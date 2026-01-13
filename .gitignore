@@ -1,0 +1,60 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+.nyc_output/
+
+# Production Build
+dist/
+dist-ssr/
+.output/
+.vinxi/
+build/
+
+# Generated Files
+.nitro/
+.tanstack/
+.wrangler/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local
+
+# Editor/IDE
+.DS_Store
+.idea/
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Convex
+# We generally DO commit convex/_generated so the types are available without running dev
+# convex/_generated
+
+# Optional: Bun lockfile is binary in older versions, but text in newer. 
+# We commit bun.lock (text) or bun.lockb (binary).
+# If you see both, commit the one you are using.

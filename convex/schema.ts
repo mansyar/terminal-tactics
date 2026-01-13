@@ -12,6 +12,8 @@ export default defineSchema({
     code: v.optional(v.string()), // 4-character lobby code
     p1: v.optional(v.string()), // userId or handle
     p2: v.optional(v.string()),
+    p1Squad: v.optional(v.array(v.string())), // Array of unit types ["K", "A", "S", "M"]
+    p2Squad: v.optional(v.array(v.string())),
     p1Typing: v.optional(v.boolean()),
     p2Typing: v.optional(v.boolean()),
     lastActionTime: v.optional(v.number()),

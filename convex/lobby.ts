@@ -76,35 +76,8 @@ export const joinLobby = mutation({
 
     await ctx.db.patch(game._id, {
       p2: args.p2,
-      status: 'playing', // For now, go straight to playing
+      status: 'drafting',
       lastActionTime: Date.now(),
-    })
-
-    // Seed default units for Phase 3 testing
-    await ctx.db.insert('units', {
-      gameId: game._id,
-      ownerId: 'p1',
-      type: 'K',
-      hp: 100,
-      maxHp: 100,
-      ap: 2,
-      maxAp: 2,
-      x: 2,
-      y: 9,
-      direction: 'N',
-    })
-
-    await ctx.db.insert('units', {
-      gameId: game._id,
-      ownerId: 'p2',
-      type: 'S',
-      hp: 50,
-      maxHp: 50,
-      ap: 4,
-      maxAp: 4,
-      x: 8,
-      y: 2,
-      direction: 'S',
     })
 
     return game._id
@@ -126,35 +99,8 @@ export const joinQuickPlay = mutation({
     if (openLobby) {
       await ctx.db.patch(openLobby._id, {
         p2: args.playerId,
-        status: 'playing',
+        status: 'drafting',
         lastActionTime: Date.now(),
-      })
-
-      // Seed default units
-      await ctx.db.insert('units', {
-        gameId: openLobby._id,
-        ownerId: 'p1',
-        type: 'K',
-        hp: 100,
-        maxHp: 100,
-        ap: 2,
-        maxAp: 2,
-        x: 2,
-        y: 9,
-        direction: 'N',
-      })
-
-      await ctx.db.insert('units', {
-        gameId: openLobby._id,
-        ownerId: 'p2',
-        type: 'S',
-        hp: 50,
-        maxHp: 50,
-        ap: 4,
-        maxAp: 4,
-        x: 8,
-        y: 2,
-        direction: 'S',
       })
 
       return openLobby._id

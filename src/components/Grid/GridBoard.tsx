@@ -1,6 +1,12 @@
 import React from 'react'
 
-export function GridBoard({ children }: { children?: React.ReactNode }) {
+export function GridBoard({
+  children,
+  mapData,
+}: {
+  children?: React.ReactNode
+  mapData?: { tiles: Array<Array<string>>; width: number; height: number }
+}) {
   const size = 12
   const tileSize = 100
   const boardSize = size * tileSize
@@ -8,7 +14,7 @@ export function GridBoard({ children }: { children?: React.ReactNode }) {
   const cols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
 
   return (
-    <div className="relative w-full aspect-square max-w-[800px] mx-auto border border-matrix-primary/30 bg-black overflow-hidden">
+    <div className="relative h-full w-auto aspect-square mx-auto bg-black overflow-hidden">
       <svg
         viewBox={`-50 -50 ${boardSize + 100} ${boardSize + 100}`}
         className="w-full h-full"
@@ -24,6 +30,45 @@ export function GridBoard({ children }: { children?: React.ReactNode }) {
           </filter>
         </defs>
 
+        {/* Tiles / Terrain */}
+        {mapData &&
+          mapData.tiles.map((row, y) =>
+            row.map((type, x) => (
+              <g
+                key={`${x}-${y}`}
+                transform={`translate(${x * tileSize}, ${y * tileSize})`}
+              >
+                <rect
+                  width={tileSize}
+                  height={tileSize}
+                  className={`fill-black stroke-matrix-primary/5 stroke-1 ${
+                    type === 'highground' ? 'fill-matrix-primary/3' : ''
+                  }`}
+                />
+                {type === 'wall' && (
+                  <text
+                    x={tileSize / 2}
+                    y={tileSize / 2 + 15}
+                    textAnchor="middle"
+                    className="fill-matrix-primary/40 font-mono text-4xl select-none"
+                  >
+                    #
+                  </text>
+                )}
+                {type === 'highground' && (
+                  <text
+                    x={tileSize / 2}
+                    y={tileSize / 2 + 15}
+                    textAnchor="middle"
+                    className="fill-matrix-primary/40 font-mono text-4xl select-none"
+                  >
+                    ^
+                  </text>
+                )}
+              </g>
+            )),
+          )}
+
         {/* Labels - Rows */}
         {Array.from({ length: size }).map((_, i) => (
           <text
@@ -31,7 +76,7 @@ export function GridBoard({ children }: { children?: React.ReactNode }) {
             x="-25"
             y={i * tileSize + 60}
             fill="#00FF00"
-            className="text-xs font-mono opacity-50"
+            className="text-2xl font-mono opacity-60"
             textAnchor="middle"
           >
             {size - i}
@@ -45,7 +90,7 @@ export function GridBoard({ children }: { children?: React.ReactNode }) {
             x={i * tileSize + 50}
             y={boardSize + 30}
             fill="#00FF00"
-            className="text-xs font-mono opacity-50"
+            className="text-2xl font-mono opacity-60"
             textAnchor="middle"
           >
             {col}
@@ -77,6 +122,18 @@ export function GridBoard({ children }: { children?: React.ReactNode }) {
             />
           </React.Fragment>
         ))}
+
+        {/* Playable Area Border */}
+        <rect
+          x="0"
+          y="0"
+          width={boardSize}
+          height={boardSize}
+          fill="none"
+          stroke="#00FF00"
+          strokeWidth="3"
+          className="opacity-30"
+        />
 
         {/* Content (Units/Terrain) */}
         <g>{children}</g>

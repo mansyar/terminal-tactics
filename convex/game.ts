@@ -121,5 +121,16 @@ export const endTurn = mutation({
       turnNum: game.turnNum + 1,
       lastActionTime: Date.now(),
     })
+
+    // Restore AP for next player's units
+    const nextUnits = await ctx.db
+      .query('units')
+      .withIndex('by_gameId', (q) => q.eq('gameId', args.gameId))
+      .filter((q) => q.eq(q.field('ownerId'), nextPlayer))
+      .collect()
+
+    for (const unit of nextUnits) {
+      await ctx.db.patch(unit._id, { ap: unit.maxAp })
+    }
   },
 })

@@ -90,22 +90,23 @@
 
 ### Tasks
 
-- [ ] **Squad Builder:** Create a UI for drafting units within the 1000 credit limit.
-- [ ] **Unit Spawning:** Logic to place drafted units on the board at start.
-- [ ] **Movement Logic:** Implement `mv` command validation (AP cost, Wall collision, Boundary checks).
-- [ ] **Animation:** Implement "Sliding" animations for unit movement (using `framer-motion` or CSS transitions).
-- [ ] **Map Generation:** Implement a basic cellular automata algorithm for 12x12 procedural maps.
+- [x] **Squad Builder:** Create a UI for drafting units within the 1000 credit limit.
+- [x] **Unit Spawning:** Logic to place drafted units on the board at start.
+- [x] **Movement Logic:** Implement `mv` command validation (AP cost, Wall collision, Boundary checks).
+- [x] **Animation:** Implement "Sliding" animations for unit movement (using `framer-motion`).
+- [x] **Map Generation:** Implement a basic cellular automata algorithm for 12x12 procedural maps.
+- [x] **AP Display:** Visual AP tracking (dots on unit tiles) and `inspect` command for detailed stats.
 
 ### Acceptance Criteria
 
-- [ ] Players can pick their team and start the match.
-- [ ] `mv u1 c4` moves the unit correctly and deducts AP.
-- [ ] Invalid moves (through walls) are rejected with a "Permission Denied" error.
+- [x] Players can pick their team and start the match.
+- [x] `mv C2 C5` moves the unit correctly and deducts AP.
+- [x] Invalid moves (through walls) are rejected with error messages.
 
 ### DoD
 
-- [ ] Unit tests for Movement Logic and "Point Buy" math.
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` (Must pass with 0 errors/warnings).
+- [x] Unit tests for Movement Logic and "Point Buy" math.
+- [x] Execute: `bun run type-check; bun run lint; bun run build; bun test` (Must pass with 0 errors/warnings).
 
 ---
 

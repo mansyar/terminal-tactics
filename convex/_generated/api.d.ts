@@ -10,6 +10,8 @@
 
 import type * as game from "../game.js";
 import type * as lobby from "../lobby.js";
+import type * as movement from "../movement.js";
+import type * as squadBuilder from "../squadBuilder.js";
 
 import type {
   ApiFromModules,
@@ -20,6 +22,8 @@ import type {
 declare const fullApi: ApiFromModules<{
   game: typeof game;
   lobby: typeof lobby;
+  movement: typeof movement;
+  squadBuilder: typeof squadBuilder;
 }>;
 
 /**

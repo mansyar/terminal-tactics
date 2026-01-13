@@ -11,6 +11,7 @@ import { LobbyScreen } from './components/LobbyScreen'
 import { TurnIndicator } from './components/TurnIndicator'
 import { parseCommand } from './lib/commandParser'
 import { getOrSetUserId } from './lib/utils'
+import { SquadBuilder } from './components/SquadBuilder'
 import type { LogEntry } from './components/Terminal/ConsoleHistory'
 
 function App() {
@@ -33,6 +34,8 @@ function App() {
   const logCommand = useMutation(api.game.logCommand)
   const setTyping = useMutation(api.lobby.setTyping)
   const endTurn = useMutation(api.game.endTurn)
+  const moveUnit = useMutation(api.movement.moveUnit)
+  const submitDraft = useMutation(api.squadBuilder.submitDraft)
 
   const handleCommand = useCallback(
     async (raw: string) => {
@@ -51,6 +54,97 @@ function App() {
       if (cmd.type === 'help') {
         result =
           'AVAILABLE_COMMANDS: mv, atk, scan, inspect, ovw, end, help, clear'
+      } else if (cmd.type === 'mv') {
+        // Syntax: mv [fromCoord] [toCoord] -> mv C2 C5
+        const [fromCoord, toCoord] = cmd.args
+        if (!fromCoord || !toCoord) {
+          result =
+            'ERROR: INVALID_ARGUMENTS. USAGE: mv [from] [to] (e.g., mv C2 C5)'
+        } else {
+          // Parse source coordinate
+          const fromXChar = fromCoord.charAt(0).toUpperCase()
+          const fromYNum = parseInt(fromCoord.slice(1))
+
+          // Parse target coordinate
+          const toXChar = toCoord.charAt(0).toUpperCase()
+          const toYNum = parseInt(toCoord.slice(1))
+
+          const isValidCoord = (xChar: string, yNum: number) =>
+            !isNaN(yNum) &&
+            xChar >= 'A' &&
+            xChar <= 'L' &&
+            yNum >= 1 &&
+            yNum <= 12
+
+          if (!isValidCoord(fromXChar, fromYNum)) {
+            result = `ERROR: INVALID_SOURCE_COORD "${fromCoord}"`
+          } else if (!isValidCoord(toXChar, toYNum)) {
+            result = `ERROR: INVALID_TARGET_COORD "${toCoord}"`
+          } else {
+            const fromX = fromXChar.charCodeAt(0) - 65
+            const fromY = 12 - fromYNum
+            const toX = toXChar.charCodeAt(0) - 65
+            const toY = 12 - toYNum
+
+            // Find unit at source position
+            const myPlayerId = gameState.p1 === playerId ? 'p1' : 'p2'
+            const unitAtSource = gameState.units.find(
+              (u: any) => u.x === fromX && u.y === fromY,
+            )
+
+            if (!unitAtSource) {
+              result = `ERROR: NO_UNIT_AT "${fromCoord}"`
+            } else if (unitAtSource.ownerId !== myPlayerId) {
+              result = `ERROR: NOT_YOUR_UNIT_AT "${fromCoord}"`
+            } else {
+              try {
+                await moveUnit({
+                  gameId: gameState._id,
+                  playerId,
+                  unitId: unitAtSource._id,
+                  targetX: toX,
+                  targetY: toY,
+                })
+                result = `MOVE_SUCCESS: [${unitAtSource.type}] ${fromCoord.toUpperCase()} -> ${toCoord.toUpperCase()}`
+              } catch (err: any) {
+                let errorMessage = err.message
+
+                if (errorMessage.includes('Uncaught Error: ')) {
+                  errorMessage = errorMessage.split('Uncaught Error: ')[1]
+                }
+
+                if (errorMessage.includes(' at handler')) {
+                  errorMessage = errorMessage.split(' at handler')[0]
+                }
+
+                result = `ERROR: ${errorMessage.trim()}`
+              }
+            }
+          }
+        }
+      } else if (cmd.type === 'inspect') {
+        const [coord] = cmd.args
+        if (!coord) {
+          result = 'ERROR: MISSING_COORD. USAGE: inspect [coord]'
+        } else {
+          const xChar = coord.charAt(0).toUpperCase()
+          const yNum = parseInt(coord.slice(1))
+          const x = xChar.charCodeAt(0) - 65
+          const y = 12 - yNum
+
+          if (isNaN(yNum) || xChar < 'A' || xChar > 'L') {
+            result = `ERROR: INVALID_COORD "${coord}"`
+          } else {
+            const unit = gameState.units.find(
+              (u: any) => u.x === x && u.y === y,
+            )
+            if (!unit) {
+              result = `NOTICE: NO_UNIT_DETECTED_AT ${coord.toUpperCase()}`
+            } else {
+              result = `UNIT_ID: [${unit.type}] | OWNER: ${unit.ownerId.toUpperCase()} | HP: ${unit.hp}/${unit.maxHp} | AP: ${unit.ap}/${unit.maxAp} | POS: ${coord.toUpperCase()}`
+            }
+          }
+        }
       } else if (cmd.type === 'end') {
         const isTurn =
           (gameState.currentPlayer === 'p1' && gameState.p1 === playerId) ||
@@ -73,7 +167,15 @@ function App() {
         result,
       })
     },
-    [gameState, logCommand, playerId, setTyping, endTurn],
+    [
+      gameState,
+      logCommand,
+      playerId,
+      setTyping,
+      endTurn,
+      moveUnit,
+      submitDraft,
+    ],
   )
 
   const formattedLogs = useMemo(() => {
@@ -113,7 +215,11 @@ function App() {
     }
   }, [activeGameId, gameState])
 
-  if (!gameState || gameState.status === 'lobby') {
+  if (
+    !gameState ||
+    gameState.status === 'lobby' ||
+    gameState.status === 'drafting'
+  ) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
         {gameState?.status === 'lobby' ? (
@@ -134,6 +240,13 @@ function App() {
               QUIT_SESSION
             </button>
           </div>
+        ) : gameState?.status === 'drafting' ? (
+          <SquadBuilder
+            isP1={gameState.p1 === playerId}
+            onDeploy={(squad) =>
+              submitDraft({ gameId: gameState._id, playerId, squad })
+            }
+          />
         ) : (
           <LobbyScreen
             playerId={playerId}
@@ -187,8 +300,8 @@ function App() {
         </div>
       }
     >
-      <div className="flex-1 flex items-center justify-center p-4">
-        <GridBoard>
+      <div className="flex-1 flex items-center justify-center p-4 h-full">
+        <GridBoard mapData={gameState.mapData}>
           {gameState.units.map((u: any) => (
             <UnitModel
               key={u._id}
@@ -196,6 +309,9 @@ function App() {
               x={u.x}
               y={u.y}
               ownerId={u.ownerId}
+              direction={u.direction}
+              ap={u.ap}
+              maxAp={u.maxAp}
             />
           ))}
         </GridBoard>

@@ -9,10 +9,16 @@ export default defineSchema({
     environmentFlags: v.array(v.string()),
     mapData: v.any(), // Procedural map data
     isPublic: v.boolean(),
+    code: v.optional(v.string()), // 4-character lobby code
     p1: v.optional(v.string()), // userId or handle
     p2: v.optional(v.string()),
+    p1Typing: v.optional(v.boolean()),
+    p2Typing: v.optional(v.boolean()),
+    lastActionTime: v.optional(v.number()),
     winner: v.optional(v.string()),
-  }).index('by_status', ['status']),
+  })
+    .index('by_status', ['status'])
+    .index('by_code', ['code']),
 
   units: defineTable({
     gameId: v.id('games'),

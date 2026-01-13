@@ -7,6 +7,7 @@ export type CommandType =
   | 'sudo'
   | 'help'
   | 'clear'
+  | 'end'
   | 'unknown'
 
 export interface ParsedCommand {
@@ -29,6 +30,7 @@ export function parseCommand(input: string): ParsedCommand {
     'sudo',
     'help',
     'clear',
+    'end',
   ]
 
   if (validTypes.includes(type)) {

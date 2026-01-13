@@ -60,19 +60,7 @@ export const getGameState = query({
   args: { gameId: v.optional(v.id('games')) },
   handler: async (ctx, args) => {
     if (!args.gameId) {
-      const activeGame = await ctx.db
-        .query('games')
-        .withIndex('by_status', (q) => q.eq('status', 'playing'))
-        .order('desc')
-        .first()
-      if (!activeGame) return null
-
-      const units = await ctx.db
-        .query('units')
-        .withIndex('by_gameId', (q) => q.eq('gameId', activeGame._id))
-        .collect()
-
-      return { ...activeGame, units }
+      return null
     }
 
     const game = await ctx.db.get(args.gameId)
@@ -113,5 +101,25 @@ export const getLogs = query({
       .withIndex('by_gameId', (q) => q.eq('gameId', args.gameId))
       .order('asc')
       .collect()
+  },
+})
+export const endTurn = mutation({
+  args: { gameId: v.id('games'), playerId: v.string() },
+  handler: async (ctx, args) => {
+    const game = await ctx.db.get(args.gameId)
+    if (!game || game.status !== 'playing') return
+
+    const expectedPlayer = game.currentPlayer === 'p1' ? game.p1 : game.p2
+
+    if (args.playerId !== expectedPlayer) {
+      throw new Error('NOT_YOUR_TURN')
+    }
+
+    const nextPlayer = game.currentPlayer === 'p1' ? 'p2' : 'p1'
+    await ctx.db.patch(args.gameId, {
+      currentPlayer: nextPlayer,
+      turnNum: game.turnNum + 1,
+      lastActionTime: Date.now(),
+    })
   },
 })

@@ -2,7 +2,7 @@
 
 > "The Matrix is everywhere. It is all around us."
 
-**Terminal Tactics** is a minimalist, high-fidelity tactical strategy game played entirely through a Command Line Interface (CLI). Built with **TanStack Start**, **Convex**, and **Tailwind CSS**, it combines the depth of deterministic tactical combat with the aesthetic of a retro-futuristic terminal.
+**Terminal Tactics** is a minimalist, high-fidelity tactical strategy game played entirely through a Command Line Interface (CLI). Built with **Vite**, **React**, **Convex**, and **Tailwind CSS**, it combines the depth of deterministic tactical combat with the aesthetic of a retro-futuristic terminal.
 
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Status](https://img.shields.io/badge/status-in_development-yellow)
@@ -11,7 +11,7 @@
 ## ⚡ Tech Stack
 
 - **Runtime / Package Manager**: [Bun](https://bun.sh)
-- **Framework**: [TanStack Start](https://tanstack.com/start)
+- **Framework**: [Vite](https://vitejs.dev) + [React](https://react.dev)
 - **Backend & Database**: [Convex](https://convex.dev)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com) (Matrix Theme)
 - **Testing**: [Bun Test](https://bun.sh/docs/cli/test)
@@ -79,7 +79,8 @@ terminal-tactics/
 │   │   ├── CLI/         # Command input & history
 │   │   ├── Grid/        # SVG Map & Unit rendering
 │   │   └── Layout/      # Main Game Shell
-│   ├── routes/          # TanStack Router definitions
+│   ├── App.tsx          # Main Application Component
+│   ├── main.tsx         # Entry Point
 │   ├── lib/             # Utilities (Command parser, etc.)
 │   └── styles.css       # Global Matrix theme
 ├── docs/                # Documentation & Roadmap

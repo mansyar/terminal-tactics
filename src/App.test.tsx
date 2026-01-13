@@ -7,7 +7,35 @@ import App from './App.tsx'
 const mockConvex = new ConvexReactClient('https://mock.convex.cloud')
 
 // Mock scrollIntoView for JSDOM
+// Mock scrollIntoView for JSDOM
 Element.prototype.scrollIntoView = () => {}
+
+// Mock localStorage
+const localStorageMock = (function () {
+  let store: Record<string, string> = {}
+  return {
+    getItem: (key: string) => store[key] || null,
+    setItem: (key: string, value: string) => {
+      store[key] = value.toString()
+    },
+    clear: () => {
+      store = {}
+    },
+    removeItem: (key: string) => {
+      delete store[key]
+    },
+  }
+})()
+
+// @ts-ignore -- Polyfilling localStorage for JSDOM
+global.localStorage = localStorageMock
+// @ts-ignore -- Polyfilling window.localStorage if window exists
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, 'localStorage', {
+    value: localStorageMock,
+    writable: true, // Ensure it can be written
+  })
+}
 
 describe('App', () => {
   test('renders', () => {
@@ -17,6 +45,6 @@ describe('App', () => {
         <App />
       </ConvexProvider>,
     )
-    expect(screen.getByText(/VIEWPORT_01/i)).toBeDefined()
+    expect(screen.getByText(/TERMINAL_TACTICS/i)).toBeDefined()
   })
 })

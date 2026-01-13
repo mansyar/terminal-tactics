@@ -11,7 +11,7 @@
 
 ### Tasks
 
-- [x] **Project Setup:** Initialize `TanStack Start` project with TypeScript using `bun`.
+- [x] **Project Setup:** Initialize `Vite + React` project with TypeScript using `bun`.
 - [x] **Styling Setup:** Configure Tailwind CSS with the custom "Matrix" palette and "JetBrains Mono" font.
 - [x] **Database Setup:** Initialize `Convex` project and set up the schema for `games`, `units`, and `logs`.
 - [x] **UI Layout:** Create the basic `GameLayout` component (Main Terminal Window + Sidebar/Status Panel).
@@ -63,24 +63,24 @@
 
 ### Tasks
 
-- [ ] **Lobby System:** Create `createLobby` (generates 4-digit code) and `joinLobby` mutations.
-- [ ] **Player Identity:** Implement anonymous auth (store `userId` and `handle` in LocalStorage).
-- [ ] **Turn Management:** Implement the core "Game Loop" in Convex (validating whose turn it is).
-- [ ] **Public Queue:** Implement a basic "Quick Play" matchmaking function.
-- [ ] **Presence:** Show "Player 2 is typing..." or "Player 2 connected" status.
+- [x] **Lobby System:** Create `createLobby` (generates 4-digit code) and `joinLobby` mutations.
+- [x] **Player Identity:** Implement anonymous auth (store `userId` and `handle` in LocalStorage).
+- [x] **Turn Management:** Implement the core "Game Loop" in Convex (validating whose turn it is).
+- [x] **Public Queue:** Implement a basic "Quick Play" matchmaking function.
+- [x] **Presence:** Show "Player 2 is typing..." or "Player 2 connected" status.
 
 ### Acceptance Criteria
 
-- [ ] Player A can create a game and see the code.
-- [ ] Player B can join using the code.
-- [ ] The game state updates for both players simultaneously.
-- [ ] Player B cannot move during Player A's turn.
+- [x] Player A can create a game and see the code.
+- [x] Player B can join using the code.
+- [x] The game state updates for both players simultaneously.
+- [x] Player B cannot move during Player A's turn.
 
 ### DoD
 
-- [ ] Integration tests for the Lobby flow.
-- [ ] Reliable state sync (no race conditions).
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` (Must pass with 0 errors/warnings).
+- [x] Integration tests for the Lobby flow.
+- [x] Reliable state sync (no race conditions).
+- [x] Execute: `bun run type-check; bun run lint; bun run build; bun test` (Must pass with 0 errors/warnings).
 
 ---
 
@@ -131,7 +131,7 @@
 
 - [ ] Comprehensive tests for the LoS algorithm.
 - [ ] Visual verification of FoW rendering.
-- [ ] Execute: `pnpm type-check; pnpm lint; pnpm build; pnpm test` (Must pass with 0 errors/warnings).
+- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` (Must pass with 0 errors/warnings).
 
 ---
 
@@ -155,4 +155,8 @@
 
 - [ ] Performance audit (Lighthouse score > 90).
 - [ ] Bug bash and final polish.
-- [ ] Execute: `pnpm type-check; pnpm lint; pnpm build; pnpm test` (Must pass with 0 errors/warnings).
+- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` (Must pass with 0 errors/warnings).
+
+# REFERENCES
+
+- [Game Design Document](./GDD.md)

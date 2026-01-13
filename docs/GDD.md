@@ -8,7 +8,7 @@
 
 ## 2. CORE TECH STACK
 
-- **Framework:** TanStack Start (Full-stack TypeScript framework)
+- **Framework:** Vite + React (Client-side Single Page Application)
 - **Backend/Database:** Convex (Real-time synchronization & ACID transactions)
 - **Rendering:** SVG (Scalable Vector Graphics for the grid and units)
 - **Styling:** Tailwind CSS + Monospaced Typography (JetBrains Mono)

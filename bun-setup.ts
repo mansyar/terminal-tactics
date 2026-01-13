@@ -4,7 +4,7 @@ const dom = new JSDOM('<!doctype html><html><body></body></html>', {
   url: 'http://localhost',
 })
 
-// @ts-ignore
+// @ts-ignore -- Polyfilling window for JSDOM environment
 global.window = dom.window
 global.document = dom.window.document
 global.Element = dom.window.Element

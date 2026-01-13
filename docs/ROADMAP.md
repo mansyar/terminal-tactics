@@ -37,23 +37,23 @@
 
 ### Tasks
 
-- [ ] **CLI Component:** Build an interactive input field that accepts text commands.
-- [ ] **Command Parser:** Implement a `parseCommand(input)` function to handle `help`, `clear`, and basic syntax validation.
-- [ ] **Grid Renderer:** Create an SVG-based 12x12 grid that renders tiles based on a 2D array.
-- [ ] **Unit Rendering:** Create basic SVG icons for the 4 unit classes (Knight, Archer, Scout, Medic).
-- [ ] **State Sync:** Connect the Grid component to a Convex query to render real-time state.
+- [x] **CLI Component:** Build an interactive input field that accepts text commands.
+- [x] **Command Parser:** Implement a `parseCommand(input)` function to handle `help`, `clear`, and basic syntax validation.
+- [x] **Grid Renderer:** Create an SVG-based 12x12 grid that renders tiles based on a 2D array.
+- [x] **Unit Rendering:** Create basic SVG icons for the 4 unit classes (Knight, Archer, Scout, Medic).
+- [x] **State Sync:** Connect the Grid component to a Convex query to render real-time state.
 
 ### Acceptance Criteria
 
-- [ ] Typing into the CLI feels responsive.
-- [ ] Submitting a command logs it to the "Console History".
-- [ ] The Grid renders correctly based on mock data in Convex.
+- [x] Typing into the CLI feels responsive.
+- [x] Submitting a command logs it to the "Console History".
+- [x] The Grid renders correctly based on mock data in Convex.
 
 ### DoD
 
-- [ ] Unit tests for the `Command Parser`.
-- [ ] Accessible CLI (keyboard navigation works).
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` (Must pass with 0 errors/warnings).
+- [x] Unit tests for the `Command Parser`.
+- [x] Accessible CLI (keyboard navigation works).
+- [x] Execute: `bun run type-check; bun run lint; bun run build; bun test` (Must pass with 0 errors/warnings).
 
 ---
 

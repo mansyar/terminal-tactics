@@ -8,9 +8,12 @@ import {
   createRouter,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { ConvexProvider, ConvexReactClient } from 'convex/react'
 
 import './styles.css'
 import App from './App.tsx'
+
+const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string)
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -49,7 +52,9 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <ConvexProvider client={convex}>
+        <RouterProvider router={router} />
+      </ConvexProvider>
     </StrictMode>,
   )
 }

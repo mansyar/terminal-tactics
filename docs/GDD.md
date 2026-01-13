@@ -1,4 +1,4 @@
-# 📑 PROJECT: TERMINAL TACTICS (GDD v1.2.0)
+# 📑 PROJECT: TERMINAL TACTICS (GDD v1.6.0)
 
 ## 1. VISION STATEMENT
 
@@ -8,117 +8,216 @@
 
 ## 2. CORE TECH STACK
 
-- **Framework:** Vite + React (Client-side Single Page Application)
-- **Backend/Database:** Convex (Real-time synchronization & ACID transactions)
-- **Rendering:** SVG (Scalable Vector Graphics for the grid and units)
-- **Styling:** Tailwind CSS + Monospaced Typography (JetBrains Mono)
+| Layer     | Technology                    |
+| --------- | ----------------------------- |
+| Framework | Vite + React                  |
+| Backend   | Convex (real-time sync)       |
+| Rendering | SVG                           |
+| Styling   | Tailwind CSS + JetBrains Mono |
+| Animation | Framer Motion                 |
 
 ---
 
 ## 3. GAMEPLAY MECHANICS
 
-### A. Game Loop & Win Condition
+### A. Game Loop
 
-- **Win Condition:** Elimination (Deathmatch). The game ends when all enemy units are destroyed.
-- **Turn Structure:** Strict Turn-Based (Player 1 completes turn -> Player 2 starts). This ensures clarity in the MVP phase.
-- **Squad Building:** Point Buy System. Players draft a custom squad using a fixed budget (e.g., 1000 Credits) before the match starts.
+| Aspect         | Rule                                  |
+| -------------- | ------------------------------------- |
+| Win Condition  | Elimination — destroy all enemy units |
+| Turn Structure | Strict alternating (P1 → P2 → P1...)  |
+| Squad Budget   | 1000 Credits                          |
+| Squad Size     | 2–5 units                             |
 
-### B. The Movement & Map System
+### B. Map System
 
-- **Grid:** 12x12 Procedurally Generated Map (via Cellular Automata or similar algorithms).
-- **Coordinates:** Chess Notation (Columns A-L, Rows 1-12). Example: `C4`.
-- **AP (Action Points):** Every unit starts a turn with 2-4 AP.
-- **Visuals:** Movements are smooth animations (sliding characters), not instant teleportation.
-- **Collision:** Units cannot pass through Walls (`#`) or enemy occupied squares.
+- **Grid:** 12×12 tiles, procedurally generated via Cellular Automata
+- **Coordinates:** Chess notation (A-L columns, 1-12 rows)
+- **Terrain:**
+  - Floor (`.`) — traversable
+  - Wall (`#`) — blocks movement and LoS
+  - High Ground (`^`) — grants combat bonuses
 
-### C. The Combat System (Deterministic)
+### C. Combat _(Phase 5)_
 
-- **No RNG:** Attacks do not "miss" based on chance.
-- **Line of Sight (LoS):** Solid walls block attacks.
-- **Facing/Orientation:** Units have a front and a back.
-  - **Frontal Attack:** 100% Damage.
-  - **Side/Flank Attack:** 125% Damage.
-  - **Backstab:** 150% Damage.
-- **Elevation:** Units on High Ground (`^`) gain +1 Range and +10 Damage.
+Combat is **deterministic** — no RNG. Damage depends on position, elevation, and abilities.
 
-### D. Fog of War (Dynamic)
+| Factor         | Effect                     |
+| -------------- | -------------------------- |
+| Frontal Attack | 100% damage                |
+| Flank Attack   | 125% damage                |
+| Backstab       | 150% damage                |
+| High Ground    | +1 range, +10 damage       |
+| Knight Shield  | -20% damage (frontal only) |
 
-- **Terrain Memory:** Once a tile is seen, the _terrain_ (walls/floor) remains mapped forever.
-- **Unit Visibility:** Enemy _units_ are only visible if they are currently inside your vision radius. If they move out, they vanish.
-- **Stealth:** Some units (Scouts) are invisible unless an enemy is adjacent to them.
+📖 **Full details:** [COMBAT.md](./COMBAT.md)
 
----
+### D. Fog of War _(Phase 5)_
 
-## 4. THE UNIT CLASSES (SYMBOLS)
+- Each unit has a **Vision (VIS)** range
+- Terrain is permanently remembered once seen
+- Enemy units vanish when outside vision
+- Scouts are invisible unless adjacent
 
-| Symbol | Class  | Cost | HP  | AP  | ATK | RNG | Description                                           |
-| :----- | :----- | :--- | :-- | :-- | :-- | :-- | :---------------------------------------------------- |
-| `[K]`  | Knight | 300  | 100 | 2   | 30  | 1   | High HP; has a frontal shield reducing damage by 20%. |
-| `[A]`  | Archer | 200  | 60  | 2   | 20  | 5   | Squishy; long range. Gains range from high ground.    |
-| `[S]`  | Scout  | 150  | 50  | 4   | 15  | 2   | Massive movement. Invisible to `scan` commands.       |
-| `[M]`  | Medic  | 250  | 70  | 3   | 0   | 2   | Heals adjacent allies for 15 HP per action.           |
-
----
-
-## 5. INTERFACE & COMMANDS
-
-The primary interaction is through a Command Line Interface (CLI) with **Tab Autocomplete**.
-
-### Core Commands:
-
-- `mv [unitID] [coord]` — Move a unit (e.g., `mv u1 C4`)
-- `atk [unitID] [targetID]` — Attack an enemy (e.g., `atk u1 e2`)
-- `scan [coord]` — Reveal a 3x3 area for 1 AP.
-- `inspect [id]` — View raw stats and status effects of a unit.
-- `ovw [unitID]` — Set unit to Overwatch (fires if enemy enters range during their turn).
-
-### Ultimate Mechanics:
-
-- `sudo [command]` — A "Limit Break" mechanic. Costs "Root Access" points (earned by kills/turns).
-  - `sudo mv`: Unit ignores terrain costs and collision for this move.
-  - `sudo scan`: Reveals the entire map for 1 turn.
+📖 **Full details:** [COMBAT.md](./COMBAT.md#vision-system)
 
 ---
 
-## 6. GAME MODES & INFRASTRUCTURE
+## 4. UNIT CLASSES
 
-### A. Matchmaking
+| Symbol | Class  | Cost |  HP |  AP | ATK | RNG | VIS | Ability                 |
+| ------ | ------ | ---: | --: | --: | --: | --: | --: | ----------------------- |
+| `[K]`  | Knight |  300 | 100 |   2 |  30 |   1 |   3 | Frontal Shield          |
+| `[A]`  | Archer |  200 |  60 |   2 |  20 |   5 |   5 | High Ground Mastery     |
+| `[S]`  | Scout  |  150 |  50 |   4 |  15 |   2 |   4 | Stealth + Scan Immunity |
+| `[M]`  | Medic  |  250 |  70 |   3 |   0 |   2 |   3 | Heal (15 HP)            |
 
-- **Lobby System:** Players can create a private lobby and share a 4-digit code (e.g., `X7Z2`).
-- **Public Queue:** Basic "Quick Play" button that pairs available players.
-
-### B. Accounts & Progression
-
-- **Auth:** Anonymous for MVP. Players provide a temporary handle (e.g., `User_99`).
-- **Persistence:** LocalStorage used to remember settings and last played handle.
-
-### C. Art Direction
-
-- **Theme:** "Matrix" / Retro-Cyberpunk.
-- **Palette:** High-contrast Green (`#00FF00`, `#00CC00`) on Deep Black (`#0A0A0A`).
-- **UI Elements:** CRT Scanlines, slight chromatic aberration glich effects on UI interactions.
+📖 **Ability details:** [COMBAT.md](./COMBAT.md#knight-shield)
 
 ---
 
-## 7. THE EVENT LOOP (GLITCHES)
+## 5. COMMANDS
 
-Every 5 turns, a global "Kernel Panic" occurs, triggered by a Convex Cron Job:
+The game is controlled via Command Line Interface (CLI).
 
-1.  **SEGFAULT:** All units lose 1 AP for the next turn.
-2.  **OVERCLOCK:** Movement range doubles, but units take 2 HP damage per step.
-3.  **REBOOT:** All unit positions are shuffled by 1 tile in a random direction.
+### Quick Reference
+
+| Command   | Syntax       |     AP | Status  |
+| --------- | ------------ | -----: | ------- |
+| Move      | `mv C2 C5`   | 1/tile | ✅      |
+| Attack    | `atk C4 E4`  |      1 | Phase 5 |
+| Heal      | `heal D5 C5` |      1 | Phase 5 |
+| Scan      | `scan D5`    |      1 | Phase 5 |
+| Overwatch | `ovw C4 N`   |      1 | Phase 5 |
+| Inspect   | `inspect C4` |      0 | ✅      |
+| End Turn  | `end`        |      — | ✅      |
+| Ultimate  | `sudo mv...` |  1 RAP | Phase 6 |
+
+📖 **Full specifications:** [COMMANDS.md](./COMMANDS.md)
 
 ---
 
-## 8. CONVEX DATABASE SCHEMA (DRAFT)
+## 6. GAME FLOW
 
-- **`games`**: `id, turnNum, currentPlayer, status, environmentFlags, mapData, public (bool)`
-- **`units`**: `id, gameId, ownerId, type, hp, ap, x, y, direction`
-- **`logs`**: `id, gameId, timestamp, commandString, result`
+```
+┌─────────┐   ┌──────────┐   ┌─────────┐   ┌──────────┐
+│  LOBBY  │ → │ DRAFTING │ → │ PLAYING │ → │ FINISHED │
+└─────────┘   └──────────┘   └─────────┘   └──────────┘
+   Create       Pick squad     Turn-based    Elimination
+   or Join      (1000 cr)      combat        or forfeit
+```
+
+### Drafting Rules
+
+| Rule       | Value                  |
+| ---------- | ---------------------- |
+| Budget     | 1000 Credits           |
+| Min Squad  | 2 units                |
+| Max Squad  | 5 units                |
+| Duplicates | Allowed                |
+| Time Limit | 90 seconds _(Phase 6)_ |
+
+### Turn Timer _(Phase 6)_
+
+- 90 seconds per turn
+- Warning at 15 seconds
+- Auto-end on timeout
 
 ---
 
-## 9. IMPACT VS. EFFORT
+## 7. INFRASTRUCTURE
 
-- **Effort:** Medium (Backend logic for LoS and Pathfinding is the primary hurdle).
-- **Impact:** High (Unique "hacker" aesthetic, highly performant, excellent portfolio piece).
+### Matchmaking
+
+- **Private Lobby:** 4-digit code (e.g., `X7Z2`)
+- **Quick Play:** Auto-join or create public lobby
+
+### Persistence
+
+- `userId` — Anonymous UUID in LocalStorage
+- `terminal_tactics_game_id` — Active session (rejoin on refresh)
+
+### Real-time Features
+
+- Typing indicator ("Player is typing...")
+- Instant state sync via Convex subscriptions
+
+---
+
+## 8. ART DIRECTION
+
+| Element    | Specification                |
+| ---------- | ---------------------------- |
+| Theme      | Matrix / Retro-Cyberpunk     |
+| Primary    | `#00FF00` (Green)            |
+| Secondary  | `#00CC00` (Dark Green)       |
+| Background | `#0A0A0A` (Deep Black)       |
+| Font       | JetBrains Mono               |
+| Effects    | CRT scanlines, glow, flicker |
+
+---
+
+## 9. KERNEL PANIC EVENTS _(Phase 6)_
+
+Every 5 turns, a global "glitch" occurs:
+
+| Event     | Effect                                |
+| --------- | ------------------------------------- |
+| SEGFAULT  | All units lose 1 AP next turn         |
+| OVERCLOCK | 2× movement, but 2 HP damage per step |
+| REBOOT    | All units shift 1 tile randomly       |
+
+---
+
+## 10. DATABASE SCHEMA
+
+```typescript
+// games
+{
+  ;(turnNum,
+    currentPlayer,
+    status,
+    mapData,
+    code,
+    p1,
+    p2,
+    p1Squad,
+    p2Squad,
+    p1Typing,
+    p2Typing,
+    winner)
+}
+
+// units (indexed by gameId)
+{
+  ;(gameId, ownerId, type, hp, maxHp, ap, maxAp, x, y, direction)
+}
+
+// logs (indexed by gameId)
+{
+  ;(gameId, timestamp, commandString, result, playerId)
+}
+```
+
+---
+
+## 11. RELATED DOCUMENTS
+
+| Document                     | Description                                   |
+| ---------------------------- | --------------------------------------------- |
+| [COMMANDS.md](./COMMANDS.md) | Full command reference with validation rules  |
+| [COMBAT.md](./COMBAT.md)     | Combat system, LoS algorithm, damage formulas |
+| [ROADMAP.md](./ROADMAP.md)   | Development phases and task tracking          |
+
+---
+
+## 12. CHANGELOG
+
+| Version | Date       | Changes                                                             |
+| ------- | ---------- | ------------------------------------------------------------------- |
+| v1.0.0  | 2026-01-13 | Initial GDD draft                                                   |
+| v1.2.0  | 2026-01-13 | Added unit classes, command syntax, Kernel Panic events             |
+| v1.3.0  | 2026-01-14 | Synced with Phase 4 implementation                                  |
+| v1.4.0  | 2026-01-14 | Expanded command reference, added heal, ovw direction syntax        |
+| v1.5.0  | 2026-01-14 | Added LoS algorithm, damage formulas, vision system, drafting rules |
+| v1.6.0  | 2026-01-14 | Refactored: Extracted detailed specs to COMMANDS.md and COMBAT.md   |

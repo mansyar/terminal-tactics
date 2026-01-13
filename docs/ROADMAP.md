@@ -1,6 +1,6 @@
 # 🗺️ TERMINAL TACTICS - ROADMAP
 
-**Project Status:** 🟢 Planned
+**Project Status:** � In Progress
 **GDD Version:** v1.2.0
 
 ---
@@ -11,23 +11,23 @@
 
 ### Tasks
 
-- [ ] **Project Setup:** Initialize `TanStack Start` project with TypeScript using `bun`.
-- [ ] **Styling Setup:** Configure Tailwind CSS with the custom "Matrix" palette and "JetBrains Mono" font.
-- [ ] **Database Setup:** Initialize `Convex` project and set up the schema for `games`, `units`, and `logs`.
-- [ ] **UI Layout:** Create the basic `GameLayout` component (Main Terminal Window + Sidebar/Status Panel).
-- [ ] **CRT Effects:** Implement global CSS effects for scanlines, glow, and flicker.
+- [x] **Project Setup:** Initialize `TanStack Start` project with TypeScript using `bun`.
+- [x] **Styling Setup:** Configure Tailwind CSS with the custom "Matrix" palette and "JetBrains Mono" font.
+- [x] **Database Setup:** Initialize `Convex` project and set up the schema for `games`, `units`, and `logs`.
+- [x] **UI Layout:** Create the basic `GameLayout` component (Main Terminal Window + Sidebar/Status Panel).
+- [x] **CRT Effects:** Implement global CSS effects for scanlines, glow, and flicker.
 
 ### Acceptance Criteria
 
-- [ ] App runs locally without errors.
-- [ ] Convex dashboard shows the correct schema tables.
-- [ ] The "Hello World" page looks like a retro terminal (Green text on Black).
+- [x] App runs locally without errors.
+- [x] Convex dashboard shows the correct schema tables.
+- [x] The "Hello World" page looks like a retro terminal (Green text on Black).
 
 ### Definition of Done (DoD)
 
-- [ ] Code compiles.
-- [ ] Artifacts (screenshots of the UI) are approved.
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` (Must pass with 0 errors/warnings).
+- [x] Code compiles.
+- [x] Artifacts (screenshots of the UI) are approved.
+- [x] Execute: `bun run type-check; bun run lint; bun run build; bun test` (Must pass with 0 errors/warnings).
 
 ---
 

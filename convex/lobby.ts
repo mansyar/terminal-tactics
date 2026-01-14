@@ -78,6 +78,7 @@ export const joinLobby = mutation({
       p2: args.p2,
       status: 'drafting',
       lastActionTime: Date.now(),
+      draftStartTime: Date.now(),
     })
 
     return game._id
@@ -101,6 +102,7 @@ export const joinQuickPlay = mutation({
         p2: args.playerId,
         status: 'drafting',
         lastActionTime: Date.now(),
+        draftStartTime: Date.now(),
       })
 
       return openLobby._id

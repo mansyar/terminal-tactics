@@ -138,3 +138,51 @@ body::after {
   border: 1px solid var(--color-matrix-primary);
   box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
 }
+@keyframes terminalFade {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.terminal-fade {
+  animation: terminalFade 0.2s ease-out forwards;
+}
+
+.glow-red {
+  text-shadow:
+    0 0 5px #ff0000,
+    0 0 10px #cc0000;
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-3px, 3px);
+  }
+  40% {
+    transform: translate(-3px, -3px);
+  }
+  60% {
+    transform: translate(3px, 3px);
+  }
+  80% {
+    transform: translate(3px, -3px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.glitch {
+  animation: glitch 0.2s infinite;
+  text-shadow:
+    2px 0 #00ffff,
+    -2px 0 #ff00ff;
+}

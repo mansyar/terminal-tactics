@@ -5,10 +5,16 @@ export type CommandType =
   | 'scan'
   | 'inspect'
   | 'ovw'
-  | 'sudo'
   | 'help'
   | 'clear'
   | 'end'
+  | 'sudo mv'
+  | 'sudo scan'
+  | 'sudo atk'
+  | 'forfeit'
+  | 'offer draw'
+  | 'accept draw'
+  | 'say'
   | 'unknown'
 
 export interface ParsedCommand {
@@ -19,7 +25,26 @@ export interface ParsedCommand {
 
 export function parseCommand(input: string): ParsedCommand {
   const parts = input.trim().split(/\s+/)
-  const type = parts[0]?.toLowerCase() as CommandType
+  const first = parts[0]?.toLowerCase()
+
+  if (first === 'sudo') {
+    const second = parts[1]?.toLowerCase()
+    if (second === 'mv')
+      return { type: 'sudo mv', args: parts.slice(2), raw: input }
+    if (second === 'scan')
+      return { type: 'sudo scan', args: parts.slice(2), raw: input }
+    if (second === 'atk')
+      return { type: 'sudo atk', args: parts.slice(2), raw: input }
+  }
+
+  if (first === 'offer' && parts[1]?.toLowerCase() === 'draw') {
+    return { type: 'offer draw', args: [], raw: input }
+  }
+  if (first === 'accept' && parts[1]?.toLowerCase() === 'draw') {
+    return { type: 'accept draw', args: [], raw: input }
+  }
+
+  const type = first as CommandType
   const args = parts.slice(1)
 
   const validTypes: Array<CommandType> = [
@@ -29,10 +54,11 @@ export function parseCommand(input: string): ParsedCommand {
     'scan',
     'inspect',
     'ovw',
-    'sudo',
     'help',
     'clear',
     'end',
+    'forfeit',
+    'say',
   ]
 
   if (validTypes.includes(type)) {

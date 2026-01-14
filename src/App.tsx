@@ -13,6 +13,15 @@ import { parseCommand } from './lib/commandParser'
 import { getOrSetUserId } from './lib/utils'
 import { SquadBuilder } from './components/SquadBuilder'
 import { hasLineOfSight } from './lib/combatSystem'
+import { TimerDisplay } from './components/TimerDisplay'
+import {
+  playAttack,
+  playError,
+  playHeal,
+  playKernelPanic,
+  playSuccess,
+  playTurnEnd,
+} from './lib/audio'
 import type { LogEntry } from './components/Terminal/ConsoleHistory'
 
 const cleanErrorMessage = (message: string) => {
@@ -53,6 +62,48 @@ function App() {
   const scanArea = useMutation(api.combat.scanArea)
   const setOverwatch = useMutation(api.combat.setOverwatch)
 
+  // Phase 6 Mutations
+  const sudoMove = useMutation(api.sudo.sudoMove)
+  const sudoScan = useMutation(api.sudo.sudoScan)
+  const sudoAttack = useMutation(api.sudo.sudoAttack)
+  const forfeit = useMutation(api.gameEnd.forfeit)
+  const offerDraw = useMutation(api.gameEnd.offerDraw)
+  const acceptDraw = useMutation(api.gameEnd.acceptDraw)
+  const sendMessage = useMutation(api.chat.sendMessage)
+  const checkDraftTimeout = useMutation(api.timers.checkDraftTimeout)
+  const checkTurnTimeout = useMutation(api.timers.checkTurnTimeout)
+
+  // Timer polling
+  useEffect(() => {
+    if (!gameState) return
+    const interval = setInterval(() => {
+      if (gameState.status === 'drafting') {
+        checkDraftTimeout({ gameId: gameState._id })
+      } else if (gameState.status === 'playing') {
+        checkTurnTimeout({ gameId: gameState._id })
+      }
+    }, 5000)
+    return () => clearInterval(interval)
+  }, [gameState, checkDraftTimeout, checkTurnTimeout])
+
+  // Audio effects for game state changes
+  const [lastTurn, setLastTurn] = useState<number | undefined>()
+  const [lastPanic, setLastPanic] = useState<string | undefined>()
+
+  useEffect(() => {
+    if (gameState?.turnNum !== lastTurn) {
+      if (lastTurn !== undefined) playTurnEnd()
+      setLastTurn(gameState?.turnNum)
+    }
+    if (
+      gameState?.kernelPanicActive &&
+      gameState.kernelPanicActive !== lastPanic
+    ) {
+      playKernelPanic()
+      setLastPanic(gameState.kernelPanicActive)
+    }
+  }, [gameState?.turnNum, gameState?.kernelPanicActive, lastTurn, lastPanic])
+
   const handleCommand = useCallback(
     async (raw: string) => {
       const cmd = parseCommand(raw)
@@ -85,6 +136,7 @@ function App() {
       if (cmd.type === 'help') {
         result =
           'AVAILABLE_COMMANDS: mv, atk, scan, inspect, ovw, end, help, clear'
+        playSuccess()
       } else if (cmd.type === 'mv') {
         const [fromCoord, toCoord] = cmd.args
         const from = parseCoord(fromCoord)
@@ -110,11 +162,14 @@ function App() {
                 targetY: to.y,
               })
               result = `MOVE_SUCCESS: [${unitAtSource.type}] ${from.label} -> ${to.label}`
+              playSuccess()
               if (res.overwatchTriggered) {
                 result += ` | WARNING: OVERWATCH TRIGGERED! Took ${res.damageTaken} damage.`
+                playError()
               }
             } catch (err: any) {
               result = `ERROR: ${cleanErrorMessage(err.message)}`
+              playError()
             }
           }
         }
@@ -145,9 +200,11 @@ function App() {
                 targetId: defender._id,
               })
               result = `ATTACK_HIT: [${attacker.type}] dealt ${res.damage} DMG to [${defender.type}] at ${to.label}. (${res.zone.toUpperCase()}${res.shieldApplied ? ' + SHIELD REDUCTION' : ''})`
+              playAttack()
               if (res.destroyed) result += ` [UNIT_ELIMINATED]`
             } catch (err: any) {
               result = `ERROR: ${cleanErrorMessage(err.message)}`
+              playError()
             }
           }
         }
@@ -177,8 +234,10 @@ function App() {
                 targetId: target._id,
               })
               result = `HEAL_SUCCESS: [${healer.type}] restored ${res.healed} HP to [${target.type}] at ${to.label}.`
+              playHeal()
             } catch (err: any) {
               result = `ERROR: ${cleanErrorMessage(err.message)}`
+              playError()
             }
           }
         }
@@ -197,8 +256,10 @@ function App() {
               y: target.y,
             })
             result = `SCAN_COMPLETE: Area centered at ${target.label} revealed. ${res.hostilesCount} hostiles detected.`
+            playSuccess()
           } catch (err: any) {
             result = `ERROR: ${cleanErrorMessage(err.message)}`
+            playError()
           }
         }
       } else if (cmd.type === 'ovw') {
@@ -223,8 +284,10 @@ function App() {
                 direction,
               })
               result = `OVERWATCH_SET: [${unit.type}] at ${target.label} watching ${direction}.`
+              playSuccess()
             } catch (err: any) {
               result = `ERROR: ${cleanErrorMessage(err.message)}`
+              playError()
             }
           }
         }
@@ -233,10 +296,12 @@ function App() {
         const target = parseCoord(coord)
         if (!target) {
           result = 'ERROR: MISSING_COORD. USAGE: inspect [coord]'
+          playError()
         } else {
           const unit = gameState.units.find(
             (u: any) => u.x === target.x && u.y === target.y,
           )
+          playSuccess()
           if (!unit) {
             result = `NOTICE: NO_UNIT_DETECTED_AT ${target.label}`
           } else {
@@ -253,12 +318,114 @@ function App() {
 
         if (!isTurn) {
           result = 'ERROR: NOT_YOUR_TURN'
+          playError()
         } else {
           await endTurn({ gameId: gameState._id, playerId })
           result = 'TURN_ENDED'
+          playSuccess()
         }
-      } else if (cmd.type === 'unknown') {
+      } else if (cmd.type === 'sudo mv') {
+        const [unitCoord, targetCoord] = cmd.args
+        const unitPos = parseCoord(unitCoord)
+        const targetPos = parseCoord(targetCoord)
+        if (!unitPos || !targetPos) {
+          result = 'ERROR: INVALID_ARGS. USAGE: sudo mv [unit] [target]'
+          playError()
+        } else {
+          const unit = gameState.units.find(
+            (u: any) => u.x === unitPos.x && u.y === unitPos.y,
+          )
+          if (!unit) {
+            result = `ERROR: NO_UNIT_AT ${unitPos.label}`
+            playError()
+          } else {
+            try {
+              await sudoMove({
+                gameId: gameState._id,
+                playerId,
+                unitId: unit._id,
+                targetX: targetPos.x,
+                targetY: targetPos.y,
+              })
+              result = `SUDO_MOVE: [${unit.type}] bypassed security to ${targetPos.label}`
+              playSuccess()
+            } catch (err: any) {
+              result = `ERROR: ${cleanErrorMessage(err.message)}`
+              playError()
+            }
+          }
+        }
+      } else if (cmd.type === 'sudo scan') {
+        try {
+          await sudoScan({ gameId: gameState._id, playerId })
+          result = 'SUDO_SCAN: FULL_MAP_DECRYPTED'
+          playSuccess()
+        } catch (err: any) {
+          result = `ERROR: ${cleanErrorMessage(err.message)}`
+          playError()
+        }
+      } else if (cmd.type === 'sudo atk') {
+        const [atkCoord, targetCoord] = cmd.args
+        const atkPos = parseCoord(atkCoord)
+        const targetPos = parseCoord(targetCoord)
+        if (!atkPos || !targetPos) {
+          result = 'ERROR: INVALID_ARGS. USAGE: sudo atk [atk] [target]'
+          playError()
+        } else {
+          const attacker = gameState.units.find(
+            (u: any) => u.x === atkPos.x && u.y === atkPos.y,
+          )
+          const defender = gameState.units.find(
+            (u: any) => u.x === targetPos.x && u.y === targetPos.y,
+          )
+          if (!attacker || !defender) {
+            result = 'ERROR: UNIT_NOT_FOUND'
+            playError()
+          } else {
+            try {
+              const res = await sudoAttack({
+                gameId: gameState._id,
+                playerId,
+                attackerId: attacker._id,
+                targetId: defender._id,
+                damage: 0,
+              })
+              result = `SUDO_ATTACK: [${attacker.type}] dealt ${res.damage} DMG to [${defender.type}] bypassing systems.`
+              playAttack()
+              if (res.destroyed) result += ' [ELIMINATED]'
+            } catch (err: any) {
+              result = `ERROR: ${cleanErrorMessage(err.message)}`
+              playError()
+            }
+          }
+        }
+      } else if (cmd.type === 'forfeit') {
+        await forfeit({ gameId: gameState._id, playerId })
+        result = 'FORFEIT_ACCEPTED. INITIATING_SHUTDOWN.'
+        playSuccess()
+      } else if (cmd.type === 'offer draw') {
+        await offerDraw({ gameId: gameState._id, playerId })
+        result = 'DRAW_OFFER_TRANSMITTED'
+        playSuccess()
+      } else if (cmd.type === 'accept draw') {
+        try {
+          await acceptDraw({ gameId: gameState._id, playerId })
+          result = 'DRAW_ACCEPTED. CONNECTION_TERMINATED.'
+          playSuccess()
+        } catch (err: any) {
+          result = `ERROR: ${cleanErrorMessage(err.message)}`
+          playError()
+        }
+      } else if (cmd.type === 'say') {
+        const message = cmd.args.join(' ')
+        if (message) {
+          await sendMessage({ gameId: gameState._id, playerId, message })
+          result = 'MSG_SENT'
+          playSuccess()
+        }
+      } else {
         result = `ERROR: UNKNOWN_COMMAND "${cmd.raw}"`
+        playError()
       }
 
       await logCommand({
@@ -403,6 +570,8 @@ function App() {
         ) : gameState?.status === 'drafting' ? (
           <SquadBuilder
             isP1={gameState.p1 === playerId}
+            draftStartTime={gameState.draftStartTime}
+            onTimeout={() => checkDraftTimeout({ gameId: gameState._id })}
             onDeploy={(squad) =>
               submitDraft({ gameId: gameState._id, playerId, squad })
             }
@@ -465,6 +634,8 @@ function App() {
           onTyping={(isTyping) =>
             setTyping({ gameId: gameState._id, playerId, isTyping })
           }
+          units={visibleUnits}
+          playerId={gameState.p1 === playerId ? 'p1' : 'p2'}
         />
       }
       sidebar={
@@ -485,6 +656,30 @@ function App() {
               enemyTyping={otherPlayerTyping}
             />
 
+            <div className="flex gap-2">
+              <div className="flex-1 border border-matrix-primary/30 p-2">
+                <div className="text-[10px] text-matrix-primary/50 uppercase">
+                  RAP
+                </div>
+                <div className="text-matrix-primary font-bold text-center">
+                  {(gameState.p1 === playerId
+                    ? gameState.p1Rap
+                    : gameState.p2Rap) || 0}
+                  /3
+                </div>
+              </div>
+              <div className="flex-1">
+                <TimerDisplay
+                  startTime={gameState.turnStartTime || Date.now()}
+                  durationMs={90000}
+                  label="Turn"
+                  onTimeout={() =>
+                    isMyTurn && checkTurnTimeout({ gameId: gameState._id })
+                  }
+                />
+              </div>
+            </div>
+
             <div className="text-[10px] text-matrix-primary/50 uppercase px-1">
               Code: {gameState.code}
             </div>
@@ -493,7 +688,16 @@ function App() {
         </div>
       }
     >
-      <div className="flex-1 flex items-center justify-center p-4 h-full">
+      <div
+        className={`flex-1 flex items-center justify-center p-4 h-full relative ${
+          gameState.kernelPanicActive ? 'glitch' : ''
+        }`}
+      >
+        {gameState.kernelPanicActive && (
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-red-900/80 text-white px-8 py-2 border-2 border-red-500 animate-bounce font-bold tracking-[0.2em]">
+            KERNEL_PANIC: {gameState.kernelPanicActive}
+          </div>
+        )}
         <GridBoard
           mapData={gameState.mapData}
           revealedTiles={revealedTiles || []}

@@ -129,11 +129,36 @@ export const endTurn = mutation({
     }
 
     const nextPlayer = game.currentPlayer === 'p1' ? 'p2' : 'p1'
-    await ctx.db.patch(args.gameId, {
+    const patch: any = {
       currentPlayer: nextPlayer,
       turnNum: game.turnNum + 1,
       lastActionTime: Date.now(),
-    })
+      turnStartTime: Date.now(),
+      kernelPanicActive: undefined, // Clear any previous panic
+    }
+
+    // Passive RAP gain: +1 every 3 turns for both players
+    if ((game.turnNum + 1) % 3 === 0) {
+      patch.p1Rap = Math.min((game.p1Rap || 0) + 1, 3)
+      patch.p2Rap = Math.min((game.p2Rap || 0) + 1, 3)
+    }
+
+    // Random Kernel Panic: 20% chance each turn after turn 3
+    if (game.turnNum >= 3 && Math.random() < 0.2) {
+      const panics = ['SEGFAULT', 'OVERCLOCK', 'REBOOT']
+      const event = panics[Math.floor(Math.random() * panics.length)]
+      patch.kernelPanicActive = event
+
+      if (event === 'REBOOT') {
+        const units = await ctx.db
+          .query('units')
+          .withIndex('by_gameId', (q) => q.eq('gameId', args.gameId))
+          .collect()
+        await applyReboot(ctx, units)
+      }
+    }
+
+    await ctx.db.patch(args.gameId, patch)
 
     // Restore AP for next player's units
     const nextUnits = await ctx.db
@@ -143,17 +168,42 @@ export const endTurn = mutation({
       .collect()
 
     for (const unit of nextUnits) {
-      const patch: any = { ap: unit.maxAp }
+      const unitPatch: any = { ap: unit.maxAp }
+
+      // SEGFAULT effect: Lose 1 AP starting turn
+      if (patch.kernelPanicActive === 'SEGFAULT') {
+        unitPatch.ap = Math.max(0, unit.maxAp - 1)
+      }
+
       // Clear overwatch when starting turn
       if (unit.isOverwatching) {
-        patch.isOverwatching = false
-        patch.overwatchDirection = undefined
+        unitPatch.isOverwatching = false
+        unitPatch.overwatchDirection = undefined
       }
       // Re-cloak Scouts if not adjacent to enemies
       if (unit.type === 'S' && !unit.isStealthed) {
-        patch.isStealthed = true
+        unitPatch.isStealthed = true
       }
-      await ctx.db.patch(unit._id, patch)
+      await ctx.db.patch(unit._id, unitPatch)
     }
   },
 })
+
+async function applyReboot(ctx: any, units: Array<any>) {
+  const directions = [
+    { dx: 0, dy: -1 }, // N
+    { dx: 1, dy: 0 }, // E
+    { dx: 0, dy: 1 }, // S
+    { dx: -1, dy: 0 }, // W
+  ]
+
+  for (const unit of units) {
+    const dir = directions[Math.floor(Math.random() * directions.length)]
+    const newX = Math.max(0, Math.min(11, unit.x + dir.dx))
+    const newY = Math.max(0, Math.min(11, unit.y + dir.dy))
+
+    // Note: In REBOOT units can collide or stack, which adds to the chaos
+    // but the design says "shuffle", so we just move them.
+    await ctx.db.patch(unit._id, { x: newX, y: newY })
+  }
+}

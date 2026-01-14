@@ -20,6 +20,12 @@ export default defineSchema({
     p2RevealedTiles: v.optional(v.array(v.string())),
     lastActionTime: v.optional(v.number()),
     winner: v.optional(v.string()),
+    draftStartTime: v.optional(v.number()), // Timestamp when drafting started
+    turnStartTime: v.optional(v.number()), // Timestamp when current turn started
+    p1Rap: v.optional(v.number()), // Root Access Points for P1
+    p2Rap: v.optional(v.number()), // Root Access Points for P2
+    kernelPanicActive: v.optional(v.string()), // "SEGFAULT" | "OVERCLOCK" | "REBOOT" | null
+    drawOffer: v.optional(v.string()), // "p1" | "p2" | null (who offered)
   })
     .index('by_status', ['status'])
     .index('by_code', ['code']),

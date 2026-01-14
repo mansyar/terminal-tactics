@@ -113,6 +113,9 @@ async function startGame(ctx: any, gameId: any) {
     status: 'playing',
     mapData,
     lastActionTime: Date.now(),
+    turnStartTime: Date.now(),
+    p1Rap: 0,
+    p2Rap: 0,
     p1RevealedTiles: [], // Initial vision calculated on first fetch/move or here
     p2RevealedTiles: [],
   })

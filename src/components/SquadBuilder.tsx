@@ -1,12 +1,19 @@
 import { useState } from 'react'
 import { UNIT_TEMPLATES } from '../../convex/squadBuilder'
+import { TimerDisplay } from './TimerDisplay'
 
 interface SquadBuilderProps {
   onDeploy: (squad: Array<string>) => void
   isP1: boolean
+  draftStartTime?: number
+  onTimeout?: () => void
 }
 
-export function SquadBuilder({ onDeploy }: SquadBuilderProps) {
+export function SquadBuilder({
+  onDeploy,
+  draftStartTime,
+  onTimeout,
+}: SquadBuilderProps) {
   const [squad, setSquad] = useState<Array<string>>([])
 
   const budget = 1000
@@ -15,6 +22,7 @@ export function SquadBuilder({ onDeploy }: SquadBuilderProps) {
     0,
   )
   const remaining = budget - currentCost
+  const isSquadValid = squad.length >= 2 && squad.length <= 5
 
   const addUnit = (type: string) => {
     if (remaining >= UNIT_TEMPLATES[type].cost && squad.length < 5) {
@@ -29,7 +37,18 @@ export function SquadBuilder({ onDeploy }: SquadBuilderProps) {
   }
 
   return (
-    <div className="max-w-2xl w-full bg-black border border-matrix-primary/30 p-8 space-y-8 font-mono">
+    <div className="max-w-2xl w-full bg-black border border-matrix-primary/30 p-8 space-y-8 font-mono relative">
+      <div className="absolute top-4 right-4 h-16 w-16">
+        {draftStartTime && (
+          <TimerDisplay
+            startTime={draftStartTime}
+            durationMs={90000}
+            onTimeout={onTimeout}
+            label="Draft"
+          />
+        )}
+      </div>
+
       <div className="text-center space-y-2">
         <h2 className="text-2xl text-matrix-primary glow uppercase underline">
           Squad_Initialization
@@ -88,13 +107,20 @@ export function SquadBuilder({ onDeploy }: SquadBuilderProps) {
         </div>
       </div>
 
-      <button
-        onClick={() => onDeploy(squad)}
-        disabled={squad.length === 0}
-        className="w-full py-3 border-2 border-matrix-primary text-matrix-primary font-bold hover:bg-matrix-primary hover:text-black transition-all disabled:opacity-20 disabled:hover:bg-transparent uppercase glow-sm"
-      >
-        Initiate_Deployment_Sequence
-      </button>
+      <div className="space-y-4">
+        {!isSquadValid && squad.length > 0 && (
+          <div className="text-center text-[10px] text-red-500 animate-pulse uppercase">
+            &gt; ERROR: MINIMUM_2_UNITS_REQUIRED
+          </div>
+        )}
+        <button
+          onClick={() => onDeploy(squad)}
+          disabled={!isSquadValid}
+          className="w-full py-3 border-2 border-matrix-primary text-matrix-primary font-bold hover:bg-matrix-primary hover:text-black transition-all disabled:opacity-20 disabled:hover:bg-transparent uppercase glow-sm"
+        >
+          Initiate_Deployment_Sequence
+        </button>
+      </div>
     </div>
   )
 }

@@ -91,6 +91,13 @@ export const attackUnit = mutation({
     if (newHp === 0) {
       await ctx.db.delete(target._id)
 
+      // Award 1 RAP to attacker (capped at 3)
+      const rapField = attacker.ownerId === 'p1' ? 'p1Rap' : 'p2Rap'
+      const currentRap = game[rapField] || 0
+      await ctx.db.patch(args.gameId, {
+        [rapField]: Math.min(currentRap + 1, 3),
+      })
+
       // Check Win Condition
       const remainingEnemyUnits = await ctx.db
         .query('units')
@@ -220,7 +227,10 @@ export const scanArea = mutation({
       )
       .collect()
 
-    const hostiles = getScannedHostiles(areaUnits as Array<any>, game.currentPlayer)
+    const hostiles = getScannedHostiles(
+      areaUnits as Array<any>,
+      game.currentPlayer,
+    )
 
     return {
       success: true,

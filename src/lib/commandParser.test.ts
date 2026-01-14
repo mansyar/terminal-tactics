@@ -50,12 +50,39 @@ describe('commandParser', () => {
     expect(result).toEqual({ type: 'unknown', args: [], raw: 'dance' })
   })
 
-  it('parses "sudo" command', () => {
-    const result = parseCommand('sudo reboot')
+  it('parses "sudo mv" command', () => {
+    const result = parseCommand('sudo mv A1 B2')
     expect(result).toEqual({
-      type: 'sudo',
-      args: ['reboot'],
-      raw: 'sudo reboot',
+      type: 'sudo mv',
+      args: ['A1', 'B2'],
+      raw: 'sudo mv A1 B2',
+    })
+  })
+
+  it('parses "forfeit" command', () => {
+    const result = parseCommand('forfeit')
+    expect(result).toEqual({
+      type: 'forfeit',
+      args: [],
+      raw: 'forfeit',
+    })
+  })
+
+  it('parses "offer draw" command', () => {
+    const result = parseCommand('offer draw')
+    expect(result).toEqual({
+      type: 'offer draw',
+      args: [],
+      raw: 'offer draw',
+    })
+  })
+
+  it('parses "say" command', () => {
+    const result = parseCommand('say hello world')
+    expect(result).toEqual({
+      type: 'say',
+      args: ['hello', 'world'],
+      raw: 'say hello world',
     })
   })
 })

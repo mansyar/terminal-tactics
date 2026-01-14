@@ -58,7 +58,14 @@ export const moveUnit = mutation({
     // 4. Calculate distance/cost
     const dx = Math.abs(unit.x - args.targetX)
     const dy = Math.abs(unit.y - args.targetY)
-    const cost = dx + dy
+    let cost = dx + dy
+    let movementDamage = 0
+
+    // OVERCLOCK Kernel Panic: free movement but 2 HP damage per tile
+    if (game.kernelPanicActive === 'OVERCLOCK') {
+      movementDamage = cost * 2
+      cost = 0 // Movement is free during overclock
+    }
 
     // 5. Calculate new direction
     let direction = unit.direction
@@ -133,7 +140,7 @@ export const moveUnit = mutation({
     }
 
     // 7. Apply Change
-    const newHp = Math.max(0, unit.hp - totalOvDamage)
+    const newHp = Math.max(0, unit.hp - totalOvDamage - movementDamage)
 
     if (newHp === 0) {
       await ctx.db.delete(unit._id)

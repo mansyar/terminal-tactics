@@ -8,11 +8,15 @@
  * @module
  */
 
+import type * as chat from "../chat.js";
 import type * as combat from "../combat.js";
 import type * as game from "../game.js";
+import type * as gameEnd from "../gameEnd.js";
 import type * as lobby from "../lobby.js";
 import type * as movement from "../movement.js";
 import type * as squadBuilder from "../squadBuilder.js";
+import type * as sudo from "../sudo.js";
+import type * as timers from "../timers.js";
 
 import type {
   ApiFromModules,
@@ -21,11 +25,15 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  chat: typeof chat;
   combat: typeof combat;
   game: typeof game;
+  gameEnd: typeof gameEnd;
   lobby: typeof lobby;
   movement: typeof movement;
   squadBuilder: typeof squadBuilder;
+  sudo: typeof sudo;
+  timers: typeof timers;
 }>;
 
 /**

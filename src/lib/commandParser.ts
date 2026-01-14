@@ -1,6 +1,7 @@
 export type CommandType =
   | 'mv'
   | 'atk'
+  | 'heal'
   | 'scan'
   | 'inspect'
   | 'ovw'
@@ -24,6 +25,7 @@ export function parseCommand(input: string): ParsedCommand {
   const validTypes: Array<CommandType> = [
     'mv',
     'atk',
+    'heal',
     'scan',
     'inspect',
     'ovw',

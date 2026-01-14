@@ -16,6 +16,8 @@ export default defineSchema({
     p2Squad: v.optional(v.array(v.string())),
     p1Typing: v.optional(v.boolean()),
     p2Typing: v.optional(v.boolean()),
+    p1RevealedTiles: v.optional(v.array(v.string())), // "x,y"
+    p2RevealedTiles: v.optional(v.array(v.string())),
     lastActionTime: v.optional(v.number()),
     winner: v.optional(v.string()),
   })
@@ -28,11 +30,17 @@ export default defineSchema({
     type: v.string(), // "K", "A", "S", "M"
     hp: v.number(),
     maxHp: v.number(),
+    atk: v.optional(v.number()),
+    rng: v.optional(v.number()),
+    vis: v.optional(v.number()),
     ap: v.number(),
     maxAp: v.number(),
     x: v.number(),
     y: v.number(),
     direction: v.string(), // "N", "E", "S", "W"
+    isOverwatching: v.optional(v.boolean()),
+    overwatchDirection: v.optional(v.optional(v.string())),
+    isStealthed: v.optional(v.boolean()),
   }).index('by_gameId', ['gameId']),
 
   logs: defineTable({

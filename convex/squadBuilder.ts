@@ -3,10 +3,10 @@ import { generateMap } from '../src/lib/mapGenerator'
 import { mutation } from './_generated/server'
 
 export const UNIT_TEMPLATES: Record<string, any> = {
-  K: { cost: 300, hp: 100, ap: 2, atk: 30, rng: 1, label: 'Knight' },
-  A: { cost: 200, hp: 60, ap: 2, atk: 20, rng: 5, label: 'Archer' },
-  S: { cost: 150, hp: 50, ap: 4, atk: 15, rng: 2, label: 'Scout' },
-  M: { cost: 250, hp: 70, ap: 3, atk: 0, rng: 2, label: 'Medic' },
+  K: { cost: 300, hp: 100, ap: 2, atk: 30, rng: 1, vis: 3, label: 'Knight' },
+  A: { cost: 200, hp: 60, ap: 2, atk: 20, rng: 5, vis: 5, label: 'Archer' },
+  S: { cost: 150, hp: 50, ap: 4, atk: 15, rng: 2, vis: 4, label: 'Scout' },
+  M: { cost: 250, hp: 70, ap: 3, atk: 0, rng: 2, vis: 3, label: 'Medic' },
 }
 
 export const submitDraft = mutation({
@@ -72,11 +72,15 @@ async function startGame(ctx: any, gameId: any) {
         type,
         hp: t.hp,
         maxHp: t.hp,
+        atk: t.atk,
+        rng: t.rng,
+        vis: t.vis,
         ap: t.ap,
         maxAp: t.ap,
         x: 2 + i, // Spread out a bit
         y: 10,
         direction: 'N',
+        isStealthed: type === 'S',
       })
     }
   }
@@ -92,11 +96,15 @@ async function startGame(ctx: any, gameId: any) {
         type,
         hp: t.hp,
         maxHp: t.hp,
+        atk: t.atk,
+        rng: t.rng,
+        vis: t.vis,
         ap: t.ap,
         maxAp: t.ap,
         x: 2 + i,
         y: 1,
         direction: 'S',
+        isStealthed: type === 'S',
       })
     }
   }
@@ -105,5 +113,7 @@ async function startGame(ctx: any, gameId: any) {
     status: 'playing',
     mapData,
     lastActionTime: Date.now(),
+    p1RevealedTiles: [], // Initial vision calculated on first fetch/move or here
+    p2RevealedTiles: [],
   })
 }

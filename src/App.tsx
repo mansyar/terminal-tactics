@@ -12,7 +12,19 @@ import { TurnIndicator } from './components/TurnIndicator'
 import { parseCommand } from './lib/commandParser'
 import { getOrSetUserId } from './lib/utils'
 import { SquadBuilder } from './components/SquadBuilder'
+import { hasLineOfSight } from './lib/combatSystem'
 import type { LogEntry } from './components/Terminal/ConsoleHistory'
+
+const cleanErrorMessage = (message: string) => {
+  return message
+    .replace(/\[CONVEX M\(.*?\)\]/g, '')
+    .replace(/\[Request ID: .*?\]/g, '')
+    .replace(/Server Error/g, '')
+    .replace(/Uncaught Error:/g, '')
+    .split(' at handler')[0]
+    .trim()
+    .toUpperCase()
+}
 
 function App() {
   const [playerId] = useState(() => getOrSetUserId())
@@ -36,6 +48,10 @@ function App() {
   const endTurn = useMutation(api.game.endTurn)
   const moveUnit = useMutation(api.movement.moveUnit)
   const submitDraft = useMutation(api.squadBuilder.submitDraft)
+  const attackUnit = useMutation(api.combat.attackUnit)
+  const healUnit = useMutation(api.combat.healUnit)
+  const scanArea = useMutation(api.combat.scanArea)
+  const setOverwatch = useMutation(api.combat.setOverwatch)
 
   const handleCommand = useCallback(
     async (raw: string) => {
@@ -51,98 +67,183 @@ function App() {
       await setTyping({ gameId: gameState._id, playerId, isTyping: false })
 
       let result = `EXECUTING: ${cmd.type.toUpperCase()}`
+
+      // Helper for coordinate parsing
+      const parseCoord = (coord: string) => {
+        if (!coord) return null
+        const xChar = coord.charAt(0).toUpperCase()
+        const yNum = parseInt(coord.slice(1))
+        if (isNaN(yNum) || xChar < 'A' || xChar > 'L' || yNum < 1 || yNum > 12)
+          return null
+        return {
+          x: xChar.charCodeAt(0) - 65,
+          y: 12 - yNum,
+          label: coord.toUpperCase(),
+        }
+      }
+
       if (cmd.type === 'help') {
         result =
           'AVAILABLE_COMMANDS: mv, atk, scan, inspect, ovw, end, help, clear'
       } else if (cmd.type === 'mv') {
-        // Syntax: mv [fromCoord] [toCoord] -> mv C2 C5
         const [fromCoord, toCoord] = cmd.args
-        if (!fromCoord || !toCoord) {
+        const from = parseCoord(fromCoord)
+        const to = parseCoord(toCoord)
+
+        if (!from || !to) {
           result =
             'ERROR: INVALID_ARGUMENTS. USAGE: mv [from] [to] (e.g., mv C2 C5)'
         } else {
-          // Parse source coordinate
-          const fromXChar = fromCoord.charAt(0).toUpperCase()
-          const fromYNum = parseInt(fromCoord.slice(1))
+          const unitAtSource = gameState.units.find(
+            (u: any) => u.x === from.x && u.y === from.y,
+          )
 
-          // Parse target coordinate
-          const toXChar = toCoord.charAt(0).toUpperCase()
-          const toYNum = parseInt(toCoord.slice(1))
-
-          const isValidCoord = (xChar: string, yNum: number) =>
-            !isNaN(yNum) &&
-            xChar >= 'A' &&
-            xChar <= 'L' &&
-            yNum >= 1 &&
-            yNum <= 12
-
-          if (!isValidCoord(fromXChar, fromYNum)) {
-            result = `ERROR: INVALID_SOURCE_COORD "${fromCoord}"`
-          } else if (!isValidCoord(toXChar, toYNum)) {
-            result = `ERROR: INVALID_TARGET_COORD "${toCoord}"`
+          if (!unitAtSource) {
+            result = `ERROR: NO_UNIT_AT "${from.label}"`
           } else {
-            const fromX = fromXChar.charCodeAt(0) - 65
-            const fromY = 12 - fromYNum
-            const toX = toXChar.charCodeAt(0) - 65
-            const toY = 12 - toYNum
-
-            // Find unit at source position
-            const myPlayerId = gameState.p1 === playerId ? 'p1' : 'p2'
-            const unitAtSource = gameState.units.find(
-              (u: any) => u.x === fromX && u.y === fromY,
-            )
-
-            if (!unitAtSource) {
-              result = `ERROR: NO_UNIT_AT "${fromCoord}"`
-            } else if (unitAtSource.ownerId !== myPlayerId) {
-              result = `ERROR: NOT_YOUR_UNIT_AT "${fromCoord}"`
-            } else {
-              try {
-                await moveUnit({
-                  gameId: gameState._id,
-                  playerId,
-                  unitId: unitAtSource._id,
-                  targetX: toX,
-                  targetY: toY,
-                })
-                result = `MOVE_SUCCESS: [${unitAtSource.type}] ${fromCoord.toUpperCase()} -> ${toCoord.toUpperCase()}`
-              } catch (err: any) {
-                let errorMessage = err.message
-
-                if (errorMessage.includes('Uncaught Error: ')) {
-                  errorMessage = errorMessage.split('Uncaught Error: ')[1]
-                }
-
-                if (errorMessage.includes(' at handler')) {
-                  errorMessage = errorMessage.split(' at handler')[0]
-                }
-
-                result = `ERROR: ${errorMessage.trim()}`
+            try {
+              const res = await moveUnit({
+                gameId: gameState._id,
+                playerId,
+                unitId: unitAtSource._id,
+                targetX: to.x,
+                targetY: to.y,
+              })
+              result = `MOVE_SUCCESS: [${unitAtSource.type}] ${from.label} -> ${to.label}`
+              if (res.overwatchTriggered) {
+                result += ` | WARNING: OVERWATCH TRIGGERED! Took ${res.damageTaken} damage.`
               }
+            } catch (err: any) {
+              result = `ERROR: ${cleanErrorMessage(err.message)}`
+            }
+          }
+        }
+      } else if (cmd.type === 'atk') {
+        const [fromCoord, toCoord] = cmd.args
+        const from = parseCoord(fromCoord)
+        const to = parseCoord(toCoord)
+
+        if (!from || !to) {
+          result =
+            'ERROR: INVALID_ARGUMENTS. USAGE: atk [from] [to] (e.g., atk C4 E4)'
+        } else {
+          const attacker = gameState.units.find(
+            (u: any) => u.x === from.x && u.y === from.y,
+          )
+          const defender = gameState.units.find(
+            (u: any) => u.x === to.x && u.y === to.y,
+          )
+
+          if (!attacker) result = `ERROR: NO_UNIT_AT "${from.label}"`
+          else if (!defender) result = `ERROR: NO_TARGET_AT "${to.label}"`
+          else {
+            try {
+              const res = await attackUnit({
+                gameId: gameState._id,
+                playerId,
+                attackerId: attacker._id,
+                targetId: defender._id,
+              })
+              result = `ATTACK_HIT: [${attacker.type}] dealt ${res.damage} DMG to [${defender.type}] at ${to.label}. (${res.zone.toUpperCase()}${res.shieldApplied ? ' + SHIELD REDUCTION' : ''})`
+              if (res.destroyed) result += ` [UNIT_ELIMINATED]`
+            } catch (err: any) {
+              result = `ERROR: ${cleanErrorMessage(err.message)}`
+            }
+          }
+        }
+      } else if (cmd.type === 'heal') {
+        const [fromCoord, toCoord] = cmd.args
+        const from = parseCoord(fromCoord)
+        const to = parseCoord(toCoord)
+
+        if (!from || !to) {
+          result = 'ERROR: INVALID_ARGUMENTS. USAGE: heal [from] [to]'
+        } else {
+          const healer = gameState.units.find(
+            (u: any) => u.x === from.x && u.y === from.y,
+          )
+          const target = gameState.units.find(
+            (u: any) => u.x === to.x && u.y === to.y,
+          )
+
+          if (!healer) result = `ERROR: NO_UNIT_AT "${from.label}"`
+          else if (!target) result = `ERROR: NO_TARGET_AT "${to.label}"`
+          else {
+            try {
+              const res = await healUnit({
+                gameId: gameState._id,
+                playerId,
+                healerId: healer._id,
+                targetId: target._id,
+              })
+              result = `HEAL_SUCCESS: [${healer.type}] restored ${res.healed} HP to [${target.type}] at ${to.label}.`
+            } catch (err: any) {
+              result = `ERROR: ${cleanErrorMessage(err.message)}`
+            }
+          }
+        }
+      } else if (cmd.type === 'scan') {
+        const [coord] = cmd.args
+        const target = parseCoord(coord)
+
+        if (!target) {
+          result = 'ERROR: INVALID_ARGUMENTS. USAGE: scan [coord]'
+        } else {
+          try {
+            const res = await scanArea({
+              gameId: gameState._id,
+              playerId,
+              x: target.x,
+              y: target.y,
+            })
+            result = `SCAN_COMPLETE: Area centered at ${target.label} revealed. ${res.hostilesCount} hostiles detected.`
+          } catch (err: any) {
+            result = `ERROR: ${cleanErrorMessage(err.message)}`
+          }
+        }
+      } else if (cmd.type === 'ovw') {
+        const [coord, dir] = cmd.args
+        const target = parseCoord(coord)
+        const direction = dir.toUpperCase()
+
+        if (!target || !['N', 'E', 'S', 'W'].includes(direction)) {
+          result = 'ERROR: INVALID_ARGUMENTS. USAGE: ovw [coord] [N|E|S|W]'
+        } else {
+          const unit = gameState.units.find(
+            (u: any) => u.x === target.x && u.y === target.y,
+          )
+          if (!unit) {
+            result = `ERROR: NO_UNIT_AT "${target.label}"`
+          } else {
+            try {
+              await setOverwatch({
+                gameId: gameState._id,
+                playerId,
+                unitId: unit._id,
+                direction,
+              })
+              result = `OVERWATCH_SET: [${unit.type}] at ${target.label} watching ${direction}.`
+            } catch (err: any) {
+              result = `ERROR: ${cleanErrorMessage(err.message)}`
             }
           }
         }
       } else if (cmd.type === 'inspect') {
         const [coord] = cmd.args
-        if (!coord) {
+        const target = parseCoord(coord)
+        if (!target) {
           result = 'ERROR: MISSING_COORD. USAGE: inspect [coord]'
         } else {
-          const xChar = coord.charAt(0).toUpperCase()
-          const yNum = parseInt(coord.slice(1))
-          const x = xChar.charCodeAt(0) - 65
-          const y = 12 - yNum
-
-          if (isNaN(yNum) || xChar < 'A' || xChar > 'L') {
-            result = `ERROR: INVALID_COORD "${coord}"`
+          const unit = gameState.units.find(
+            (u: any) => u.x === target.x && u.y === target.y,
+          )
+          if (!unit) {
+            result = `NOTICE: NO_UNIT_DETECTED_AT ${target.label}`
           } else {
-            const unit = gameState.units.find(
-              (u: any) => u.x === x && u.y === y,
-            )
-            if (!unit) {
-              result = `NOTICE: NO_UNIT_DETECTED_AT ${coord.toUpperCase()}`
-            } else {
-              result = `UNIT_ID: [${unit.type}] | OWNER: ${unit.ownerId.toUpperCase()} | HP: ${unit.hp}/${unit.maxHp} | AP: ${unit.ap}/${unit.maxAp} | POS: ${coord.toUpperCase()}`
-            }
+            result = `UNIT_ID: [${unit.type}] | OWNER: ${unit.ownerId.toUpperCase()} | HP: ${unit.hp}/${unit.maxHp} | AP: ${unit.ap}/${unit.maxAp} | ATK: ${unit.atk} | RNG: ${unit.rng} | POS: ${target.label}`
+            if (unit.isOverwatching)
+              result += ` | OVERWATCHING: ${unit.overwatchDirection}`
+            if (unit.isStealthed) result += ` | STEALTHED`
           }
         }
       } else if (cmd.type === 'end') {
@@ -215,10 +316,69 @@ function App() {
     }
   }, [activeGameId, gameState])
 
+  const currentlyVisibleTiles = useMemo(() => {
+    if (!gameState || !playerId) return new Set<string>()
+    const myPlayerKey = gameState.p1 === playerId ? 'p1' : 'p2'
+    const myUnits = gameState.units.filter(
+      (u: any) => u.ownerId === myPlayerKey,
+    )
+
+    const set = new Set<string>()
+    myUnits.forEach((u: any) => {
+      const vis = u.vis || 3
+      for (let dy = -vis; dy <= vis; dy++) {
+        for (let dx = -vis; dx <= vis; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) <= vis) {
+            const tx = u.x + dx
+            const ty = u.y + dy
+            if (tx >= 0 && tx < 12 && ty >= 0 && ty < 12) {
+              if (
+                hasLineOfSight(
+                  { x: u.x, y: u.y },
+                  { x: tx, y: ty },
+                  gameState.mapData,
+                )
+              ) {
+                set.add(`${tx},${ty}`)
+              }
+            }
+          }
+        }
+      }
+    })
+    return set
+  }, [gameState, playerId])
+
+  const visibleUnits = useMemo(() => {
+    if (!gameState) return []
+    const myPlayerKey = gameState.p1 === playerId ? 'p1' : 'p2'
+
+    return gameState.units.filter((u: any) => {
+      if (u.ownerId === myPlayerKey) return true
+
+      // Enemy visibility
+      const isVisible = currentlyVisibleTiles.has(`${u.x},${u.y}`)
+
+      // Scout stealth check: invisible unless adjacent
+      if (u.type === 'S' && u.isStealthed) {
+        const myUnits = gameState.units.filter(
+          (my: any) => my.ownerId === myPlayerKey,
+        )
+        const isAdjacent = myUnits.some(
+          (my: any) => Math.abs(my.x - u.x) + Math.abs(my.y - u.y) <= 1,
+        )
+        if (!isAdjacent) return false
+      }
+
+      return isVisible
+    })
+  }, [gameState, currentlyVisibleTiles, playerId])
+
   if (
     !gameState ||
     gameState.status === 'lobby' ||
-    gameState.status === 'drafting'
+    gameState.status === 'drafting' ||
+    gameState.status === 'finished'
   ) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-4">
@@ -247,6 +407,34 @@ function App() {
               submitDraft({ gameId: gameState._id, playerId, squad })
             }
           />
+        ) : gameState?.status === 'finished' ? (
+          <div className="space-y-6 text-center max-w-md w-full border border-matrix-primary p-8 bg-black/90 shadow-[0_0_20px_rgba(0,255,0,0.2)]">
+            <h1 className="text-4xl font-mono font-bold uppercase tracking-widest animate-pulse">
+              {gameState.winner === playerId
+                ? 'MISSION_COMPLETE'
+                : 'MISSION_FAILED'}
+            </h1>
+            <div
+              className={`text-xl font-mono ${
+                gameState.winner === playerId
+                  ? 'text-matrix-primary'
+                  : 'text-red-500'
+              }`}
+            >
+              {gameState.winner === playerId
+                ? 'TARGET_NEUTRALIZED. SYSTEM SECURE.'
+                : 'CRITICAL FAILURE. SYSTEM COMPROMISED.'}
+            </div>
+            <div className="text-xs text-matrix-primary/50 font-mono">
+              OPERATION_LOG_SAVED &gt;&gt; /var/logs/{gameState._id}
+            </div>
+            <button
+              onClick={() => setActiveGameId(null)}
+              className="mt-8 px-6 py-3 border border-matrix-primary text-matrix-primary hover:bg-matrix-primary hover:text-black transition-all font-mono uppercase tracking-widest text-sm"
+            >
+              RETURN_TO_BASE
+            </button>
+          </div>
         ) : (
           <LobbyScreen
             playerId={playerId}
@@ -263,6 +451,11 @@ function App() {
 
   const otherPlayerTyping =
     playerId === gameState.p1 ? gameState.p2Typing : gameState.p1Typing
+
+  const revealedTiles =
+    playerId === gameState.p1
+      ? gameState.p1RevealedTiles
+      : gameState.p2RevealedTiles
 
   return (
     <GameLayout
@@ -301,8 +494,12 @@ function App() {
       }
     >
       <div className="flex-1 flex items-center justify-center p-4 h-full">
-        <GridBoard mapData={gameState.mapData}>
-          {gameState.units.map((u: any) => (
+        <GridBoard
+          mapData={gameState.mapData}
+          revealedTiles={revealedTiles || []}
+          currentlyVisibleTiles={Array.from(currentlyVisibleTiles)}
+        >
+          {visibleUnits.map((u: any) => (
             <UnitModel
               key={u._id}
               type={u.type}
@@ -312,6 +509,8 @@ function App() {
               direction={u.direction}
               ap={u.ap}
               maxAp={u.maxAp}
+              isStealthed={u.isStealthed}
+              isOverwatching={u.isOverwatching}
             />
           ))}
         </GridBoard>

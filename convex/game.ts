@@ -11,6 +11,8 @@ export const seedGame = mutation({
       environmentFlags: [],
       mapData: {},
       isPublic: true,
+      p1RevealedTiles: [],
+      p2RevealedTiles: [],
     })
 
     await ctx.db.insert('units', {
@@ -19,6 +21,9 @@ export const seedGame = mutation({
       type: 'K',
       hp: 100,
       maxHp: 100,
+      atk: 30,
+      rng: 1,
+      vis: 3,
       ap: 2,
       maxAp: 2,
       x: 2,
@@ -32,6 +37,9 @@ export const seedGame = mutation({
       type: 'A',
       hp: 60,
       maxHp: 60,
+      atk: 20,
+      rng: 5,
+      vis: 5,
       ap: 2,
       maxAp: 2,
       x: 2,
@@ -45,11 +53,15 @@ export const seedGame = mutation({
       type: 'S',
       hp: 50,
       maxHp: 50,
+      atk: 15,
+      rng: 2,
+      vis: 4,
       ap: 4,
       maxAp: 4,
       x: 8,
       y: 2,
       direction: 'S',
+      isStealthed: true,
     })
 
     return gameId
@@ -103,6 +115,7 @@ export const getLogs = query({
       .collect()
   },
 })
+
 export const endTurn = mutation({
   args: { gameId: v.id('games'), playerId: v.string() },
   handler: async (ctx, args) => {
@@ -130,7 +143,17 @@ export const endTurn = mutation({
       .collect()
 
     for (const unit of nextUnits) {
-      await ctx.db.patch(unit._id, { ap: unit.maxAp })
+      const patch: any = { ap: unit.maxAp }
+      // Clear overwatch when starting turn
+      if (unit.isOverwatching) {
+        patch.isOverwatching = false
+        patch.overwatchDirection = undefined
+      }
+      // Re-cloak Scouts if not adjacent to enemies
+      if (unit.type === 'S' && !unit.isStealthed) {
+        patch.isStealthed = true
+      }
+      await ctx.db.patch(unit._id, patch)
     }
   },
 })

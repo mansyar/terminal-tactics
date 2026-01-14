@@ -8,6 +8,8 @@ interface UnitModelProps {
   direction?: string
   ap: number
   maxAp: number
+  isStealthed?: boolean
+  isOverwatching?: boolean
 }
 
 export function UnitModel({
@@ -18,6 +20,8 @@ export function UnitModel({
   direction = 'N',
   ap,
   maxAp,
+  isStealthed = false,
+  isOverwatching = false,
 }: UnitModelProps) {
   // x, y are tile coordinates (0-11)
   // Grid tiles are 100x100
@@ -43,9 +47,30 @@ export function UnitModel({
   return (
     <motion.g
       initial={false}
-      animate={{ x: x * 100, y: y * 100 }}
+      animate={{
+        x: x * 100,
+        y: y * 100,
+        opacity: isStealthed ? 0.4 : 1,
+      }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
     >
+      {/* Overwatch Effect */}
+      {isOverwatching && (
+        <motion.rect
+          x="10"
+          y="10"
+          width="80"
+          height="80"
+          fill="none"
+          stroke={color}
+          strokeWidth="2"
+          initial={{ opacity: 0.1 }}
+          animate={{ opacity: [0.1, 0.4, 0.1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="glow"
+        />
+      )}
+
       {/* Glow effect */}
       <rect
         x="10"
@@ -62,7 +87,7 @@ export function UnitModel({
         y="60"
         textAnchor="middle"
         fill={color}
-        className="font-mono text-4xl font-bold glow"
+        className={`font-mono text-4xl font-bold glow ${isStealthed ? 'opacity-50' : ''}`}
         style={{ pointerEvents: 'none' }}
       >
         [{type}]
@@ -96,6 +121,11 @@ export function UnitModel({
           />
         ))}
       </g>
+
+      {/* Stealth indicator dot */}
+      {isStealthed && (
+        <circle cx="20" cy="20" r="2" fill={color} className="animate-pulse" />
+      )}
     </motion.g>
   )
 }

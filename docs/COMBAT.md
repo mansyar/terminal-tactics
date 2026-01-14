@@ -232,3 +232,67 @@ The Scout `[S]` has special stealth capabilities:
 | -------------- | ---------------------- | -------------------------------- |
 | **Orthogonal** | 4 (N, E, S, W)         | Heal range, Scout reveal trigger |
 | **Chebyshev**  | 8 (includes diagonals) | Vision range calculation         |
+
+---
+
+## Expansion Unit Abilities _(Phase 11)_
+
+### Sniper Precision
+
+The Sniper `[N]` has unique attack restrictions:
+
+- **Stationary Attack:** Cannot move and attack in the same turn.
+  - If unit moved this turn → `CANNOT_ATTACK_AFTER_MOVE`
+  - If unit attacks → cannot move remainder of turn
+- **Extended Range:** 8-tile attack range (longest in game).
+- **High Ground Synergy:** Gains +2 range (total 10) from elevation.
+
+### Engineer Construction
+
+The Engineer `[E]` can manipulate the battlefield:
+
+- **Build (`build [coord]`):**
+  - Create a wall tile at target empty floor
+  - Limited to 1 wall per Engineer per game
+  - Wall is permanent and blocks LoS/movement
+- **Demolish (`demolish [coord]`):**
+  - Destroy adjacent wall tile
+  - Converts to floor (`.`)
+  - Unlimited uses
+
+### Commander Rally
+
+The Commander `[C]` supports the team:
+
+- **Rally (`rally [coord]`):**
+  - Target adjacent friendly unit gains +1 AP
+  - Cannot self-rally
+  - Bonus AP expires at end of current turn
+  - Can rally same unit multiple times (if has AP)
+
+---
+
+## King of the Hill Mechanics _(Phase 11)_
+
+Alternative win condition for the King of the Hill game mode.
+
+### Control Point
+
+- **Location:** Central 2×2 tiles (F6, F7, G6, G7 on standard 12×12 map)
+- **Visual:** Marked with `◉` symbols
+- **Capture:** A player "controls" the point if ONLY their units occupy it
+
+### Victory Condition
+
+| Condition                             | Result  |
+| ------------------------------------- | ------- |
+| Control point for 5 consecutive turns | Victory |
+| All enemy units eliminated            | Victory |
+| Opponent forfeits                     | Victory |
+| Both players agree to draw            | Draw    |
+
+### Contesting
+
+- If both players have units on control point → **Contested** (no progress)
+- If control point is empty → No progress for either player
+- Progress counter resets if control is lost

@@ -7,19 +7,23 @@
 
 ## Quick Reference
 
-| Command   | Syntax              |     AP | Status         |
-| --------- | ------------------- | -----: | -------------- |
-| `mv`      | `mv [from] [to]`    | 1/tile | ✅ Implemented |
-| `atk`     | `atk [from] [to]`   |      1 | Phase 5        |
-| `heal`    | `heal [from] [to]`  |      1 | Phase 5        |
-| `scan`    | `scan [coord]`      |      1 | Phase 5        |
-| `ovw`     | `ovw [coord] [dir]` |      1 | Phase 5        |
-| `inspect` | `inspect [coord]`   |      0 | ✅ Implemented |
-| `end`     | `end`               |      — | ✅ Implemented |
-| `help`    | `help`              |      0 | ✅ Implemented |
-| `clear`   | `clear`             |      0 | ✅ Implemented |
-| `forfeit` | `forfeit`           |      0 | Phase 6        |
-| `sudo`    | `sudo [cmd]`        |  1 RAP | Phase 6        |
+| Command    | Syntax              |     AP | Status         |
+| ---------- | ------------------- | -----: | -------------- |
+| `mv`       | `mv [from] [to]`    | 1/tile | ✅ Implemented |
+| `atk`      | `atk [from] [to]`   |      1 | ✅ Implemented |
+| `heal`     | `heal [from] [to]`  |      1 | ✅ Implemented |
+| `scan`     | `scan [coord]`      |      1 | ✅ Implemented |
+| `ovw`      | `ovw [coord] [dir]` |      1 | ✅ Implemented |
+| `inspect`  | `inspect [coord]`   |      0 | ✅ Implemented |
+| `end`      | `end`               |      — | ✅ Implemented |
+| `help`     | `help`              |      0 | ✅ Implemented |
+| `clear`    | `clear`             |      0 | ✅ Implemented |
+| `forfeit`  | `forfeit`           |      0 | ✅ Implemented |
+| `say`      | `say [message]`     |      0 | ✅ Implemented |
+| `sudo`     | `sudo [cmd]`        |  1 RAP | ✅ Implemented |
+| `build`    | `build [coord]`     |      1 | ⏳ Phase 11    |
+| `demolish` | `demolish [coord]`  |      1 | ⏳ Phase 11    |
+| `rally`    | `rally [coord]`     |      1 | ⏳ Phase 11    |
 
 ---
 
@@ -54,7 +58,7 @@
 
 ---
 
-### `atk` — Attack _(Phase 5)_
+### `atk` — Attack ✅
 
 **Syntax:** `atk [fromCoord] [targetCoord]`  
 **Example:** `atk C4 E4`  
@@ -85,7 +89,7 @@ See [COMBAT.md](./COMBAT.md) for damage calculation details.
 
 ---
 
-### `heal` — Heal _(Phase 5)_
+### `heal` — Heal ✅
 
 **Syntax:** `heal [fromCoord] [targetCoord]`  
 **Example:** `heal D5 C5`  
@@ -112,7 +116,7 @@ See [COMBAT.md](./COMBAT.md) for damage calculation details.
 
 ---
 
-### `scan` — Scan Area _(Phase 5)_
+### `scan` — Scan Area ✅
 
 **Syntax:** `scan [coord]`  
 **Example:** `scan D5`  
@@ -136,7 +140,7 @@ See [COMBAT.md](./COMBAT.md) for damage calculation details.
 
 ---
 
-### `ovw` — Overwatch _(Phase 5)_
+### `ovw` — Overwatch ✅
 
 **Syntax:** `ovw [coord] [direction]`  
 **Example:** `ovw C4 N`  
@@ -224,11 +228,12 @@ UNIT_ID: [K] | OWNER: P1 | HP: 85/100 | AP: 1/2 | POS: C4 | DIR: N
 | --------- | ------- | -------------------------------------------- |
 | `help`    | 0       | Display list of available commands           |
 | `clear`   | 0       | Clear the console history (client-side only) |
-| `forfeit` | 0       | Surrender the game immediately _(Phase 6)_   |
+| `forfeit` | 0       | Surrender the game immediately ✅            |
+| `say`     | 0       | Send a message to opponent ✅                |
 
 ---
 
-### `sudo` — Ultimate Ability _(Phase 6)_
+### `sudo` — Ultimate Ability ✅
 
 **Syntax:** `sudo [command]`  
 **Example:** `sudo mv C2 C8`  
@@ -249,3 +254,89 @@ UNIT_ID: [K] | OWNER: P1 | HP: 85/100 | AP: 1/2 | POS: C4 | DIR: N
 | `sudo atk [from] [to]` | Attack ignores Line of Sight. Deals **200% damage**.               |
 
 **Success Response:** `ROOT_ACCESS_GRANTED: Executing privileged command...`
+
+---
+
+## Phase 11: Expansion Unit Commands ⏳
+
+The following commands will be available with the expansion units (Phase 11).
+
+### `build` — Build Wall _(Engineer Only)_
+
+**Syntax:** `build [coord]`  
+**Example:** `build D5`  
+**AP Cost:** 1 AP  
+**Engineer Only**
+
+**Mechanics:**
+
+- Engineer constructs a wall (`#`) at the target coordinate.
+- Limited to **1 wall per game** per Engineer.
+- Cannot build on occupied tiles or existing walls.
+- Wall persists for entire game.
+
+**Validation Rules:**
+
+| Check      | Error Code            | Description                         |
+| ---------- | --------------------- | ----------------------------------- |
+| Unit type  | `NOT_AN_ENGINEER`     | Only `[E]` can build                |
+| Empty tile | `TILE_OCCUPIED`       | Target must be empty floor          |
+| Uses left  | `BUILD_LIMIT_REACHED` | Engineer already used build ability |
+| AP         | `INSUFFICIENT_AP`     | Requires 1 AP                       |
+
+**Success Response:** `BUILD_COMPLETE: Wall constructed at D5.`
+
+---
+
+### `demolish` — Destroy Wall _(Engineer Only)_
+
+**Syntax:** `demolish [coord]`  
+**Example:** `demolish E5`  
+**AP Cost:** 1 AP  
+**Engineer Only**
+
+**Mechanics:**
+
+- Engineer destroys a wall at an adjacent coordinate.
+- Wall becomes floor (`.`).
+- No limit on uses.
+
+**Validation Rules:**
+
+| Check          | Error Code        | Description                |
+| -------------- | ----------------- | -------------------------- |
+| Unit type      | `NOT_AN_ENGINEER` | Only `[E]` can demolish    |
+| Target is wall | `NOT_A_WALL`      | Target must be a wall tile |
+| Adjacency      | `NOT_ADJACENT`    | Engineer must be adjacent  |
+| AP             | `INSUFFICIENT_AP` | Requires 1 AP              |
+
+**Success Response:** `DEMOLISH_COMPLETE: Wall at E5 destroyed.`
+
+---
+
+### `rally` — Boost Adjacent Allies _(Commander Only)_
+
+**Syntax:** `rally [coord]`  
+**Example:** `rally C4`  
+**AP Cost:** 1 AP  
+**Commander Only**
+
+**Mechanics:**
+
+- Commander rallies the unit at target position.
+- Target gains **+1 AP** (added to current AP, not max).
+- Target must be an adjacent friendly unit.
+- Cannot self-rally.
+- Effect lasts for current turn only.
+
+**Validation Rules:**
+
+| Check     | Error Code           | Description                 |
+| --------- | -------------------- | --------------------------- |
+| Unit type | `NOT_A_COMMANDER`    | Only `[C]` can rally        |
+| Adjacency | `NOT_ADJACENT`       | Target must be adjacent     |
+| Ally      | `CANNOT_RALLY_ENEMY` | Target must be your unit    |
+| Self      | `CANNOT_SELF_RALLY`  | Commander cannot rally self |
+| AP        | `INSUFFICIENT_AP`    | Requires 1 AP               |
+
+**Success Response:** `RALLY_SUCCESS: [K] at C4 gained +1 AP (now 3 AP).`

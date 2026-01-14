@@ -172,48 +172,49 @@
 
 ### 6.1 Timers & Session Management
 
-- [ ] **Draft Timer:** 90-second countdown during squad selection.
+- [x] **Draft Timer:** 90-second countdown during squad selection.
   - Auto-forfeit if not submitted.
-- [ ] **Turn Timer:** 90-second countdown per turn.
+- [x] **Turn Timer:** 90-second countdown per turn.
   - Warning at 15 seconds.
   - Auto-end turn on timeout.
-- [ ] **Disconnect Timeout:** 2-minute grace period for reconnection.
+- [ ] **Disconnect Timeout:** 2-minute grace period for reconnection. _(Deferred)_
   - Auto-forfeit if exceeded.
 
 ### 6.2 Game End Commands
 
-- [ ] **Forfeit (`forfeit`):** Immediate surrender.
-- [ ] **Draw Offer (`offer draw`):** Propose a draw.
-- [ ] **Draw Accept (`accept draw`):** Accept opponent's draw offer.
+- [x] **Forfeit (`forfeit`):** Immediate surrender.
+- [x] **Draw Offer (`offer draw`):** Propose a draw.
+- [x] **Draw Accept (`accept draw`):** Accept opponent's draw offer.
 
 ### 6.3 Ultimate Mechanics (sudo)
 
-- [ ] **Root Access Points (RAP):**
+- [x] **Root Access Points (RAP):**
   - +1 RAP per enemy kill
   - +1 RAP every 3 turns survived
   - Max: 3 RAP stored
-- [ ] **`sudo mv`:** Ignore terrain/collision, unlimited range.
-- [ ] **`sudo scan`:** Reveal entire map for remainder of turn.
-- [ ] **`sudo atk`:** Ignore LoS, deal 200% damage.
+- [x] **`sudo mv`:** Ignore terrain/collision, unlimited range.
+- [x] **`sudo scan`:** Reveal entire map for remainder of turn.
+- [x] **`sudo atk`:** Ignore LoS, deal 200% damage.
 
 ### 6.4 Kernel Panic Events
 
-- [ ] **Convex Cron Job:** Trigger every 5 turns (global turn count).
-- [ ] **SEGFAULT:** All units lose 1 AP next turn.
-- [ ] **OVERCLOCK:** 2× movement range, 2 HP damage per step.
-- [ ] **REBOOT:** Shuffle all units 1 tile in random direction.
+- [x] **Random Trigger:** 20% chance after turn 3.
+- [x] **SEGFAULT:** All units lose 1 maxAP next turn.
+- [x] **OVERCLOCK:** Free movement but 2 HP damage per tile.
+- [x] **REBOOT:** Shuffle all units 1 tile in random direction.
 
 ### 6.5 Audio & Polish
 
-- [ ] **Retro SFX:** Keystrokes, error buzzers, success chimes.
-- [ ] **Tab Autocomplete:** Smart completion for coordinates and commands.
-- [ ] **Chat (`say`):** In-game messaging via CLI.
+- [x] **Retro SFX:** Keystrokes, error buzzers, success chimes.
+- [x] **Tab Autocomplete:** Smart completion for coordinates and commands.
+- [x] **IntelliSense:** Context-aware suggestions for units (friendly/hostile).
+- [x] **Chat (`say`):** In-game messaging via CLI.
 
 ### 6.6 Squad Builder Enhancements
 
-- [ ] **Min Squad Validation:** Require at least 2 units.
-- [ ] **Max Squad Validation:** Limit to 5 units.
-- [ ] **Visual Feedback:** Show remaining budget and errors.
+- [x] **Min Squad Validation:** Require at least 2 units.
+- [x] **Max Squad Validation:** Limit to 5 units.
+- [x] **Visual Feedback:** Show remaining budget and errors.
 
 ### Definition of Done
 
@@ -226,30 +227,355 @@
 
 ---
 
-## 📊 Progress Summary
+## � Phase 7: Visual & UX Polish ⏳
 
-| Phase                 | Status      | Completion |
-| --------------------- | ----------- | ---------- |
-| Phase 1: Foundation   | ✅ Complete | 100%       |
-| Phase 2: CLI & Grid   | ✅ Complete | 100%       |
-| Phase 3: Multiplayer  | ✅ Complete | 100%       |
-| Phase 4: Movement     | ✅ Complete | 100%       |
-| Phase 5: Combat & FoW | ✅ Complete | 100%       |
-| Phase 6: Polish       | ✅ Complete | 100%       |
+**Goal:** Address the identified visual limitations and improve battlefield readability.
+
+### 7.1 Visual Unit Enhancements
+
+- [ ] **Health Bars:** Add visual HP bar beneath each unit icon on the grid.
+  - Show current HP / max HP ratio
+  - Color gradient: Green (>50%) → Yellow (25-50%) → Red (<25%)
+- [ ] **Enemy Color Coding:** Render hostile units in distinct colors.
+  - Friendly: Matrix Green (`#00FF00`)
+  - Enemy: Hostile Red (`#FF4444`) or Amber (`#FF9900`)
+  - Neutral/Unknown: Dim Gray
+- [ ] **Direction Indicator:** Visual arrow or facing indicator on unit tiles.
+- [ ] **Stealth Indicator:** Visual shimmer effect for stealthed Scouts.
+
+### 7.2 Log Visibility System
+
+- [ ] **Schema Update:** Add `visibility` field to `logs` table (`"public"` | `"private"`).
+- [ ] **Private Logs:** `scan` and `inspect` results visible only to issuing player.
+- [ ] **Filter Logic:** Query logs with player-specific visibility filter.
+- [ ] **UI Update:** Render private logs with distinct styling (e.g., dimmed or italicized).
+
+### 7.3 Grid Readability Enhancements
+
+- [ ] **Tile Coordinates:** Optional toggle to show coordinate labels on grid edges.
+- [ ] **Last Move Highlight:** Highlight the tile a unit just moved from/to.
+- [ ] **Attack Range Preview:** Visual overlay when hovering over a unit.
+- [ ] **Overwatch Indicator:** Show direction cone for units on overwatch.
+- [ ] **Hover Tooltips:** Quick unit stats on mouse hover (non-CLI users).
+
+### Definition of Done
+
+- [ ] All unit health visible at a glance.
+- [ ] Enemy/friendly units visually distinct.
+- [ ] Private logs filtered correctly per player.
+- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
 
 ---
 
-## 🔮 Known Limitations / Future Work
+## 🚩 Phase 8: Session Stability ⏳
 
-These items were identified during Phase 6 but deferred for a future polish pass:
+**Goal:** Implement robust session management and disconnect handling.
 
-| Feature                    | Priority | Description                                                                                     |
-| -------------------------- | -------- | ----------------------------------------------------------------------------------------------- |
-| **Log Visibility System**  | Medium   | Add `visibility` field to logs ("public" vs "private"). Filter scan/inspect results per player. |
-| **Visual Unit Health**     | Medium   | Add health bars or HP numbers directly on unit tiles in the grid.                               |
-| **Enemy Color Coding**     | Medium   | Highlight hostile units in a different color (e.g., Red or Amber) for faster identification.    |
-| **Disconnect Detection**   | Low      | Proper presence tracking and 2-minute auto-forfeit on disconnect.                               |
-| **Performance Lighthouse** | Low      | Full Lighthouse audit (currently assumed to pass, not formally tested).                         |
+### 8.1 Disconnect Detection
+
+- [ ] **Heartbeat System:** Client sends heartbeat every 10 seconds.
+- [ ] **Presence Tracking:** Server tracks last heartbeat timestamp per player.
+- [ ] **Disconnect Detection:** Mark player as "disconnected" if no heartbeat for 30 seconds.
+- [ ] **UI Indicator:** Show "Opponent disconnected" warning message.
+
+### 8.2 Grace Period & Recovery
+
+- [ ] **Grace Period:** 2-minute reconnection window.
+- [ ] **Timer Pause:** Turn timer pauses during opponent disconnection.
+- [ ] **State Preservation:** Game state frozen during grace period.
+- [ ] **Reconnection Flow:** Seamless rejoin with state restoration.
+- [ ] **Auto-Forfeit:** Trigger forfeit if grace period expires.
+
+### 8.3 Session Persistence Improvements
+
+- [ ] **Browser Tab Handling:** Detect tab visibility changes.
+- [ ] **Multi-Tab Prevention:** Warn or block duplicate game sessions.
+- [ ] **Graceful Refresh:** Maintain session state through page refresh.
+
+### Definition of Done
+
+- [ ] Disconnect/reconnect flow tested and stable.
+- [ ] Grace period countdown visible to both players.
+- [ ] No state corruption on reconnection.
+- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
+
+---
+
+## 🚩 Phase 9: Accessibility & Performance ⏳
+
+**Goal:** Ensure the game is accessible and performant for all users.
+
+### 9.1 Performance Audit
+
+- [ ] **Lighthouse Audit:** Run full Lighthouse performance test.
+  - Target: Performance > 90, Accessibility > 95
+- [ ] **Bundle Optimization:** Tree-shake unused code, lazy load components.
+- [ ] **Animation Performance:** Ensure 60fps during unit animations.
+- [ ] **Memory Profiling:** Check for memory leaks in long games.
+
+### 9.2 Accessibility (WCAG 2.1 AA)
+
+- [ ] **Screen Reader Support:** ARIA labels for all interactive elements.
+- [ ] **Keyboard Navigation:** Full game playable without mouse.
+- [ ] **Focus Management:** Visible focus indicators on all controls.
+- [ ] **High Contrast Mode:** Alternative color scheme for visibility.
+- [ ] **Reduced Motion:** Disable animations on system preference.
+
+### 9.3 Mobile Responsiveness
+
+- [ ] **Responsive Grid:** Grid scales appropriately on smaller screens.
+- [ ] **Touch Support:** Tap to select units and tiles.
+- [ ] **Virtual Keyboard:** CLI input works with mobile keyboards.
+- [ ] **Orientation Handling:** Support both portrait and landscape.
+
+### Definition of Done
+
+- [ ] Lighthouse Performance Score > 90.
+- [ ] Lighthouse Accessibility Score > 95.
+- [ ] Game playable on tablet-sized screens.
+- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
+
+---
+
+## 🚩 Phase 10: Competitive Features ⏳
+
+**Goal:** Add ranked play and statistical tracking for competitive players.
+
+### 10.1 Player Profiles
+
+- [ ] **Profile Schema:** Create `players` table with persistent stats.
+  - `userId`, `handle`, `gamesPlayed`, `wins`, `losses`, `elo`
+- [ ] **Profile Page:** View own stats and match history.
+- [ ] **Handle System:** Allow players to set a custom handle (3-15 chars).
+- [ ] **Handle Uniqueness:** Ensure no duplicate handles.
+
+### 10.2 ELO Rating System
+
+- [ ] **Initial ELO:** New players start at 1200.
+- [ ] **ELO Calculation:** Standard K=32 ELO formula.
+- [ ] **Ranked Queue:** Separate "Ranked" matchmaking queue.
+- [ ] **ELO Display:** Show rating in lobby and game UI.
+- [ ] **Rank Tiers:** Bronze, Silver, Gold, Platinum, Diamond.
+
+### 10.3 Leaderboard
+
+- [ ] **Global Leaderboard:** Top 100 players by ELO.
+- [ ] **Weekly Leaderboard:** Reset weekly with rewards tracking.
+- [ ] **Personal Rank:** Show your current position.
+
+### 10.4 Match History
+
+- [ ] **Game Archive:** Store completed games with summary data.
+- [ ] **Match List:** View past 50 games with outcome and opponent.
+- [ ] **Stats Breakdown:** Track unit kills, deaths, damage dealt.
+
+### Definition of Done
+
+- [ ] ELO system calculating correctly.
+- [ ] Leaderboard displaying top players.
+- [ ] Match history viewable per player.
+- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
+
+---
+
+## 🚩 Phase 11: Content Expansion ⏳
+
+**Goal:** Extend gameplay depth with new units and map options.
+
+### 11.1 New Unit Classes
+
+- [ ] **Engineer (`[E]`):**
+  - Cost: 200, HP: 60, AP: 3, ATK: 10, RNG: 1, VIS: 3
+  - Ability: `build [coord]` — Create a wall tile (1 per game)
+  - Ability: `demolish [coord]` — Destroy adjacent wall
+- [ ] **Sniper (`[N]`):**
+  - Cost: 350, HP: 40, AP: 2, ATK: 40, RNG: 8, VIS: 6
+  - Ability: Must remain stationary to attack (no move + attack same turn)
+- [ ] **Commander (`[C]`):**
+  - Cost: 400, HP: 80, AP: 2, ATK: 20, RNG: 2, VIS: 4
+  - Ability: `rally [coord]` — Grant +1 AP to adjacent friendly units
+
+### 11.2 Map Customization
+
+- [ ] **Preset Maps:** 5 curated competitive maps with balanced layouts.
+- [ ] **Map Size Options:** 8×8 (Quick), 12×12 (Standard), 16×16 (Large).
+- [ ] **Map Selection:** Allow lobby host to choose map before game.
+- [ ] **Map Preview:** Show map layout in lobby before starting.
+
+### 11.3 Game Mode: King of the Hill
+
+- [ ] **Control Point:** Central 2×2 area marked as objective.
+- [ ] **Capture Mechanic:** Own the point by having only your units inside.
+- [ ] **Win Condition:** Control for 5 consecutive turns to win.
+- [ ] **Alternative Victory:** Elimination still valid.
+
+### Definition of Done
+
+- [ ] At least 2 new unit classes playable and balanced.
+- [ ] At least 3 preset maps available.
+- [ ] King of the Hill mode functional.
+- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
+
+---
+
+## 🚩 Phase 12: Advanced Features ⏳
+
+**Goal:** Add spectating, replays, and AI opponent for enhanced experience.
+
+### 12.1 Spectator Mode
+
+- [ ] **Spectate Link:** Generate shareable link to watch live game.
+- [ ] **Spectator View:** Full visibility of both sides (no FoW).
+- [ ] **Spectator Count:** Show number of viewers to players.
+- [ ] **Spectator Chat:** Separate chat channel for spectators.
+
+### 12.2 Game Replay
+
+- [ ] **Replay Recording:** Store all commands and state changes.
+- [ ] **Replay Viewer:** Step-through replay of any completed match.
+- [ ] **Playback Controls:** Play, pause, speed up, rewind.
+- [ ] **Share Link:** Generate shareable link to specific replay.
+
+### 12.3 AI Opponent (Single Player)
+
+- [ ] **Basic AI:** Rule-based opponent for practice.
+  - Prioritizes attacking low-HP targets
+  - Moves toward nearest enemy if out of range
+  - Uses heal when allies are injured
+- [ ] **Difficulty Levels:** Easy (random), Medium (smart), Hard (optimal).
+- [ ] **Offline Play:** Play against AI without network connection.
+
+### 12.4 Achievements System
+
+- [ ] **Achievement Schema:** Track unlockable badges.
+- [ ] **Achievements:**
+  - "First Blood" — Win your first game
+  - "Tactician" — Win without losing a unit
+  - "Comeback Kid" — Win after losing 3+ units
+  - "Sudo Master" — Win using a sudo command
+  - "Patience" — Win a game lasting 20+ turns
+  - "Speed Demon" — Win a game in under 5 turns
+- [ ] **Achievement Display:** Show earned badges on profile.
+
+### Definition of Done
+
+- [ ] Spectator mode functional for live games.
+- [ ] Replay viewer working for completed games.
+- [ ] Basic AI opponent playable.
+- [ ] At least 10 achievements implemented.
+- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
+
+---
+
+## 🚩 Phase 13: Deployment & Distribution ⏳
+
+**Goal:** Publish Terminal Tactics to gaming platforms, starting with itch.io and optionally Steam.
+
+### 13.1 Production Build Setup
+
+- [ ] **Build Script:** Create `build:prod` script for optimized production build.
+- [ ] **Environment Config:** Separate dev/prod Convex endpoints.
+- [ ] **Asset Optimization:** Compress images, minify CSS/JS.
+- [ ] **Bundle Analysis:** Ensure bundle size is reasonable (<5MB).
+
+### 13.2 Convex Production Deployment
+
+- [ ] **Deploy Backend:** Run `bunx convex deploy` for production.
+- [ ] **Environment Variables:** Configure production secrets.
+- [ ] **Rate Limiting:** Ensure production rate limits are appropriate.
+- [ ] **Monitoring:** Set up Convex dashboard alerts.
+
+### 13.3 itch.io Web Deployment
+
+- [ ] **Create itch.io Account:** Register at itch.io.
+- [ ] **Game Page Setup:** Create Terminal Tactics game page.
+- [ ] **Store Assets:**
+  - Cover image (630×500)
+  - Banner (960×540)
+  - Screenshots (min 3)
+  - GIF preview
+- [ ] **Upload Build:** ZIP `dist/` and upload as HTML5 game.
+- [ ] **Embed Configuration:**
+  - Viewport: 1280×720 or 1920×1080
+  - Enable fullscreen
+  - Set appropriate embed options
+- [ ] **Description & Tags:** Write compelling game description.
+- [ ] **Butler Setup:** Configure itch.io butler for automated deployments.
+
+### 13.4 Steam Desktop Build (Optional)
+
+- [ ] **Desktop Wrapper:** Integrate Tauri or Electron.
+- [ ] **Steam Partner Account:** Register at Steamworks ($100 fee).
+- [ ] **Steamworks SDK:** Integrate for achievements/overlay.
+- [ ] **Build Executables:** Windows (.exe), Mac (.dmg), Linux (.AppImage).
+- [ ] **Steam Store Assets:**
+  - Capsule images (various sizes)
+  - Screenshots
+  - Trailer video
+- [ ] **Submit for Review:** Steam review process (2-5 days).
+
+### 13.5 Marketing & Launch
+
+- [ ] **Landing Page:** Simple website with game info + links.
+- [ ] **Social Media:** Twitter/X, Reddit posts for launch.
+- [ ] **Press Kit:** Screenshots, description, logos for press.
+- [ ] **Community:** Discord server or subreddit.
+- [ ] **Analytics:** Track player counts, session length.
+
+### Definition of Done
+
+- [ ] Game playable on itch.io in browser.
+- [ ] Convex production backend stable.
+- [ ] At least 10 players have tested the public build.
+- [ ] Store page has all required assets.
+- [ ] Execute: `bun run build` produces deployable bundle.
+
+---
+
+## 📊 Progress Summary
+
+| Phase                         | Status      | Completion |
+| ----------------------------- | ----------- | ---------- |
+| Phase 1: Foundation           | ✅ Complete | 100%       |
+| Phase 2: CLI & Grid           | ✅ Complete | 100%       |
+| Phase 3: Multiplayer          | ✅ Complete | 100%       |
+| Phase 4: Movement             | ✅ Complete | 100%       |
+| Phase 5: Combat & FoW         | ✅ Complete | 100%       |
+| Phase 6: Polish               | ✅ Complete | 100%       |
+| Phase 7: Visual & UX Polish   | ⏳ Planned  | 0%         |
+| Phase 8: Session Stability    | ⏳ Planned  | 0%         |
+| Phase 9: Accessibility & Perf | ⏳ Planned  | 0%         |
+| Phase 10: Competitive         | ⏳ Planned  | 0%         |
+| Phase 11: Content Expansion   | ⏳ Planned  | 0%         |
+| Phase 12: Advanced Features   | ⏳ Planned  | 0%         |
+| Phase 13: Deployment          | ⏳ Planned  | 0%         |
+
+---
+
+## 🎯 Recommended Priority Order
+
+| Priority  | Phase    | Rationale                                                     |
+| --------- | -------- | ------------------------------------------------------------- |
+| 🔴 High   | Phase 7  | Addresses known visual limitations affecting gameplay clarity |
+| 🔴 High   | Phase 8  | Disconnect handling critical for multiplayer stability        |
+| 🟡 Medium | Phase 9  | Accessibility and performance for broader audience            |
+| 🟡 Medium | Phase 13 | **Early launch on itch.io for player feedback**               |
+| 🟡 Medium | Phase 10 | Competitive features for player retention                     |
+| 🟢 Low    | Phase 11 | Content expansion extends game lifespan                       |
+| 🟢 Low    | Phase 12 | Advanced features for long-term engagement                    |
+
+---
+
+## 🔮 Future Considerations
+
+Ideas for beyond Phase 13:
+
+- **Tournament Mode:** Bracket-based competitive events
+- **Clan System:** Team-based social features
+- **Custom Unit Editor:** Let players design their own unit stats
+- **Workshop:** Community-created maps and mods
+- **Cross-Platform:** Native mobile apps (React Native)
+- **Monetization:** Cosmetic skins, unit visual variants
 
 ---
 

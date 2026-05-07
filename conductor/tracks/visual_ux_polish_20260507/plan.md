@@ -19,10 +19,10 @@
 
 ### Task 7.1.1: Health Bars on Unit Icons
 **DEPENDS ON: 7.1.0** (uses hoveredUnit for optional highlight)
-- [ ] Write failing tests for health bar rendering (color gradient, positioning, sizing)
-- [ ] Implement `HealthBar` SVG sub-component in `UnitModel`
-- [ ] Wire HP/maxHP props from game state to health bar rendering
-- [ ] Verify tests pass
+- [x] Write failing tests for health bar rendering (color gradient, positioning, sizing) [1ca1ca7]
+- [x] Implement `HealthBar` SVG sub-component in `UnitModel`
+- [x] Wire HP/maxHP props from game state to health bar rendering
+- [x] Verify tests pass
 
 ### Task 7.1.2: Enemy Color Coding
 **DEPENDS ON: 7.1.0** (needs currentPlayerId prop)

@@ -35,7 +35,7 @@ function freshMockDb() {
       })),
       insert: mock(() => 'mock-id'),
       patch: mock(() => {}),
-      get: mock((id: any) => collectorFns.getResult),
+      get: mock(() => collectorFns.getResult),
     },
   }
 }

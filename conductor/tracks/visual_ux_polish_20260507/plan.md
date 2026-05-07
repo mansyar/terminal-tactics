@@ -102,7 +102,7 @@
 ### Task 7.3.2: Last Move Highlight
 **Note:** `moveUnit` mutation must return origin coordinates. See Prerequisites in spec.
 **DEPENDS ON: 7.1.0, moveUnit return extension (spec prerequisite)**
-- [ ] Write failing tests for last-move highlight rendering
+- [~] Write failing tests for last-move highlight rendering
 - [ ] Track `lastMoveOrigin` and `lastMoveDestination` in `App.tsx` state, set after successful `moveUnit` call
 - [ ] Pass last-move tiles to `GridBoard` and render highlight overlays (semi-transparent colored rectangles)
 - [ ] Clear highlight on next action (next move, attack, end-turn, or turn change detected in `gameState`)
@@ -110,26 +110,26 @@
 
 ### Task 7.3.3: Attack Range Preview
 **DEPENDS ON: 7.1.0** (uses selectedUnit/hoveredUnit state)
-- [ ] Write failing tests for attack range overlay
-- [ ] Implement range calculation: all tiles within Manhattan distance ≤ `unit.rng` from selected/hovered unit
-- [ ] Render translucent overlay circles on in-range tiles in `GridBoard`
-- [ ] Clear overlay when no unit is selected or hovered
-- [ ] Verify tests pass
+- [x] Write failing tests for attack range overlay [20bd88b]
+- [x] Implement range calculation: all tiles within Manhattan distance ≤ `unit.rng` from selected/hovered unit
+- [x] Render translucent overlay circles on in-range tiles in `GridBoard`
+- [x] Clear overlay when no unit is selected or hovered
+- [x] Verify tests pass
 
 ### Task 7.3.4: Overwatch Direction Cone (Replace Pulsing Border)
 **Note:** A pulsing-border overwatch effect already exists in `UnitModel`. This task replaces it with a direction-aware cone.
 **DEPENDS ON: 7.1.0**
-- [ ] Write failing tests for overwatch direction cone rendering
-- [ ] Design SVG cone/pie-slice shape for each direction (N: upward cone, E: rightward, S: downward, W: leftward)
-- [ ] Replace the existing `<motion.rect>` pulse with the new cone SVG
-- [ ] Maintain the pulsing/breathing animation on the cone
-- [ ] Verify tests pass
+- [x] Write failing tests for overwatch direction cone rendering
+- [x] Design SVG cone/pie-slice shape for each direction (N: upward cone, E: rightward, S: downward, W: leftward)
+- [x] Replace the existing `<motion.rect>` pulse with the new cone SVG
+- [x] Maintain the pulsing/breathing animation on the cone
+- [x] Verify tests pass
 
 ### Task 7.3.5: Hover Tooltips
 **DEPENDS ON: 7.1.0, 7.1.2** (needs hover state + correct colors)
-- [ ] Write failing tests for hover tooltip rendering and content
-- [ ] Implement a tooltip SVG group or absolutely-positioned HTML overlay showing: type, HP, AP, ATK, RNG
-- [ ] Position tooltip near the hovered unit, with boundary clamping to avoid viewport overflow
-- [ ] Show only on mouse hover (not keyboard focus), as keyboard users have the `inspect` command
-- [ ] Verify tests pass
+- [x] Write failing tests for hover tooltip rendering and content
+- [x] Implement a tooltip SVG group or absolutely-positioned HTML overlay showing: type, HP, AP, ATK, RNG
+- [x] Position tooltip near the hovered unit, with boundary clamping to avoid viewport overflow
+- [x] Show only on mouse hover (not keyboard focus), as keyboard users have the `inspect` command
+- [x] Verify tests pass
 - [ ] Task: Conductor - User Manual Verification 'Phase 7.3: Grid Readability Enhancements' (Protocol in workflow.md)

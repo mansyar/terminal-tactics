@@ -62,10 +62,10 @@
 
 ## Phase 3: Implement Pre-Push Hook (Coverage Threshold)
 
-- [ ] Task: Add type checking to pre-push hook
-    - [ ] Write `.husky/pre-push` with `bun run typecheck && bun test --coverage`
-    - [ ] Verify push is blocked when type errors exist
-- [ ] Task: Verify coverage threshold
-    - [ ] Confirm `coverageThreshold = 0.8` is active in bunfig.toml (already configured in Phase 1)
-    - [ ] Verify pre-push blocks when coverage is below 80%
+- [x] Task: Add type checking to pre-push hook [68c536a]
+    - [x] Write `.husky/pre-push` with `bun run typecheck && bun test --coverage`
+    - [x] Verify push is blocked when type errors exist
+- [x] Task: Verify coverage threshold [68c536a]
+    - [x] Confirm `coverageThreshold = 0.8` is active in bunfig.toml
+    - [x] Verify pre-push blocks when coverage is below 80%
 - [ ] Task: Conductor - User Manual Verification 'Implement Pre-Push Hook' (Protocol in workflow.md)

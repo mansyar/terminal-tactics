@@ -6,6 +6,8 @@ export function GridBoard({
   revealedTiles = [],
   currentlyVisibleTiles = [],
   showCoordinates = true,
+  lastMoveOrigin,
+  lastMoveDestination,
   onUnitClick: _onUnitClick,
   onUnitHover: _onUnitHover,
   onUnitLeave: _onUnitLeave,
@@ -15,6 +17,8 @@ export function GridBoard({
   revealedTiles?: Array<string>
   currentlyVisibleTiles?: Array<string>
   showCoordinates?: boolean
+  lastMoveOrigin?: { x: number; y: number }
+  lastMoveDestination?: { x: number; y: number }
   onUnitClick?: (unitId: string) => void
   onUnitHover?: (unitId: string) => void
   onUnitLeave?: () => void
@@ -180,6 +184,30 @@ export function GridBoard({
           strokeWidth="3"
           className="opacity-30"
         />
+
+        {/* Last Move Highlights */}
+        {lastMoveOrigin && (
+          <rect
+            x={lastMoveOrigin.x * tileSize}
+            y={lastMoveOrigin.y * tileSize}
+            width={tileSize}
+            height={tileSize}
+            fill="#00FF00"
+            className="opacity-20"
+            data-testid="last-move-origin"
+          />
+        )}
+        {lastMoveDestination && (
+          <rect
+            x={lastMoveDestination.x * tileSize}
+            y={lastMoveDestination.y * tileSize}
+            width={tileSize}
+            height={tileSize}
+            fill="#00FF00"
+            className="opacity-30"
+            data-testid="last-move-destination"
+          />
+        )}
 
         {/* Content (Units/Terrain) */}
         <g>{children}</g>

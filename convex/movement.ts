@@ -140,6 +140,9 @@ export const moveUnit = mutation({
     }
 
     // 7. Apply Change
+    // Capture origin coordinates before updating position (for Last Move Highlight)
+    const originX = unit.x
+    const originY = unit.y
     const newHp = Math.max(0, unit.hp - totalOvDamage - movementDamage)
 
     if (newHp === 0) {
@@ -212,6 +215,8 @@ export const moveUnit = mutation({
       success: true,
       overwatchTriggered,
       damageTaken: totalOvDamage,
+      originX,
+      originY,
     }
   },
 })

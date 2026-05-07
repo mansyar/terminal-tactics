@@ -78,6 +78,8 @@ function App() {
   const [selectedUnit, setSelectedUnit] = useState<string | null>(null)
   const [hoveredUnit, setHoveredUnit] = useState<string | null>(null)
   const [showCoordinates, setShowCoordinates] = useState(true)
+  const [lastMoveOrigin, setLastMoveOrigin] = useState<{ x: number; y: number } | null>(null)
+  const [lastMoveDestination, setLastMoveDestination] = useState<{ x: number; y: number } | null>(null)
   void selectedUnit
   void hoveredUnit
 
@@ -131,6 +133,10 @@ function App() {
       if (cmd.type === 'clear') {
         return
       }
+
+      // Clear last move highlights on any new action
+      setLastMoveOrigin(null)
+      setLastMoveDestination(null)
 
       if (!gameState) return
 
@@ -198,6 +204,8 @@ function App() {
                 targetX: to.x,
                 targetY: to.y,
               })
+              setLastMoveOrigin({ x: res.originX, y: res.originY })
+              setLastMoveDestination({ x: to.x, y: to.y })
               result = `MOVE_SUCCESS: [${unitAtSource.type}] ${from.label} -> ${to.label}`
               playSuccess()
               if (res.overwatchTriggered) {
@@ -748,6 +756,8 @@ function App() {
           revealedTiles={revealedTiles || []}
           currentlyVisibleTiles={Array.from(currentlyVisibleTiles)}
           showCoordinates={showCoordinates}
+          lastMoveOrigin={lastMoveOrigin ?? undefined}
+          lastMoveDestination={lastMoveDestination ?? undefined}
           onUnitClick={handleUnitClick}
           onUnitHover={handleUnitHover}
           onUnitLeave={handleUnitLeave}

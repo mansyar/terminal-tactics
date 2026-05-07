@@ -100,3 +100,42 @@ describe('GridBoard - Coordinate Labels Toggle (Task 7.3.1)', () => {
     expect(svg).toBeTruthy()
   })
 })
+
+describe('GridBoard - Last Move Highlight (Task 7.3.2)', () => {
+  it('renders a highlight rectangle at the move origin', () => {
+    const { container } = render(
+      <GridBoard lastMoveOrigin={{ x: 2, y: 3 }}>
+        <UnitModel type="K" x={5} y={5} ownerId="p1" hp={10} maxHp={10} ap={3} maxAp={3} />
+      </GridBoard>,
+    )
+    // Should have a highlight rect at origin
+    const highlightRect = container.querySelector('[data-testid="last-move-origin"]')
+    expect(highlightRect).toBeTruthy()
+    expect(highlightRect!.getAttribute('x')).toBe('200') // x * tileSize
+    expect(highlightRect!.getAttribute('y')).toBe('300') // y * tileSize
+  })
+
+  it('renders a highlight rectangle at the move destination', () => {
+    const { container } = render(
+      <GridBoard lastMoveDestination={{ x: 5, y: 5 }}>
+        <UnitModel type="K" x={5} y={5} ownerId="p1" hp={10} maxHp={10} ap={3} maxAp={3} />
+      </GridBoard>,
+    )
+    const highlightRect = container.querySelector('[data-testid="last-move-destination"]')
+    expect(highlightRect).toBeTruthy()
+    expect(highlightRect!.getAttribute('x')).toBe('500')
+    expect(highlightRect!.getAttribute('y')).toBe('500')
+  })
+
+  it('does not render highlights when no lastMove props provided', () => {
+    const { container } = render(
+      <GridBoard>
+        <UnitModel type="K" x={0} y={0} ownerId="p1" hp={10} maxHp={10} ap={3} maxAp={3} />
+      </GridBoard>,
+    )
+    const originRects = container.querySelectorAll('[data-testid="last-move-origin"]')
+    const destRects = container.querySelectorAll('[data-testid="last-move-destination"]')
+    expect(originRects.length).toBe(0)
+    expect(destRects.length).toBe(0)
+  })
+})

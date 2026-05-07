@@ -6,6 +6,8 @@ interface UnitModelProps {
   y: number
   ownerId: string
   direction?: string
+  hp: number
+  maxHp: number
   ap: number
   maxAp: number
   isStealthed?: boolean
@@ -22,6 +24,8 @@ export function UnitModel({
   y,
   ownerId,
   direction = 'N',
+  hp,
+  maxHp,
   ap,
   maxAp,
   isStealthed = false,
@@ -133,6 +137,32 @@ export function UnitModel({
           />
         ))}
       </g>
+
+      {/* Health Bar */}
+      <rect
+        x="20"
+        y="92"
+        width="60"
+        height="6"
+        fill="#003300"
+        rx="2"
+        data-testid="health-bar-bg"
+      />
+      <rect
+        x="20"
+        y="92"
+        width={Math.max(0, Math.min(60, (hp / Math.max(1, maxHp)) * 60))}
+        height="6"
+        fill={
+          hp / Math.max(1, maxHp) > 0.5
+            ? '#00FF00'
+            : hp / Math.max(1, maxHp) > 0.25
+              ? '#FFFF00'
+              : '#FF4444'
+        }
+        rx="2"
+        data-testid="health-bar-fill"
+      />
 
       {/* Stealth indicator dot */}
       {isStealthed && (

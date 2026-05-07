@@ -736,6 +736,8 @@ function App() {
               maxAp={u.maxAp}
               isStealthed={u.isStealthed}
               isOverwatching={u.isOverwatching}
+              hp={u.hp}
+              maxHp={u.maxHp}
               onClick={() => handleUnitClick(u._id)}
               onMouseEnter={() => handleUnitHover(u._id)}
               onMouseLeave={handleUnitLeave}

@@ -6,7 +6,7 @@
 
 ---
 
-## Phase 7.1: Visual Unit Enhancements
+## Phase 7.1: Visual Unit Enhancements [checkpoint: 341d6d6]
 
 ### Task 7.1.0: Client-side Interaction State & Viewer Context (Prerequisite)
 **DEPENDS ON: (none — foundation task)**
@@ -46,7 +46,7 @@
 - [x] Implement CSS `@keyframes` shimmer pulse animation (not opacity flicker — a glitchy horizontal offset)
 - [x] Apply CSS class to `UnitModel` group when `isStealthed` is true (visible to owning player only)
 - [x] Verify tests pass
-- [ ] Task: Conductor - User Manual Verification 'Phase 7.1: Visual Unit Enhancements' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 7.1: Visual Unit Enhancements' (Protocol in workflow.md)
 
 ---
 

@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun --bun vite --port 3000",
-    "type-check": "tsc --noEmit",
+
     "build": "bun --bun vite build && tsc",
     "preview": "bun --bun vite preview",
     "test": "bun test",
@@ -12,7 +12,10 @@
     "lint": "eslint",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky",
+    "pre-commit": "lint-staged",
+    "pre-push": "bun run typecheck && bun test --coverage"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
@@ -37,7 +40,9 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
+    "husky": "^9.1.7",
     "jsdom": "^27.0.0",
+    "lint-staged": "^17.0.2",
     "prettier": "^3.5.3",
     "typescript": "^5.7.2",
     "vite": "^7.1.7",

@@ -1,2 +1,3 @@
 [test]
 preload = ["./bun-setup.ts"]
+coverageThreshold = 0.8

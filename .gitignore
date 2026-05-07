@@ -58,3 +58,5 @@ Desktop.ini
 # Optional: Bun lockfile is binary in older versions, but text in newer. 
 # We commit bun.lock (text) or bun.lockb (binary).
 # If you see both, commit the one you are using.
+
+tsconfig.tsbuildinfo

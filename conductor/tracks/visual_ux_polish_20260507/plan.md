@@ -63,11 +63,11 @@
 ### Task 7.2.2: Private Log Creation (Client-Side)
 **Note:** Logging happens client-side in `App.tsx`, not inside Convex mutations. The `scanArea` mutation does not call `logCommand`.
 **DEPENDS ON: 7.2.1**
-- [ ] Write failing tests for logCommand calls with visibility parameter
-- [ ] Update `App.tsx` scan command handler to pass `visibility: "private"` to `logCommand`
-- [ ] Update `App.tsx` inspect command handler to pass `visibility: "private"` to `logCommand`
-- [ ] Ensure all other command handlers pass `visibility: "public"` (or omit — schema field is optional)
-- [ ] Verify tests pass
+- [x] Write failing tests for logCommand calls with visibility parameter [ae9a92f]
+- [x] Update `App.tsx` scan command handler to pass `visibility: "private"` to `logCommand`
+- [x] Update `App.tsx` inspect command handler to pass `visibility: "private"` to `logCommand`
+- [x] Ensure all other command handlers pass `visibility: "public"` (or omit — schema field is optional)
+- [x] Verify tests pass
 
 ### Task 7.2.3: Log Filter Query (Server-Side)
 **DEPENDS ON: 7.2.1**

@@ -20,12 +20,13 @@ Before the hooks can be installed, the codebase must be remediated to pass the c
 - **F1.2** Run `eslint --fix` on all staged `.ts`, `.tsx`, `.js`, `.jsx` files
 - **F1.3** Run `bun test --bail` on staged test files (`*.test.ts`, `*.test.tsx`)
 - **F1.4** Run `tsc --noEmit` for type checking on the project (uses `incremental: true` in tsconfig for fast re-runs)
-- **F1.5** Run a line-of-code check: block the commit if any staged `.ts`, `.tsx`, `.js`, `.jsx` file exceeds 500 lines
+- **F1.5** Run a line-of-code check: block the commit if any staged `.ts`, `.tsx`, `.js`, `.jsx` file in `src/` or `convex/` exceeds 500 lines
   - Display a clear error message listing each violating file and line count
   - Message must instruct the developer to **refactor** the file (not simply trim it)
   - Exit with non-zero code to block the commit
-  - Must exclude generated/non-source directories: `convex/_generated/`, `dist/`, `.output/`, `node_modules/`
-  - No grandfathering or exemptions -- all files are subject to this check
+  - Scope is limited to `src/**/*.{ts,tsx,js,jsx}` and `convex/**/*.{ts,tsx,js,jsx}`
+  - Must exclude generated directory: `convex/_generated/`
+  - No grandfathering or exemptions -- all files in scope are subject to this check
 
 ### FR2: Pre-Push Hook (via husky)
 
@@ -40,7 +41,7 @@ Before the hooks can be installed, the codebase must be remediated to pass the c
 - **NFR2:** Must use the project's existing ESLint (TanStack flat config) and Prettier (ESM config) configurations
 - **NFR3:** Must use Bun (not npm/pnpm/yarn) for all scripts and tooling
 - **NFR4:** The line-of-code check must be a custom lint-staged script/module, not a third-party dependency
-- **NFR5:** Generated directories (`convex/_generated/`, `dist/`, `.output/`, `node_modules/`) must be excluded from all checks
+- **NFR5:** The line-of-code check is scoped to `src/` and `convex/` only (excluding `convex/_generated/`)
 - **NFR6:** Test files follow the `*.test.ts` / `*.test.tsx` naming convention (not `*.spec.*`)
 - **NFR7:** Use `typecheck` script name (duplicate `type-check` removed)
 
@@ -49,7 +50,7 @@ Before the hooks can be installed, the codebase must be remediated to pass the c
 ### Phase 0
 - [ ] `src/App.tsx` is refactored to under 500 lines
 - [ ] `src/components/Grid/UnitModel.test.tsx` is split into focused files, each under 500 lines
-- [ ] No `.ts`/`.tsx`/`.js`/`.jsx` files in the project exceed 500 lines (excluding generated dirs)
+- [ ] No `.ts`/`.tsx`/`.js`/`.jsx` files in `src/` or `convex/` exceed 500 lines (excluding `convex/_generated/`)
 - [ ] Global test coverage is >=80% (`bun test --coverage` reports >=80%)
 
 ### Phase 1-3

@@ -7,13 +7,13 @@
     - [x] Extract `parseCoord()` helper to `src/lib/utils.ts`
     - [x] Extract `handleCommand` into a custom hook `src/hooks/useGameCommands.ts`
     - [x] Verify `src/App.tsx` is under 500 lines after extraction
-- [ ] Task: Split `src/components/Grid/UnitModel.test.tsx` into focused test files
-    - [ ] Create `src/components/Grid/UnitModel.health.test.tsx` (health bar tests)
-    - [ ] Create `src/components/Grid/UnitModel.interactions.test.tsx` (callbacks, color coding, stealth)
-    - [ ] Create `src/components/Grid/UnitModel.visual.test.tsx` (overwatch cone, direction arrow)
-    - [ ] Remove the original monolithic `UnitModel.test.tsx`
-    - [ ] Verify each new test file is under 500 lines
-    - [ ] Run all tests to confirm nothing broke
+- [x] Task: Split `src/components/Grid/UnitModel.test.tsx` into focused test files [8204a3a]
+    - [x] Create `src/components/Grid/UnitModel.health.test.tsx` (health bar tests)
+    - [x] Create `src/components/Grid/UnitModel.interactions.test.tsx` (callbacks, color coding, stealth)
+    - [x] Create `src/components/Grid/UnitModel.visual.test.tsx` (overwatch cone, direction arrow)
+    - [x] Remove the original monolithic `UnitModel.test.tsx`
+    - [x] Verify each new test file is under 500 lines
+    - [x] Run all tests to confirm nothing broke
 - [ ] Task: Raise test coverage to >=80%
     - [ ] Write tests for `convex/squadBuilder.ts` (squad budget, validation, templates -- currently 14.66%)
     - [ ] Write tests for `convex/lobby.ts` (lobby creation, join, code generation -- currently 45.24%)

@@ -79,11 +79,11 @@
 
 ### Task 7.2.4: UI Rendering for Private Logs
 **DEPENDS ON: 7.2.2, 7.2.3**
-- [ ] Write failing tests for private log styling
-- [ ] Switch `App.tsx` from `getLogs` to `getFilteredLogs` query, passing the current `playerId`
-- [ ] Update `ConsoleHistory` or log formatting in `App.tsx` to render private logs dimmed or italicized
-- [ ] Optionally add a small privacy indicator icon/label to private entries (e.g., `[PRIVATE]`)
-- [ ] Verify tests pass
+- [x] Write failing tests for private log styling [e80e64f]
+- [x] Switch `App.tsx` from `getLogs` to `getFilteredLogs` query, passing the current `playerId`
+- [x] Update `ConsoleHistory` or log formatting in `App.tsx` to render private logs dimmed or italicized
+- [x] Optionally add a small privacy indicator icon/label to private entries (e.g., `[PRIVATE]`)
+- [x] Verify tests pass
 - [ ] Task: Conductor - User Manual Verification 'Phase 7.2: Log Visibility System' (Protocol in workflow.md)
 
 ---

@@ -69,13 +69,14 @@ export function UnitModel({
       animate={{
         x: x * 100,
         y: y * 100,
-        opacity: isStealthed ? 0.4 : 1,
+        opacity: 1,
       }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       style={{ cursor: onClick ? 'pointer' : undefined }}
+      className={isStealthed ? 'stealth-shimmer' : ''}
     >
       {/* Overwatch Effect */}
       {isOverwatching && (
@@ -110,7 +111,7 @@ export function UnitModel({
         y="60"
         textAnchor="middle"
         fill={color}
-        className={`font-mono text-4xl font-bold glow ${isStealthed ? 'opacity-50' : ''}`}
+        className={`font-mono text-4xl font-bold glow`}
         style={{ pointerEvents: 'none' }}
       >
         [{type}]
@@ -167,9 +168,20 @@ export function UnitModel({
         data-testid="health-bar-fill"
       />
 
-      {/* Stealth indicator dot */}
+      {/* Stealth shimmer indicator */}
       {isStealthed && (
-        <circle cx="20" cy="20" r="2" fill={color} className="animate-pulse" />
+        <rect
+          x="5"
+          y="5"
+          width="90"
+          height="90"
+          fill="none"
+          stroke="#00FFFF"
+          strokeWidth="1"
+          strokeDasharray="4 4"
+          className="opacity-60"
+          rx="2"
+        />
       )}
     </motion.g>
   )

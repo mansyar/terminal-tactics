@@ -186,3 +186,45 @@ body::after {
     2px 0 #00ffff,
     -2px 0 #ff00ff;
 }
+
+/* Stealth Shimmer - glitchy horizontal offset for stealthed scouts */
+@keyframes stealth-shimmer {
+  0% {
+    transform: translate(0, 0);
+  }
+  10% {
+    transform: translate(-2px, 1px);
+  }
+  20% {
+    transform: translate(2px, -1px);
+  }
+  30% {
+    transform: translate(-1px, 0);
+  }
+  40% {
+    transform: translate(1px, 1px);
+  }
+  50% {
+    transform: translate(0, -1px);
+  }
+  60% {
+    transform: translate(-2px, 0);
+  }
+  70% {
+    transform: translate(1px, 1px);
+  }
+  80% {
+    transform: translate(2px, -1px);
+  }
+  90% {
+    transform: translate(-1px, 1px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+.stealth-shimmer {
+  animation: stealth-shimmer 3s steps(3) infinite;
+  filter: drop-shadow(0 0 2px rgba(0, 255, 255, 0.5));
+}

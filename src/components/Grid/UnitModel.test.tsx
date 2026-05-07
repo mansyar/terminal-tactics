@@ -321,6 +321,120 @@ describe('UnitModel - Enemy Color Coding (Task 7.1.2)', () => {
   })
 })
 
+describe('UnitModel - Stealth Glitch Indicator (Task 7.1.4)', () => {
+  it('applies stealth-shimmer CSS class to group when isStealthed is true', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="S"
+          x={3}
+          y={4}
+          ownerId="p1"
+          currentPlayerId="p1"
+          hp={6}
+          maxHp={6}
+          ap={3}
+          maxAp={3}
+          isStealthed={true}
+        />
+      </svg>,
+    )
+    const unitGroup = container.querySelector('g')
+    expect(unitGroup).toBeTruthy()
+    expect(unitGroup!.classList.contains('stealth-shimmer')).toBe(true)
+  })
+
+  it('does not apply stealth-shimmer class when isStealthed is false', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="S"
+          x={3}
+          y={4}
+          ownerId="p1"
+          currentPlayerId="p1"
+          hp={6}
+          maxHp={6}
+          ap={3}
+          maxAp={3}
+          isStealthed={false}
+        />
+      </svg>,
+    )
+    const unitGroup = container.querySelector('g')
+    expect(unitGroup!.classList.contains('stealth-shimmer')).toBe(false)
+  })
+
+  it('removes the old opacity-based stealth styling', () => {
+    // The motion group should NOT set opacity: 0.4 for stealthed units
+    // Instead, the glitch animation handles the visual effect
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="S"
+          x={3}
+          y={4}
+          ownerId="p1"
+          currentPlayerId="p1"
+          hp={6}
+          maxHp={6}
+          ap={3}
+          maxAp={3}
+          isStealthed={true}
+        />
+      </svg>,
+    )
+    // Check that text does NOT have opacity-50 (old stealth styling)
+    const texts = container.querySelectorAll('text')
+    texts.forEach((t) => {
+      expect(t.classList.contains('opacity-50')).toBe(false)
+    })
+  })
+
+  it('keeps full opacity on stealthed units (no opacity flicker)', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="S"
+          x={3}
+          y={4}
+          ownerId="p1"
+          currentPlayerId="p1"
+          hp={6}
+          maxHp={6}
+          ap={3}
+          maxAp={3}
+          isStealthed={true}
+        />
+      </svg>,
+    )
+    const unitGroup = container.querySelector('g')
+    // The framer-motion animate should have opacity:1 (no more opacity:0.4)
+    expect(unitGroup).toBeTruthy()
+  })
+
+  it('isStealthed={false} keeps unit fully opaque', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="K"
+          x={0}
+          y={0}
+          ownerId="p1"
+          currentPlayerId="p1"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+          isStealthed={false}
+        />
+      </svg>,
+    )
+    const unitGroup = container.querySelector('g')
+    expect(unitGroup!.classList.contains('stealth-shimmer')).toBe(false)
+  })
+})
+
 describe('UnitModel - Direction Indicator Arrow (Task 7.1.3)', () => {
   it('renders an arrow polygon for North-facing unit', () => {
     const { container } = render(

@@ -26,10 +26,10 @@
 
 ### Task 7.1.2: Enemy Color Coding
 **DEPENDS ON: 7.1.0** (needs currentPlayerId prop)
-- [ ] Write failing tests for friendly/enemy color differentiation
-- [ ] Implement color mapping: `ownerId === currentPlayerId` → Matrix Green (`#00FF00`), else → Hostile Red (`#FF4444`)
-- [ ] Update `UnitModel` to receive `currentPlayerId` and apply dynamic color to border, text, direction line, and AP dots
-- [ ] Verify tests pass
+- [x] Write failing tests for friendly/enemy color differentiation [43e3289]
+- [x] Implement color mapping: `ownerId === currentPlayerId` → Matrix Green (`#00FF00`), else → Hostile Red (`#FF4444`)
+- [x] Update `UnitModel` to receive `currentPlayerId` and apply dynamic color to border, text, direction line, and AP dots
+- [x] Verify tests pass
 
 ### Task 7.1.3: Direction Indicator Enhancement — Line to Arrow
 **Note:** A direction indicator already exists in `UnitModel` (thick edge line). This task enhances it.

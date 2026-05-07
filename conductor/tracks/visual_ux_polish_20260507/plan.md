@@ -50,7 +50,7 @@
 
 ---
 
-## Phase 7.2: Log Visibility System
+## Phase 7.2: Log Visibility System [checkpoint: 00378bb]
 
 ### Task 7.2.1: Schema Update for Log Visibility
 **DEPENDS ON: (none — can run in parallel with Phase 7.1)**
@@ -84,7 +84,7 @@
 - [x] Update `ConsoleHistory` or log formatting in `App.tsx` to render private logs dimmed or italicized
 - [x] Optionally add a small privacy indicator icon/label to private entries (e.g., `[PRIVATE]`)
 - [x] Verify tests pass
-- [ ] Task: Conductor - User Manual Verification 'Phase 7.2: Log Visibility System' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase 7.2: Log Visibility System' (Protocol in workflow.md)
 
 ---
 

@@ -10,12 +10,12 @@
 
 ### Task 7.1.0: Client-side Interaction State & Viewer Context (Prerequisite)
 **DEPENDS ON: (none — foundation task)**
-- [ ] Write tests for selection state management (selectedUnit, hoveredUnit, isHovering)
-- [ ] Add `selectedUnit` and `hoveredUnit` state to `App.tsx` via `useState`
-- [ ] Add `onUnitHover`/`onUnitLeave`/`onUnitClick` callbacks passed to `GridBoard` children
-- [ ] Add `currentPlayerId` prop to `UnitModel` interface for friendly/enemy distinction
-- [ ] Wire callbacks from `App.tsx` through `GameLayout` to unit rendering
-- [ ] Verify tests pass
+- [x] Write tests for selection state management (selectedUnit, hoveredUnit, isHovering) [e89f4fd]
+- [x] Add `selectedUnit` and `hoveredUnit` state to `App.tsx` via `useState`
+- [x] Add `onUnitHover`/`onUnitLeave`/`onUnitClick` callbacks passed to `GridBoard` children
+- [x] Add `currentPlayerId` prop to `UnitModel` interface for friendly/enemy distinction
+- [x] Wire callbacks from `App.tsx` through `GameLayout` to unit rendering
+- [x] Verify tests pass
 
 ### Task 7.1.1: Health Bars on Unit Icons
 **DEPENDS ON: 7.1.0** (uses hoveredUnit for optional highlight)

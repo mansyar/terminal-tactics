@@ -14,15 +14,15 @@
     - [x] Remove the original monolithic `UnitModel.test.tsx`
     - [x] Verify each new test file is under 500 lines
     - [x] Run all tests to confirm nothing broke
-- [ ] Task: Raise test coverage to >=80%
-    - [ ] Write tests for `convex/squadBuilder.ts` (squad budget, validation, templates -- currently 14.66%)
-    - [ ] Write tests for `convex/lobby.ts` (lobby creation, join, code generation -- currently 45.24%)
-    - [ ] Write tests for `convex/game.ts` (game state mutations -- currently 26.36%)
-    - [ ] Write tests for `src/components/SquadBuilder.tsx` (currently 2.61%)
-    - [ ] Write tests for `src/components/Terminal/CLIInput.tsx` (currently 8.89%)
-    - [ ] Write tests for `src/components/TimerDisplay.tsx` (currently 2.56%)
-    - [ ] Write tests for `src/components/TurnIndicator.tsx` (currently 4.55%)
-    - [ ] Write tests for `src/lib/audio.ts` (currently 40.00%)
+- [x] Task: Raise test coverage to >=80% [8c6f288]
+    - [x] Write tests for `convex/squadBuilder.ts` (squad budget, validation, templates -- currently 14.66%)
+    - [x] Write tests for `convex/lobby.ts` (lobby creation, join, code generation -- currently 45.24%)
+    - [x] Write tests for `convex/game.ts` (game state mutations -- currently 26.36%)
+    - [x] Write tests for `src/components/SquadBuilder.tsx` (currently 2.61%)
+    - [x] Write tests for `src/components/Terminal/CLIInput.tsx` (currently 8.89%)
+    - [x] Write tests for `src/components/TimerDisplay.tsx` (currently 2.56%)
+    - [x] Write tests for `src/components/TurnIndicator.tsx` (currently 4.55%)
+    - [x] Write tests for `src/lib/audio.ts` (currently 40.00%)
 - [ ] Task: Verify all violations are cleared
     - [ ] Run `bun test --coverage` and confirm >=80% lines
     - [ ] Run line count check on all `.ts/.tsx/.js/.jsx` files in `src/` and `convex/` (excluding `convex/_generated/`) and confirm none exceed 500 lines

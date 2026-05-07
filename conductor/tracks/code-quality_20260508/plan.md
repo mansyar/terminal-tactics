@@ -2,11 +2,11 @@
 
 ## Phase 0: Remediate Existing Violations
 
-- [ ] Task: Refactor `src/App.tsx` to under 500 lines
-    - [ ] Extract `cleanErrorMessage()` helper to `src/lib/utils.ts`
-    - [ ] Extract `parseCoord()` helper to `src/lib/utils.ts`
-    - [ ] Extract `handleCommand` into a custom hook `src/hooks/useGameCommands.ts`
-    - [ ] Verify `src/App.tsx` is under 500 lines after extraction
+- [x] Task: Refactor `src/App.tsx` to under 500 lines [adce6db]
+    - [x] Extract `cleanErrorMessage()` helper to `src/lib/utils.ts`
+    - [x] Extract `parseCoord()` helper to `src/lib/utils.ts`
+    - [x] Extract `handleCommand` into a custom hook `src/hooks/useGameCommands.ts`
+    - [x] Verify `src/App.tsx` is under 500 lines after extraction
 - [ ] Task: Split `src/components/Grid/UnitModel.test.tsx` into focused test files
     - [ ] Create `src/components/Grid/UnitModel.health.test.tsx` (health bar tests)
     - [ ] Create `src/components/Grid/UnitModel.interactions.test.tsx` (callbacks, color coding, stealth)

@@ -93,11 +93,11 @@
 ### Task 7.3.1: Coordinate Labels Toggle
 **Note:** Row labels (12-1) and column labels (A-L) already render on grid edges in `GridBoard.tsx`. This task adds a toggle.
 **DEPENDS ON: (none — independent of other 7.3 tasks)**
-- [ ] Write failing tests for coordinate label toggle behavior
-- [ ] Add a `showCoordinates` boolean state (default: true) to `GridBoard` or parent
-- [ ] Add keyboard shortcut (e.g., toggle via new `toggle labels` command or extend existing CLI)
-- [ ] Conditionally render the existing label `<text>` elements based on `showCoordinates`
-- [ ] Verify tests pass
+- [x] Write failing tests for coordinate label toggle behavior [a22687f]
+- [x] Add a `showCoordinates` boolean state (default: true) to `GridBoard` or parent
+- [x] Add keyboard shortcut (e.g., toggle via new `toggle labels` command or extend existing CLI)
+- [x] Conditionally render the existing label `<text>` elements based on `showCoordinates`
+- [x] Verify tests pass
 
 ### Task 7.3.2: Last Move Highlight
 **Note:** `moveUnit` mutation must return origin coordinates. See Prerequisites in spec.

@@ -32,22 +32,21 @@
 
 ## Phase 1: Setup Dependencies & Configuration
 
-- [ ] Task: Install husky and lint-staged
-    - [ ] Install `husky` and `lint-staged` as devDependencies via bun
-    - [ ] Initialize husky (create `.husky/` directory)
-    - [ ] Add `"prepare": "husky"` to package.json scripts
-    - [ ] Create `.husky/pre-commit` hook file with `npx lint-staged`
-    - [ ] Create `.husky/pre-push` hook file
-- [ ] Task: Configure lint-staged
-    - [ ] Create `.lintstagedrc.js` config file at project root
-    - [ ] Add prettier + eslint auto-fix rules for `*.{ts,tsx,js,jsx}` files
-    - [ ] Add `bun test --bail` for `*.test.{ts,tsx}` file patterns
-    - [ ] Add `tsc --noEmit` for `*.{ts,tsx}` files (runs once per commit, not per file)
-- [ ] Task: Update bunfig.toml with coverage threshold
-    - [ ] Add `coverageThreshold = 0.8` under the existing `[test]` section
-- [ ] Task: Clean up duplicate scripts in package.json
-    - [ ] Remove duplicate `"type-check": "tsc --noEmit"` (keep `"typecheck"`)
-    - [ ] Add `"pre-commit": "lint-staged"` and `"pre-push": "bun run typecheck && bun test --coverage"` convenience scripts
+- [x] Task: Install husky and lint-staged [c7d3c02]
+    - [x] Install `husky` and `lint-staged` as devDependencies via bun
+    - [x] Initialize husky (create `.husky/` directory)
+    - [x] Add `"prepare": "husky"` to package.json scripts
+    - [x] Create `.husky/pre-commit` hook file with `npx lint-staged`
+    - [x] Create `.husky/pre-push` hook file
+- [x] Task: Configure lint-staged [c7d3c02]
+    - [x] Create `.lintstagedrc.json` config file at project root
+    - [x] Add prettier + eslint auto-fix rules for `*.{ts,tsx,js,jsx}` files
+    - [x] Add `bun test --bail` for `*.test.{ts,tsx}` file patterns
+- [x] Task: Update bunfig.toml with coverage threshold [c7d3c02]
+    - [x] Add `coverageThreshold = 0.8` under the existing `[test]` section
+- [x] Task: Clean up duplicate scripts in package.json [c7d3c02]
+    - [x] Remove duplicate `"type-check": "tsc --noEmit"` (keep `"typecheck"`)
+    - [x] Add `"pre-commit": "lint-staged"` and `"pre-push": "bun run typecheck && bun test --coverage"` convenience scripts
 - [ ] Task: Conductor - User Manual Verification 'Setup Dependencies & Configuration' (Protocol in workflow.md)
 
 ## Phase 2: Implement Pre-Commit Hook (Line-of-Code Check + Type Checking)

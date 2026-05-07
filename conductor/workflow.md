@@ -198,7 +198,7 @@ bun test
 bun run lint
 
 # Run type checking
-bun run type-check
+bun run typecheck
 ```
 
 ### Before Committing

@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "dev": "bun --bun vite --port 3000",
-
     "build": "bun --bun vite build && tsc",
     "preview": "bun --bun vite preview",
     "test": "bun test",

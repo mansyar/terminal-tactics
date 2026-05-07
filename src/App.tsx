@@ -89,6 +89,7 @@ function App() {
   // Reset local state if game finished or not found
   useEffect(() => {
     if (activeGameId && gameState === null) {
+      // Only clear if we actually had an ID but the server returned null (e.g. game deleted)
       setActiveGameId(null)
     }
   }, [activeGameId, gameState])

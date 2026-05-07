@@ -8,6 +8,7 @@
     "build": "bun --bun vite build && tsc",
     "preview": "bun --bun vite preview",
     "test": "bun test",
+    "test:coverage": "bun test --coverage",
     "lint": "eslint",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix",

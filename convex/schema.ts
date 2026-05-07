@@ -55,5 +55,6 @@ export default defineSchema({
     commandString: v.string(),
     result: v.string(),
     playerId: v.string(),
+    visibility: v.optional(v.union(v.literal('public'), v.literal('private'))),
   }).index('by_gameId', ['gameId']),
 })

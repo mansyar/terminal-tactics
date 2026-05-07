@@ -87,22 +87,31 @@ export const getGameState = query({
   },
 })
 
+export const logCommandHandler = async (ctx: any, args: any) => {
+  const logEntry: any = {
+    gameId: args.gameId,
+    playerId: args.playerId,
+    commandString: args.command,
+    result: args.result,
+    timestamp: Date.now(),
+  }
+
+  if (args.visibility !== undefined) {
+    logEntry.visibility = args.visibility
+  }
+
+  await ctx.db.insert('logs', logEntry)
+}
+
 export const logCommand = mutation({
   args: {
     gameId: v.id('games'),
     playerId: v.string(),
     command: v.string(),
     result: v.string(),
+    visibility: v.optional(v.union(v.literal('public'), v.literal('private'))),
   },
-  handler: async (ctx, args) => {
-    await ctx.db.insert('logs', {
-      gameId: args.gameId,
-      playerId: args.playerId,
-      commandString: args.command,
-      result: args.result,
-      timestamp: Date.now(),
-    })
-  },
+  handler: logCommandHandler,
 })
 
 export const getLogs = query({

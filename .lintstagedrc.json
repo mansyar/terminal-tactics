@@ -1,4 +1,6 @@
 {
   "*.{ts,tsx,js,jsx}": ["prettier --write", "eslint --fix"],
-  "*.test.{ts,tsx}": ["bun test --bail --"]
+  "*.test.{ts,tsx}": ["bun test --bail --"],
+  "src/**/*.{ts,tsx,js,jsx}": ["bun run scripts/check-file-size.ts"],
+  "convex/**/*.{ts,tsx,js,jsx}": ["bun run scripts/check-file-size.ts"]
 }

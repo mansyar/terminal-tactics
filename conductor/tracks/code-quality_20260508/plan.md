@@ -51,13 +51,13 @@
 
 ## Phase 2: Implement Pre-Commit Hook (Line-of-Code Check + Type Checking)
 
-- [ ] Task: Create custom line-of-code check script
-    - [ ] Write failing test for `scripts/check-file-size.ts` (should detect file > 500 lines, should pass for file <= 500 lines, should only check files under `src/` and `convex/`, should exclude `convex/_generated/`, should output correct error message with refactor instruction)
-    - [ ] Implement `scripts/check-file-size.ts` that reads staged files, counts lines, filters to only `src/` and `convex/` paths (excluding `convex/_generated/`), and exits with non-zero if any file exceeds 500 lines
-    - [ ] Verify tests pass
-- [ ] Task: Wire line-of-code check into pre-commit
-    - [ ] Add the custom script to lint-staged config for `src/**/*.{ts,tsx,js,jsx}` and `convex/**/*.{ts,tsx,js,jsx}` patterns
-    - [ ] Verify the full pre-commit chain: prettier -> eslint -> test -> tsc -> line-of-code check
+- [x] Task: Create custom line-of-code check script
+    - [x] Write failing test for `scripts/check-file-size.ts` (should detect file > 500 lines, should pass for file <= 500 lines, should only check files under `src/` and `convex/`, should exclude `convex/_generated/`, should output correct error message with refactor instruction)
+    - [x] Implement `scripts/check-file-size.ts` that reads staged files, counts lines, filters to only `src/` and `convex/` paths (excluding `convex/_generated/`), and exits with non-zero if any file exceeds 500 lines
+    - [x] Verify tests pass
+- [x] Task: Wire line-of-code check into pre-commit
+    - [x] Add the custom script to lint-staged config for `src/**/*.{ts,tsx,js,jsx}` and `convex/**/*.{ts,tsx,js,jsx}` patterns
+    - [x] Verify the full pre-commit chain: prettier -> eslint -> test -> tsc -> line-of-code check
 - [ ] Task: Conductor - User Manual Verification 'Implement Pre-Commit Hook' (Protocol in workflow.md)
 
 ## Phase 3: Implement Pre-Push Hook (Coverage Threshold)

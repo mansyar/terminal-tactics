@@ -42,10 +42,10 @@
 ### Task 7.1.4: Stealth Indicator for Friendly Scouts
 **Note:** Stealthed Scouts are filtered from `visibleUnits` for the enemy — the indicator is for the **owning player** only.
 **DEPENDS ON: 7.1.0**
-- [ ] Write failing tests for stealthed unit shimmer/glitch visual effect
-- [ ] Implement CSS `@keyframes` shimmer pulse animation (not opacity flicker — a glitchy horizontal offset)
-- [ ] Apply CSS class to `UnitModel` group when `isStealthed` is true (visible to owning player only)
-- [ ] Verify tests pass
+- [x] Write failing tests for stealthed unit shimmer/glitch visual effect [dbbb9b0]
+- [x] Implement CSS `@keyframes` shimmer pulse animation (not opacity flicker — a glitchy horizontal offset)
+- [x] Apply CSS class to `UnitModel` group when `isStealthed` is true (visible to owning player only)
+- [x] Verify tests pass
 - [ ] Task: Conductor - User Manual Verification 'Phase 7.1: Visual Unit Enhancements' (Protocol in workflow.md)
 
 ---

@@ -125,6 +125,28 @@ export const getLogs = query({
   },
 })
 
+export const getFilteredLogsHandler = async (ctx: any, args: any) => {
+  const allLogs = await ctx.db
+    .query('logs')
+    .withIndex('by_gameId', (q) => q.eq('gameId', args.gameId))
+    .order('asc')
+    .collect()
+
+  return allLogs.filter((log: any) => {
+    const isPublic = log.visibility === 'public' || !log.visibility
+    const isMyPrivate = log.visibility === 'private' && log.playerId === args.playerId
+    return isPublic || isMyPrivate
+  })
+}
+
+export const getFilteredLogs = query({
+  args: {
+    gameId: v.id('games'),
+    playerId: v.string(),
+  },
+  handler: getFilteredLogsHandler,
+})
+
 export const endTurn = mutation({
   args: { gameId: v.id('games'), playerId: v.string() },
   handler: async (ctx, args) => {

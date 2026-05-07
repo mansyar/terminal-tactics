@@ -1,12 +1,17 @@
-import { describe, expect, test } from 'bun:test'
+import { describe, expect, mock, test } from 'bun:test'
 import { render, screen } from '@testing-library/react'
-import { ConvexProvider, ConvexReactClient } from 'convex/react'
-import App from './App.tsx'
 
-// Mock the Convex React Client
-const mockConvex = new ConvexReactClient('https://mock.convex.cloud')
+// Mock convex/react to prevent WebSocket connection attempts
+mock.module('convex/react', () => ({
+  ConvexProvider: ({ children }: { children: any }) => children,
+  useQuery: () => undefined,
+  useMutation: () => () => {},
+  useAction: () => () => {},
+}))
 
-// Mock scrollIntoView for JSDOM
+// Must import App after mocking convex/react
+const { default: App } = await import('./App.tsx')
+
 // Mock scrollIntoView for JSDOM
 Element.prototype.scrollIntoView = () => {}
 
@@ -29,22 +34,16 @@ const localStorageMock = (function () {
 
 // @ts-ignore -- Polyfilling localStorage for JSDOM
 global.localStorage = localStorageMock
-// @ts-ignore -- Polyfilling window.localStorage if window exists
 if (typeof window !== 'undefined') {
   Object.defineProperty(window, 'localStorage', {
     value: localStorageMock,
-    writable: true, // Ensure it can be written
+    writable: true,
   })
 }
 
 describe('App', () => {
   test('renders', () => {
-    // We need to wrap App in ConvexProvider because it uses useQuery
-    render(
-      <ConvexProvider client={mockConvex}>
-        <App />
-      </ConvexProvider>,
-    )
+    render(<App />)
     expect(screen.getByText(/TERMINAL_TACTICS/i)).toBeDefined()
   })
 })

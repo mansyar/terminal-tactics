@@ -102,11 +102,11 @@
 ### Task 7.3.2: Last Move Highlight
 **Note:** `moveUnit` mutation must return origin coordinates. See Prerequisites in spec.
 **DEPENDS ON: 7.1.0, moveUnit return extension (spec prerequisite)**
-- [~] Write failing tests for last-move highlight rendering
-- [ ] Track `lastMoveOrigin` and `lastMoveDestination` in `App.tsx` state, set after successful `moveUnit` call
-- [ ] Pass last-move tiles to `GridBoard` and render highlight overlays (semi-transparent colored rectangles)
-- [ ] Clear highlight on next action (next move, attack, end-turn, or turn change detected in `gameState`)
-- [ ] Verify tests pass
+- [x] Write failing tests for last-move highlight rendering [59b8e92]
+- [x] Track `lastMoveOrigin` and `lastMoveDestination` in `App.tsx` state, set after successful `moveUnit` call
+- [x] Pass last-move tiles to `GridBoard` and render highlight overlays (semi-transparent colored rectangles)
+- [x] Clear highlight on next action (next move, attack, end-turn, or turn change detected in `gameState`)
+- [x] Verify tests pass
 
 ### Task 7.3.3: Attack Range Preview
 **DEPENDS ON: 7.1.0** (uses selectedUnit/hoveredUnit state)
@@ -133,3 +133,6 @@
 - [x] Show only on mouse hover (not keyboard focus), as keyboard users have the `inspect` command
 - [x] Verify tests pass
 - [ ] Task: Conductor - User Manual Verification 'Phase 7.3: Grid Readability Enhancements' (Protocol in workflow.md)
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions [0bfe85d]

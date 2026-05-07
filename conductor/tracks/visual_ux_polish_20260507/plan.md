@@ -34,10 +34,10 @@
 ### Task 7.1.3: Direction Indicator Enhancement — Line to Arrow
 **Note:** A direction indicator already exists in `UnitModel` (thick edge line). This task enhances it.
 **DEPENDS ON: 7.1.0**
-- [ ] Write failing tests for arrow direction rendering (N, E, S, W arrow glyphs)
-- [ ] Replace the existing `<motion.line>` indicator with an `<motion.polygon>` or `<motion.path>` arrow (triangle/chevron pointing in the facing direction)
-- [ ] Ensure arrow maintains the existing spring animation
-- [ ] Verify tests pass
+- [x] Write failing tests for arrow direction rendering (N, E, S, W arrow glyphs) [908e39d]
+- [x] Replace the existing `<motion.line>` indicator with an `<motion.polygon>` or `<motion.path>` arrow (triangle/chevron pointing in the facing direction)
+- [x] Ensure arrow maintains the existing spring animation
+- [x] Verify tests pass
 
 ### Task 7.1.4: Stealth Indicator for Friendly Scouts
 **Note:** Stealthed Scouts are filtered from `visibleUnits` for the enemy — the indicator is for the **owning player** only.

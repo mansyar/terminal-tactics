@@ -73,6 +73,22 @@ function App() {
   const checkDraftTimeout = useMutation(api.timers.checkDraftTimeout)
   const checkTurnTimeout = useMutation(api.timers.checkTurnTimeout)
 
+  // Interaction state for visual enhancements (Phase 7)
+  const [selectedUnit, setSelectedUnit] = useState<string | null>(null)
+  const [hoveredUnit, setHoveredUnit] = useState<string | null>(null)
+
+  const handleUnitClick = useCallback((unitId: string) => {
+    setSelectedUnit((prev) => (prev === unitId ? null : unitId))
+  }, [])
+
+  const handleUnitHover = useCallback((unitId: string) => {
+    setHoveredUnit(unitId)
+  }, [])
+
+  const handleUnitLeave = useCallback(() => {
+    setHoveredUnit(null)
+  }, [])
+
   // Timer polling
   useEffect(() => {
     if (!gameState) return
@@ -618,6 +634,8 @@ function App() {
     (gameState.currentPlayer === 'p1' && gameState.p1 === playerId) ||
     (gameState.currentPlayer === 'p2' && gameState.p2 === playerId)
 
+  const myPlayerKey = gameState.p1 === playerId ? 'p1' : 'p2'
+
   const otherPlayerTyping =
     playerId === gameState.p1 ? gameState.p2Typing : gameState.p1Typing
 
@@ -702,6 +720,9 @@ function App() {
           mapData={gameState.mapData}
           revealedTiles={revealedTiles || []}
           currentlyVisibleTiles={Array.from(currentlyVisibleTiles)}
+          onUnitClick={handleUnitClick}
+          onUnitHover={handleUnitHover}
+          onUnitLeave={handleUnitLeave}
         >
           {visibleUnits.map((u: any) => (
             <UnitModel
@@ -715,6 +736,10 @@ function App() {
               maxAp={u.maxAp}
               isStealthed={u.isStealthed}
               isOverwatching={u.isOverwatching}
+              onClick={() => handleUnitClick(u._id)}
+              onMouseEnter={() => handleUnitHover(u._id)}
+              onMouseLeave={handleUnitLeave}
+              currentPlayerId={myPlayerKey}
             />
           ))}
         </GridBoard>

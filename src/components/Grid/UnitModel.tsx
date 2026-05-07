@@ -10,6 +10,10 @@ interface UnitModelProps {
   maxAp: number
   isStealthed?: boolean
   isOverwatching?: boolean
+  onClick?: () => void
+  onMouseEnter?: () => void
+  onMouseLeave?: () => void
+  currentPlayerId?: string
 }
 
 export function UnitModel({
@@ -22,6 +26,10 @@ export function UnitModel({
   maxAp,
   isStealthed = false,
   isOverwatching = false,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+  currentPlayerId: _currentPlayerId,
 }: UnitModelProps) {
   // x, y are tile coordinates (0-11)
   // Grid tiles are 100x100
@@ -53,6 +61,10 @@ export function UnitModel({
         opacity: isStealthed ? 0.4 : 1,
       }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      style={{ cursor: onClick ? 'pointer' : undefined }}
     >
       {/* Overwatch Effect */}
       {isOverwatching && (

@@ -49,8 +49,8 @@ function App() {
   })
 
   const logs = useQuery(
-    api.game.getLogs,
-    gameState ? { gameId: gameState._id } : 'skip',
+    api.game.getFilteredLogs,
+    gameState ? { gameId: gameState._id, playerId } : 'skip',
   )
   const logCommand = useMutation(api.game.logCommand)
   const setTyping = useMutation(api.lobby.setTyping)
@@ -471,15 +471,18 @@ function App() {
     if (!logs) return result
 
     for (const l of logs) {
+      const isPrivate = l.visibility === 'private'
       result.push({
         timestamp: l.timestamp,
         content: l.commandString,
         type: 'input',
+        isPrivate,
       })
       result.push({
         timestamp: l.timestamp,
         content: l.result,
         type: l.result.startsWith('ERROR') ? 'error' : 'output',
+        isPrivate,
       })
     }
     return result

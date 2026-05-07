@@ -4,6 +4,7 @@ export interface LogEntry {
   timestamp: number
   content: string
   type: 'input' | 'output' | 'error'
+  isPrivate?: boolean
 }
 
 interface ConsoleHistoryProps {
@@ -31,6 +32,11 @@ export function ConsoleHistory({ logs }: ConsoleHistoryProps) {
             })}
             ]
           </span>
+          {log.isPrivate && (
+            <span className="text-xs text-matrix-primary/40 italic shrink-0">
+              [PRIVATE]
+            </span>
+          )}
           <span
             className={`${
               log.type === 'input'
@@ -39,6 +45,11 @@ export function ConsoleHistory({ logs }: ConsoleHistoryProps) {
                   ? 'text-red-500'
                   : 'text-matrix-primary'
             }`}
+            style={
+              log.isPrivate
+                ? { fontStyle: 'italic', opacity: 0.6 }
+                : undefined
+            }
           >
             {log.type === 'input' && '> '}
             {log.content}

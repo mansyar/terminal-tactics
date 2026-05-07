@@ -134,6 +134,7 @@ function App() {
       await setTyping({ gameId: gameState._id, playerId, isTyping: false })
 
       let result = `EXECUTING: ${cmd.type.toUpperCase()}`
+      let logVisibility: 'public' | 'private' = 'public'
 
       // Helper for coordinate parsing
       const parseCoord = (coord: string) => {
@@ -272,6 +273,7 @@ function App() {
               y: target.y,
             })
             result = `SCAN_COMPLETE: Area centered at ${target.label} revealed. ${res.hostilesCount} hostiles detected.`
+            logVisibility = 'private'
             playSuccess()
           } catch (err: any) {
             result = `ERROR: ${cleanErrorMessage(err.message)}`
@@ -322,6 +324,7 @@ function App() {
             result = `NOTICE: NO_UNIT_DETECTED_AT ${target.label}`
           } else {
             result = `UNIT_ID: [${unit.type}] | OWNER: ${unit.ownerId.toUpperCase()} | HP: ${unit.hp}/${unit.maxHp} | AP: ${unit.ap}/${unit.maxAp} | ATK: ${unit.atk} | RNG: ${unit.rng} | POS: ${target.label}`
+            logVisibility = 'private'
             if (unit.isOverwatching)
               result += ` | OVERWATCHING: ${unit.overwatchDirection}`
             if (unit.isStealthed) result += ` | STEALTHED`
@@ -449,6 +452,7 @@ function App() {
         playerId: playerId,
         command: raw,
         result,
+        visibility: logVisibility,
       })
     },
     [

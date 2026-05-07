@@ -77,6 +77,7 @@ function App() {
   // Used by Phase 7.3 tasks (Attack Range Preview, Hover Tooltips, Last Move Highlight)
   const [selectedUnit, setSelectedUnit] = useState<string | null>(null)
   const [hoveredUnit, setHoveredUnit] = useState<string | null>(null)
+  const [showCoordinates, setShowCoordinates] = useState(true)
   void selectedUnit
   void hoveredUnit
 
@@ -138,6 +139,22 @@ function App() {
 
       let result = `EXECUTING: ${cmd.type.toUpperCase()}`
       let logVisibility: 'public' | 'private' = 'public'
+
+      if (cmd.type === 'toggle labels') {
+        setShowCoordinates((prev) => !prev)
+        result = showCoordinates
+          ? 'COORDINATE_LABELS: OFF'
+          : 'COORDINATE_LABELS: ON'
+        playSuccess()
+        await logCommand({
+          gameId: gameState._id,
+          playerId: playerId,
+          command: raw,
+          result,
+          visibility: 'public',
+        })
+        return
+      }
 
       // Helper for coordinate parsing
       const parseCoord = (coord: string) => {
@@ -730,6 +747,7 @@ function App() {
           mapData={gameState.mapData}
           revealedTiles={revealedTiles || []}
           currentlyVisibleTiles={Array.from(currentlyVisibleTiles)}
+          showCoordinates={showCoordinates}
           onUnitClick={handleUnitClick}
           onUnitHover={handleUnitHover}
           onUnitLeave={handleUnitLeave}

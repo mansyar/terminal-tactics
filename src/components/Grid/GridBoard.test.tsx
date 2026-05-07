@@ -54,3 +54,49 @@ describe('GridBoard - Interaction Callbacks (Task 7.1.0)', () => {
     expect(container.querySelector('svg')).toBeTruthy()
   })
 })
+
+describe('GridBoard - Coordinate Labels Toggle (Task 7.3.1)', () => {
+  it('renders coordinate labels by default (showCoordinates=true)', () => {
+    const { container } = render(
+      <GridBoard>
+        <UnitModel type="K" x={0} y={0} ownerId="p1" hp={10} maxHp={10} ap={3} maxAp={3} />
+      </GridBoard>,
+    )
+    // Row labels: 12, 11, 10... and Column labels: A, B, C...
+    const rowLabel12 = Array.from(container.querySelectorAll('text')).find(
+      (t) => t.textContent === '12',
+    )
+    const colLabelA = Array.from(container.querySelectorAll('text')).find(
+      (t) => t.textContent === 'A',
+    )
+    expect(rowLabel12).toBeTruthy()
+    expect(colLabelA).toBeTruthy()
+  })
+
+  it('hides coordinate labels when showCoordinates is false', () => {
+    const { container } = render(
+      <GridBoard showCoordinates={false}>
+        <UnitModel type="K" x={0} y={0} ownerId="p1" hp={10} maxHp={10} ap={3} maxAp={3} />
+      </GridBoard>,
+    )
+    const rowLabel12 = Array.from(container.querySelectorAll('text')).find(
+      (t) => t.textContent === '12',
+    )
+    const colLabelA = Array.from(container.querySelectorAll('text')).find(
+      (t) => t.textContent === 'A',
+    )
+    expect(rowLabel12).toBeFalsy()
+    expect(colLabelA).toBeFalsy()
+  })
+
+  it('still renders tiles and units when coordinates are hidden', () => {
+    const { container } = render(
+      <GridBoard showCoordinates={false}>
+        <UnitModel type="K" x={0} y={0} ownerId="p1" hp={10} maxHp={10} ap={3} maxAp={3} />
+      </GridBoard>,
+    )
+    // Grid lines should still render
+    const svg = container.querySelector('svg')
+    expect(svg).toBeTruthy()
+  })
+})

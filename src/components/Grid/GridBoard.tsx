@@ -5,6 +5,7 @@ export function GridBoard({
   mapData,
   revealedTiles = [],
   currentlyVisibleTiles = [],
+  showCoordinates = true,
   onUnitClick: _onUnitClick,
   onUnitHover: _onUnitHover,
   onUnitLeave: _onUnitLeave,
@@ -13,6 +14,7 @@ export function GridBoard({
   mapData?: { tiles: Array<Array<string>>; width: number; height: number }
   revealedTiles?: Array<string>
   currentlyVisibleTiles?: Array<string>
+  showCoordinates?: boolean
   onUnitClick?: (unitId: string) => void
   onUnitHover?: (unitId: string) => void
   onUnitLeave?: () => void
@@ -114,7 +116,7 @@ export function GridBoard({
           )}
 
         {/* Labels - Rows */}
-        {Array.from({ length: size }).map((_, i) => (
+        {showCoordinates && Array.from({ length: size }).map((_, i) => (
           <text
             key={`row-${i}`}
             x="-25"
@@ -128,7 +130,7 @@ export function GridBoard({
         ))}
 
         {/* Labels - Columns */}
-        {cols.map((col, i) => (
+        {showCoordinates && cols.map((col, i) => (
           <text
             key={`col-${i}`}
             x={i * tileSize + 50}

@@ -15,6 +15,7 @@ export type CommandType =
   | 'offer draw'
   | 'accept draw'
   | 'say'
+  | 'toggle labels'
   | 'unknown'
 
 export interface ParsedCommand {
@@ -42,6 +43,9 @@ export function parseCommand(input: string): ParsedCommand {
   }
   if (first === 'accept' && parts[1]?.toLowerCase() === 'draw') {
     return { type: 'accept draw', args: [], raw: input }
+  }
+  if (first === 'toggle' && parts[1]?.toLowerCase() === 'labels') {
+    return { type: 'toggle labels', args: [], raw: input }
   }
 
   const type = first as CommandType

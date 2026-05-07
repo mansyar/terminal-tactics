@@ -228,7 +228,7 @@ describe('UnitModel - Enemy Color Coding (Task 7.1.2)', () => {
     expect(glowRect!.getAttribute('stroke')).toBe('#FF4444')
   })
 
-  it('renders direction indicator in correct enemy color', () => {
+  it('renders direction indicator arrow in correct enemy color', () => {
     const { container } = render(
       <svg>
         <UnitModel
@@ -245,10 +245,10 @@ describe('UnitModel - Enemy Color Coding (Task 7.1.2)', () => {
         />
       </svg>,
     )
-    const lines = container.querySelectorAll('line')
-    const dirLine = Array.from(lines).find((l) => l.getAttribute('stroke-width') === '3')
-    expect(dirLine).toBeTruthy()
-    expect(dirLine!.getAttribute('stroke')).toBe('#FF4444')
+    const polygons = container.querySelectorAll('polygon')
+    const dirArrow = polygons[0]
+    expect(dirArrow).toBeTruthy()
+    expect(dirArrow.getAttribute('fill')).toBe('#FF4444')
   })
 
   it('renders AP dots in correct enemy color', () => {
@@ -321,15 +321,68 @@ describe('UnitModel - Enemy Color Coding (Task 7.1.2)', () => {
   })
 })
 
-describe('UnitModel - Direction Indicator Type (Task 7.1.0)', () => {
-  it('renders with direction prop applied', () => {
+describe('UnitModel - Direction Indicator Arrow (Task 7.1.3)', () => {
+  it('renders an arrow polygon for North-facing unit', () => {
     const { container } = render(
       <svg>
         <UnitModel
           type="K"
-          x={5}
-          y={3}
+          x={0}
+          y={0}
           ownerId="p1"
+          currentPlayerId="p1"
+          direction="N"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+        />
+      </svg>,
+    )
+    // Should have a polygon instead of a line
+    const polygons = container.querySelectorAll('polygon')
+    expect(polygons.length).toBeGreaterThan(0)
+    // The arrow polygon should be near the top of the unit tile
+    const arrowPoly = polygons[0]
+    const points = arrowPoly.getAttribute('points') || ''
+    expect(points).toContain('5') // y-coordinate near top of tile (small y values = up)
+  })
+
+  it('renders an arrow polygon for South-facing unit', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="K"
+          x={0}
+          y={0}
+          ownerId="p1"
+          currentPlayerId="p1"
+          direction="S"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+        />
+      </svg>,
+    )
+    const polygons = container.querySelectorAll('polygon')
+    expect(polygons.length).toBeGreaterThan(0)
+    const arrowPoly = polygons[0]
+    const points = arrowPoly.getAttribute('points') || ''
+    // South arrow has y values near 90+ (bottom of tile)
+    const yValues = points.split(' ').map((p) => parseInt(p.split(',')[1]))
+    expect(yValues.some((y) => y > 80)).toBe(true)
+  })
+
+  it('renders an arrow polygon for East-facing unit', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="K"
+          x={0}
+          y={0}
+          ownerId="p1"
+          currentPlayerId="p1"
           direction="E"
           hp={10}
           maxHp={10}
@@ -338,7 +391,85 @@ describe('UnitModel - Direction Indicator Type (Task 7.1.0)', () => {
         />
       </svg>,
     )
-    const unitGroup = container.querySelector('g')
-    expect(unitGroup).toBeTruthy()
+    const polygons = container.querySelectorAll('polygon')
+    expect(polygons.length).toBeGreaterThan(0)
+    const arrowPoly = polygons[0]
+    const points = arrowPoly.getAttribute('points') || ''
+    // East arrow has x values near 90+ (right side of tile)
+    const xValues = points.split(' ').map((p) => parseInt(p.split(',')[0]))
+    expect(xValues.some((x) => x > 80)).toBe(true)
+  })
+
+  it('renders an arrow polygon for West-facing unit', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="K"
+          x={0}
+          y={0}
+          ownerId="p1"
+          currentPlayerId="p1"
+          direction="W"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+        />
+      </svg>,
+    )
+    const polygons = container.querySelectorAll('polygon')
+    expect(polygons.length).toBeGreaterThan(0)
+    const arrowPoly = polygons[0]
+    const points = arrowPoly.getAttribute('points') || ''
+    // West arrow has x values near 5-25 (left side of tile)
+    const xValues = points.split(' ').map((p) => parseInt(p.split(',')[0]))
+    expect(xValues.some((x) => x < 30)).toBe(true)
+  })
+
+  it('does not render a direction line (replaced by arrow)', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="K"
+          x={0}
+          y={0}
+          ownerId="p1"
+          currentPlayerId="p1"
+          direction="N"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+        />
+      </svg>,
+    )
+    // Should not have a strokeWidth=3 line (the old direction indicator)
+    const lines = container.querySelectorAll('line')
+    const thickLines = Array.from(lines).filter(
+      (l) => l.getAttribute('stroke-width') === '3',
+    )
+    expect(thickLines.length).toBe(0)
+  })
+
+  it('applies the correct arrow color based on ownership', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="S"
+          x={2}
+          y={3}
+          ownerId="p2"
+          currentPlayerId="p1"
+          direction="E"
+          hp={8}
+          maxHp={8}
+          ap={2}
+          maxAp={4}
+        />
+      </svg>,
+    )
+    const polygons = container.querySelectorAll('polygon')
+    const dirArrow = polygons[0]
+    expect(dirArrow.getAttribute('fill')).toBe('#FF4444')
   })
 })

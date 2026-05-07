@@ -46,22 +46,22 @@ export function UnitModel({
         ? '#00FF00'
         : '#00CC00'
 
-  const getLineProps = (dir: string) => {
+  const getArrowPoints = (dir: string) => {
     switch (dir) {
       case 'N':
-        return { x1: 20, y1: 12, x2: 80, y2: 12 } // Top line
+        return '50,5 30,25 70,25' // Triangle pointing up
       case 'S':
-        return { x1: 20, y1: 88, x2: 80, y2: 88 } // Bottom line
+        return '50,95 30,75 70,75' // Triangle pointing down
       case 'E':
-        return { x1: 88, y1: 20, x2: 88, y2: 80 } // Right line
+        return '95,50 75,30 75,70' // Triangle pointing right
       case 'W':
-        return { x1: 12, y1: 20, x2: 12, y2: 80 } // Left line
+        return '5,50 25,30 25,70' // Triangle pointing left
       default:
-        return { x1: 20, y1: 12, x2: 80, y2: 12 }
+        return '50,5 30,25 70,25'
     }
   }
 
-  const lineProps = getLineProps(direction)
+  const arrowPoints = getArrowPoints(direction)
 
   return (
     <motion.g
@@ -116,18 +116,14 @@ export function UnitModel({
         [{type}]
       </text>
 
-      {/* Direction Indicator - Line on facing side */}
-      <motion.line
+      {/* Direction Indicator - Arrow on facing side */}
+      <motion.polygon
         key={direction}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.2 }}
-        x1={lineProps.x1}
-        y1={lineProps.y1}
-        x2={lineProps.x2}
-        y2={lineProps.y2}
-        stroke={color}
-        strokeWidth="3"
+        points={arrowPoints}
+        fill={color}
       />
 
       {/* AP Dots */}

@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, mock, test } from 'bun:test'
 import {
+  endTurn,
+  getFilteredLogsHandler,
   getGameState,
   logCommandHandler,
-  getFilteredLogsHandler,
-  endTurn,
 } from './game'
 
 // ---------------------------------------------------------------------------
@@ -12,9 +12,9 @@ import {
 // ---------------------------------------------------------------------------
 const collectorFns = {
   getResult: null as any,
-  collectResult: [] as any[],
-  orderCollectResult: [] as any[],
-  filterCollectResult: [] as any[],
+  collectResult: [] as Array<any>,
+  orderCollectResult: [] as Array<any>,
+  filterCollectResult: [] as Array<any>,
 }
 
 function freshMockDb() {

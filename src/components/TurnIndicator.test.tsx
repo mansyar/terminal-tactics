@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test'
-import { render, cleanup } from '@testing-library/react'
+import { cleanup, render } from '@testing-library/react'
 import { TurnIndicator } from './TurnIndicator'
 
 describe('TurnIndicator', () => {

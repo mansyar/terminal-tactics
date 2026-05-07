@@ -14,7 +14,7 @@ let OriginalAudio: typeof globalThis.Audio
 
 beforeAll(() => {
   OriginalAudio = globalThis.Audio
-  // @ts-ignore
+  // @ts-ignore - Mock Audio for jsdom test environment
   globalThis.Audio = class {
     volume = 0
     play() {

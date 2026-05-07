@@ -61,6 +61,21 @@ export function UnitModel({
     }
   }
 
+  const getOverwatchConePoints = (dir: string) => {
+    switch (dir) {
+      case 'N':
+        return '50,0 20,40 80,40' // Upward cone
+      case 'S':
+        return '50,100 20,60 80,60' // Downward cone
+      case 'E':
+        return '100,50 60,20 60,80' // Rightward cone
+      case 'W':
+        return '0,50 40,20 40,80' // Leftward cone
+      default:
+        return '50,0 20,40 80,40'
+    }
+  }
+
   const arrowPoints = getArrowPoints(direction)
 
   return (
@@ -78,20 +93,16 @@ export function UnitModel({
       style={{ cursor: onClick ? 'pointer' : undefined }}
       className={isStealthed ? 'stealth-shimmer' : ''}
     >
-      {/* Overwatch Effect */}
+      {/* Overwatch Direction Cone */}
       {isOverwatching && (
-        <motion.rect
-          x="10"
-          y="10"
-          width="80"
-          height="80"
-          fill="none"
-          stroke={color}
-          strokeWidth="2"
+        <motion.polygon
+          points={getOverwatchConePoints(direction)}
+          fill={color}
           initial={{ opacity: 0.1 }}
           animate={{ opacity: [0.1, 0.4, 0.1] }}
           transition={{ duration: 2, repeat: Infinity }}
           className="glow"
+          data-testid="overwatch-cone"
         />
       )}
 

@@ -139,3 +139,58 @@ describe('GridBoard - Last Move Highlight (Task 7.3.2)', () => {
     expect(destRects.length).toBe(0)
   })
 })
+
+describe('GridBoard - Attack Range Preview (Task 7.3.3)', () => {
+  it('renders range overlay circles on specified tiles', () => {
+    const { container } = render(
+      <GridBoard attackRangeTiles={['3,3', '3,4', '4,3', '5,3']}>
+        <UnitModel type="K" x={4} y={3} ownerId="p1" hp={10} maxHp={10} ap={3} maxAp={3} />
+      </GridBoard>,
+    )
+    const circles = container.querySelectorAll('[data-testid="range-tile"]')
+    expect(circles.length).toBe(4)
+  })
+
+  it('does not render range overlay when no tiles provided', () => {
+    const { container } = render(
+      <GridBoard>
+        <UnitModel type="K" x={4} y={3} ownerId="p1" hp={10} maxHp={10} ap={3} maxAp={3} />
+      </GridBoard>,
+    )
+    const circles = container.querySelectorAll('[data-testid="range-tile"]')
+    expect(circles.length).toBe(0)
+  })
+})
+
+describe('GridBoard - Hover Tooltip (Task 7.3.5)', () => {
+  it('renders tooltip data when provided', () => {
+    const tooltip = {
+      type: 'K',
+      hp: 8,
+      maxHp: 10,
+      ap: 2,
+      maxAp: 3,
+      atk: 30,
+      rng: 1,
+    }
+    const { container } = render(
+      <GridBoard tooltipData={tooltip} tooltipPosition={{ x: 400, y: 300 }}>
+        <UnitModel type="K" x={4} y={3} ownerId="p1" hp={10} maxHp={10} ap={3} maxAp={3} />
+      </GridBoard>,
+    )
+    const tooltipEl = container.querySelector('[data-testid="hover-tooltip"]')
+    expect(tooltipEl).toBeTruthy()
+    expect(tooltipEl!.textContent).toContain('[K]')
+    expect(tooltipEl!.textContent).toContain('8/10')
+  })
+
+  it('does not render tooltip when no data provided', () => {
+    const { container } = render(
+      <GridBoard>
+        <UnitModel type="K" x={0} y={0} ownerId="p1" hp={10} maxHp={10} ap={3} maxAp={3} />
+      </GridBoard>,
+    )
+    const tooltipEl = container.querySelector('[data-testid="hover-tooltip"]')
+    expect(tooltipEl).toBeNull()
+  })
+})

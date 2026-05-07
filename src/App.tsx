@@ -592,6 +592,51 @@ function App() {
     })
   }, [gameState, currentlyVisibleTiles, playerId])
 
+  // Attack range preview from selected/hovered unit
+  const attackRangeTiles = useMemo(() => {
+    if (!gameState || !selectedUnit && !hoveredUnit) return []
+    const targetId = selectedUnit || hoveredUnit
+    const unit = gameState.units.find((u: any) => u._id === targetId)
+    if (!unit) return []
+    const rng = unit.rng || 1
+    const tiles: string[] = []
+    for (let dy = -rng; dy <= rng; dy++) {
+      for (let dx = -rng; dx <= rng; dx++) {
+        if (Math.abs(dx) + Math.abs(dy) <= rng) {
+          const tx = unit.x + dx
+          const ty = unit.y + dy
+          if (tx >= 0 && tx < 12 && ty >= 0 && ty < 12) {
+            tiles.push(`${tx},${ty}`)
+          }
+        }
+      }
+    }
+    return tiles
+  }, [gameState, selectedUnit, hoveredUnit])
+
+  // Hover tooltip data
+  const hoverTooltipData = useMemo(() => {
+    if (!gameState || !hoveredUnit) return null
+    const unit = gameState.units.find((u: any) => u._id === hoveredUnit)
+    if (!unit) return null
+    return {
+      type: unit.type,
+      hp: unit.hp,
+      maxHp: unit.maxHp,
+      ap: unit.ap,
+      maxAp: unit.maxAp,
+      atk: unit.atk ?? 0,
+      rng: unit.rng ?? 1,
+    }
+  }, [gameState, hoveredUnit])
+
+  const hoverTooltipPosition = useMemo(() => {
+    if (!gameState || !hoveredUnit) return null
+    const unit = gameState.units.find((u: any) => u._id === hoveredUnit)
+    if (!unit) return null
+    return { x: unit.x * 100, y: unit.y * 100 }
+  }, [gameState, hoveredUnit])
+
   if (
     !gameState ||
     gameState.status === 'lobby' ||
@@ -758,6 +803,9 @@ function App() {
           showCoordinates={showCoordinates}
           lastMoveOrigin={lastMoveOrigin ?? undefined}
           lastMoveDestination={lastMoveDestination ?? undefined}
+          attackRangeTiles={attackRangeTiles}
+          tooltipData={hoverTooltipData ?? undefined}
+          tooltipPosition={hoverTooltipPosition ?? undefined}
           onUnitClick={handleUnitClick}
           onUnitHover={handleUnitHover}
           onUnitLeave={handleUnitLeave}

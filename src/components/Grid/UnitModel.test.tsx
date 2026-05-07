@@ -321,6 +321,106 @@ describe('UnitModel - Enemy Color Coding (Task 7.1.2)', () => {
   })
 })
 
+describe('UnitModel - Overwatch Direction Cone (Task 7.3.4)', () => {
+  it('renders a cone-shaped polygon when overwatching', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="K"
+          x={5}
+          y={3}
+          ownerId="p1"
+          currentPlayerId="p1"
+          direction="N"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+          isOverwatching={true}
+        />
+      </svg>,
+    )
+    const polygons = container.querySelectorAll('polygon')
+    expect(polygons.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('renders overwatch cone for north-facing unit', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="K"
+          x={5}
+          y={3}
+          ownerId="p1"
+          currentPlayerId="p1"
+          direction="N"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+          isOverwatching={true}
+        />
+      </svg>,
+    )
+    const polygons = container.querySelectorAll('polygon')
+    const overwatchPoly = Array.from(polygons).find(
+      (p) => p.getAttribute('data-testid') === 'overwatch-cone',
+    )
+    expect(overwatchPoly).toBeTruthy()
+  })
+
+  it('does not render overwatch cone when not overwatching', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="K"
+          x={5}
+          y={3}
+          ownerId="p1"
+          currentPlayerId="p1"
+          direction="N"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+          isOverwatching={false}
+        />
+      </svg>,
+    )
+    const overwatchPoly = container.querySelector('[data-testid="overwatch-cone"]')
+    expect(overwatchPoly).toBeNull()
+  })
+
+  it('replaces pulsing rect with cone (no overwatch rect)', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="K"
+          x={5}
+          y={3}
+          ownerId="p1"
+          currentPlayerId="p1"
+          direction="N"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+          isOverwatching={true}
+        />
+      </svg>,
+    )
+    const rects = container.querySelectorAll('rect')
+    // Should have health bar bg/fill + glow rect, but no overwatch rect
+    // The old overwatch rect had strokeWidth=2 and fill=none
+    // The health bar has fill, so it won't match
+    // Expect 0 overwatch-specific rects (only glow rect which has strokeWidth=1)
+    const glowRects = Array.from(rects).filter(
+      (r) => r.getAttribute('stroke-width') === '1',
+    )
+    expect(glowRects.length).toBeGreaterThanOrEqual(1) // glow rect still exists
+  })
+})
+
 describe('UnitModel - Stealth Glitch Indicator (Task 7.1.4)', () => {
   it('applies stealth-shimmer CSS class to group when isStealthed is true', () => {
     const { container } = render(

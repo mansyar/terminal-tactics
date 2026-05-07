@@ -8,6 +8,9 @@ export function GridBoard({
   showCoordinates = true,
   lastMoveOrigin,
   lastMoveDestination,
+  attackRangeTiles,
+  tooltipData,
+  tooltipPosition,
   onUnitClick: _onUnitClick,
   onUnitHover: _onUnitHover,
   onUnitLeave: _onUnitLeave,
@@ -19,6 +22,9 @@ export function GridBoard({
   showCoordinates?: boolean
   lastMoveOrigin?: { x: number; y: number }
   lastMoveDestination?: { x: number; y: number }
+  attackRangeTiles?: Array<string>
+  tooltipData?: { type: string; hp: number; maxHp: number; ap: number; maxAp: number; atk: number; rng: number }
+  tooltipPosition?: { x: number; y: number }
   onUnitClick?: (unitId: string) => void
   onUnitHover?: (unitId: string) => void
   onUnitLeave?: () => void
@@ -185,6 +191,22 @@ export function GridBoard({
           className="opacity-30"
         />
 
+        {/* Attack Range Preview */}
+        {attackRangeTiles?.map((coord) => {
+          const [rx, ry] = coord.split(',').map(Number)
+          return (
+            <circle
+              key={`range-${coord}`}
+              cx={rx * tileSize + tileSize / 2}
+              cy={ry * tileSize + tileSize / 2}
+              r={tileSize / 2 - 4}
+              fill="#FF4444"
+              className="opacity-15"
+              data-testid="range-tile"
+            />
+          )
+        })}
+
         {/* Last Move Highlights */}
         {lastMoveOrigin && (
           <rect
@@ -211,6 +233,39 @@ export function GridBoard({
 
         {/* Content (Units/Terrain) */}
         <g>{children}</g>
+
+        {/* Hover Tooltip */}
+        {tooltipData && tooltipPosition && (
+          <g data-testid="hover-tooltip">
+            <rect
+              x={tooltipPosition.x + 60}
+              y={tooltipPosition.y - 30}
+              width="130"
+              height="60"
+              fill="#0a0a0a"
+              stroke="#00FF00"
+              strokeWidth="1"
+              rx="2"
+              className="opacity-90"
+            />
+            <text
+              x={tooltipPosition.x + 70}
+              y={tooltipPosition.y - 10}
+              fill="#00FF00"
+              className="text-xs font-mono"
+            >
+              [{tooltipData.type}] HP: {tooltipData.hp}/{tooltipData.maxHp}
+            </text>
+            <text
+              x={tooltipPosition.x + 70}
+              y={tooltipPosition.y + 10}
+              fill="#00FF00"
+              className="text-xs font-mono"
+            >
+              AP: {tooltipData.ap}/{tooltipData.maxAp} ATK: {tooltipData.atk} RNG: {tooltipData.rng}
+            </text>
+          </g>
+        )}
       </svg>
     </div>
   )

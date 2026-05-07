@@ -594,7 +594,7 @@ function App() {
 
   // Attack range preview from selected/hovered unit
   const attackRangeTiles = useMemo(() => {
-    if (!gameState || !selectedUnit && !hoveredUnit) return []
+    if (!gameState || (!selectedUnit && !hoveredUnit)) return []
     const targetId = selectedUnit || hoveredUnit
     const unit = gameState.units.find((u: any) => u._id === targetId)
     if (!unit) return []
@@ -614,28 +614,27 @@ function App() {
     return tiles
   }, [gameState, selectedUnit, hoveredUnit])
 
-  // Hover tooltip data
-  const hoverTooltipData = useMemo(() => {
+  // Hover tooltip — single pass lookup for data + position
+  const hoverTooltipInfo = useMemo(() => {
     if (!gameState || !hoveredUnit) return null
     const unit = gameState.units.find((u: any) => u._id === hoveredUnit)
     if (!unit) return null
     return {
-      type: unit.type,
-      hp: unit.hp,
-      maxHp: unit.maxHp,
-      ap: unit.ap,
-      maxAp: unit.maxAp,
-      atk: unit.atk ?? 0,
-      rng: unit.rng ?? 1,
+      data: {
+        type: unit.type,
+        hp: unit.hp,
+        maxHp: unit.maxHp,
+        ap: unit.ap,
+        maxAp: unit.maxAp,
+        atk: unit.atk ?? 0,
+        rng: unit.rng ?? 1,
+      },
+      position: { x: unit.x * 100, y: unit.y * 100 },
     }
   }, [gameState, hoveredUnit])
 
-  const hoverTooltipPosition = useMemo(() => {
-    if (!gameState || !hoveredUnit) return null
-    const unit = gameState.units.find((u: any) => u._id === hoveredUnit)
-    if (!unit) return null
-    return { x: unit.x * 100, y: unit.y * 100 }
-  }, [gameState, hoveredUnit])
+  const hoverTooltipData = hoverTooltipInfo?.data
+  const hoverTooltipPosition = hoverTooltipInfo?.position
 
   if (
     !gameState ||

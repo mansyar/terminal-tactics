@@ -29,6 +29,8 @@ export function GridBoard({
   onUnitHover?: (unitId: string) => void
   onUnitLeave?: () => void
 }) {
+  // Unused internally — callbacks are wired directly in App.tsx via unit children.
+  // Reserved for future use when GridBoard assumes click-delegation responsibility.
   void _onUnitClick
   void _onUnitHover
   void _onUnitLeave

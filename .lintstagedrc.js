@@ -1,4 +1,0 @@
-export default {
-  '*.{ts,tsx,js,jsx}': ['prettier --write', 'eslint --fix'],
-  '*.test.{ts,tsx}': ['bun test --bail --'],
-}

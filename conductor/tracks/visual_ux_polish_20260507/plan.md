@@ -54,11 +54,11 @@
 
 ### Task 7.2.1: Schema Update for Log Visibility
 **DEPENDS ON: (none — can run in parallel with Phase 7.1)**
-- [ ] Write failing tests for visibility field in logs schema
-- [ ] Add `visibility: v.optional(v.union(v.literal("public"), v.literal("private")))` to logs schema in `convex/schema.ts` (optional for backward compatibility)
-- [ ] Update `logCommand` mutation args in `convex/game.ts` to accept optional `visibility` parameter
-- [ ] Update `convex/chat.ts` `sendMessage` to always insert with `visibility: "public"`
-- [ ] Verify tests pass
+- [x] Write failing tests for visibility field in logs schema [38e1d14]
+- [x] Add `visibility: v.optional(v.union(v.literal("public"), v.literal("private")))` to logs schema in `convex/schema.ts` (optional for backward compatibility)
+- [x] Update `logCommand` mutation args in `convex/game.ts` to accept optional `visibility` parameter
+- [x] Update `convex/chat.ts` `sendMessage` to always insert with `visibility: "public"`
+- [x] Verify tests pass
 
 ### Task 7.2.2: Private Log Creation (Client-Side)
 **Note:** Logging happens client-side in `App.tsx`, not inside Convex mutations. The `scanArea` mutation does not call `logCommand`.

@@ -2,7 +2,7 @@
 
 **Project Status:** 🔄 In Progress  
 **GDD Version:** v1.6.0  
-**Last Updated:** 2026-01-15
+**Last Updated:** 2026-05-08
 
 ---
 
@@ -227,43 +227,48 @@
 
 ---
 
-## � Phase 7: Visual & UX Polish ⏳
+## 🚩 Phase 7: Visual & UX Polish ✅
 
-**Goal:** Address the identified visual limitations and improve battlefield readability.
+**Goal:** Address the identified visual limitations and improve battlefield readability. All core visual unit enhancements, log visibility system, and grid readability features are now implemented.
 
 ### 7.1 Visual Unit Enhancements
 
-- [ ] **Health Bars:** Add visual HP bar beneath each unit icon on the grid.
+- [x] **Health Bars:** Add visual HP bar beneath each unit icon on the grid. [1ca1ca7]
   - Show current HP / max HP ratio
   - Color gradient: Green (>50%) → Yellow (25-50%) → Red (<25%)
-- [ ] **Enemy Color Coding:** Render hostile units in distinct colors.
+- [x] **Enemy Color Coding:** Render hostile units in distinct colors. [43e3289]
   - Friendly: Matrix Green (`#00FF00`)
-  - Enemy: Hostile Red (`#FF4444`) or Amber (`#FF9900`)
-  - Neutral/Unknown: Dim Gray
-- [ ] **Direction Indicator:** Visual arrow or facing indicator on unit tiles.
-- [ ] **Stealth Indicator:** Visual shimmer effect for stealthed Scouts.
+  - Enemy: Hostile Red (`#FF4444`)
+  - Direction arrow, AP dots, glow border, and text all reflect the correct color
+- [x] **Direction Indicator:** Arrow glyph (triangle) replacing thick edge line. [908e39d]
+  - Triangle pointing in facing direction (N/E/S/W)
+  - Maintains fade-in spring animation
+- [x] **Stealth Indicator:** Glitch shimmer animation for stealthed Scouts. [dbbb9b0]
+  - CSS `@keyframes stealth-shimmer` with horizontal offset jitter
+  - Cyan dashed border overlay + cyan drop-shadow glow
+  - Replaced old opacity flicker and pulsing dot
 
 ### 7.2 Log Visibility System
 
-- [ ] **Schema Update:** Add `visibility` field to `logs` table (`"public"` | `"private"`).
-- [ ] **Private Logs:** `scan` and `inspect` results visible only to issuing player.
-- [ ] **Filter Logic:** Query logs with player-specific visibility filter.
-- [ ] **UI Update:** Render private logs with distinct styling (e.g., dimmed or italicized).
+- [x] **Schema Update:** Add `visibility` field to `logs` table (`"public"` | `"private"`). [38e1d14]
+- [x] **Private Logs:** `scan` and `inspect` results visible only to issuing player. [ae9a92f]
+- [x] **Filter Logic:** New `getFilteredLogs` Convex query with player-specific filter. [f929eae]
+- [x] **UI Update:** Render private logs with italic/dimmed styling + `[PRIVATE]` label. [e80e64f]
 
 ### 7.3 Grid Readability Enhancements
 
-- [ ] **Tile Coordinates:** Optional toggle to show coordinate labels on grid edges.
-- [ ] **Last Move Highlight:** Highlight the tile a unit just moved from/to.
-- [ ] **Attack Range Preview:** Visual overlay when hovering over a unit.
-- [ ] **Overwatch Indicator:** Show direction cone for units on overwatch.
-- [ ] **Hover Tooltips:** Quick unit stats on mouse hover (non-CLI users).
+- [x] **Tile Coordinates:** Optional `showCoordinates` toggle via `toggle labels` command. [a22687f]
+- [x] **Last Move Highlight:** Green overlay at origin/destination tiles. [59b8e92]
+- [x] **Attack Range Preview:** Translucent red circles on tiles within unit.rng. [20bd88b]
+- [x] **Overwatch Indicator:** Direction-aware SVG cone replacing pulsing border. [20bd88b]
+- [x] **Hover Tooltips:** Compact unit stats (type, HP, AP, ATK, RNG) on mouse hover. [20bd88b]
 
 ### Definition of Done
 
-- [ ] All unit health visible at a glance.
-- [ ] Enemy/friendly units visually distinct.
-- [ ] Private logs filtered correctly per player.
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
+- [x] All unit health visible at a glance via health bars.
+- [x] Enemy/friendly units visually distinct via color coding.
+- [x] Private logs filtered correctly per player via getFilteredLogs query.
+- [x] Execute: `bun run type-check; bun run lint; bun run build; bun test` (97 tests, 0 failures).
 
 ---
 
@@ -542,7 +547,7 @@
 | Phase 4: Movement             | ✅ Complete | 100%       |
 | Phase 5: Combat & FoW         | ✅ Complete | 100%       |
 | Phase 6: Polish               | ✅ Complete | 100%       |
-| Phase 7: Visual & UX Polish   | ⏳ Planned  | 0%         |
+| Phase 7: Visual & UX Polish   | ✅ Complete | 100%       |
 | Phase 8: Session Stability    | ⏳ Planned  | 0%         |
 | Phase 9: Accessibility & Perf | ⏳ Planned  | 0%         |
 | Phase 10: Competitive         | ⏳ Planned  | 0%         |
@@ -556,7 +561,7 @@
 
 | Priority  | Phase    | Rationale                                                     |
 | --------- | -------- | ------------------------------------------------------------- |
-| 🔴 High   | Phase 7  | Addresses known visual limitations affecting gameplay clarity |
+| ✅ Done   | Phase 7  | Visual & UX Polish completed — health bars, colors, logs, readability |
 | 🔴 High   | Phase 8  | Disconnect handling critical for multiplayer stability        |
 | 🟡 Medium | Phase 9  | Accessibility and performance for broader audience            |
 | 🟡 Medium | Phase 13 | **Early launch on itch.io for player feedback**               |

@@ -71,11 +71,11 @@
 
 ### Task 7.2.3: Log Filter Query (Server-Side)
 **DEPENDS ON: 7.2.1**
-- [ ] Write failing tests for player-specific log filtering
-- [ ] Create new Convex query `getFilteredLogs` that accepts `gameId` and `playerId` args
-- [ ] Filter logic: return logs where `visibility === "public"` OR (`visibility === "private"` AND `playerId === requestedPlayerId`)
-- [ ] Return logs ordered ascending by timestamp for chronological display
-- [ ] Verify tests pass
+- [x] Write failing tests for player-specific log filtering [f929eae]
+- [x] Create new Convex query `getFilteredLogs` that accepts `gameId` and `playerId` args
+- [x] Filter logic: return logs where `visibility === "public"` OR (`visibility === "private"` AND `playerId === requestedPlayerId`)
+- [x] Return logs ordered ascending by timestamp for chronological display
+- [x] Verify tests pass
 
 ### Task 7.2.4: UI Rendering for Private Logs
 **DEPENDS ON: 7.2.2, 7.2.3**

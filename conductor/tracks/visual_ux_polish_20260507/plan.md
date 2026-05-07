@@ -88,7 +88,7 @@
 
 ---
 
-## Phase 7.3: Grid Readability Enhancements
+## Phase 7.3: Grid Readability Enhancements [checkpoint: ac3373d]
 
 ### Task 7.3.1: Coordinate Labels Toggle
 **Note:** Row labels (12-1) and column labels (A-L) already render on grid edges in `GridBoard.tsx`. This task adds a toggle.

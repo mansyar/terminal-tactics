@@ -69,3 +69,6 @@
     - [x] Confirm `coverageThreshold = 0.8` is active in bunfig.toml
     - [x] Verify pre-push blocks when coverage is below 80%
 - [ ] Task: Conductor - User Manual Verification 'Implement Pre-Push Hook' (Protocol in workflow.md)
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions [9cdafc2]

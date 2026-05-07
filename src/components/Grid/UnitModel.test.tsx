@@ -178,6 +178,149 @@ describe('UnitModel - Health Bar (Task 7.1.1)', () => {
   })
 })
 
+describe('UnitModel - Enemy Color Coding (Task 7.1.2)', () => {
+  it('renders friendly unit in Matrix Green when ownerId matches currentPlayerId', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="K"
+          x={0}
+          y={0}
+          ownerId="p1"
+          currentPlayerId="p1"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+        />
+      </svg>,
+    )
+    // Glow border rect
+    const rects = container.querySelectorAll('rect')
+    const glowRect = Array.from(rects).find(
+      (r) => r.getAttribute('stroke') && r.getAttribute('stroke') !== 'none',
+    )
+    expect(glowRect).toBeTruthy()
+    expect(glowRect!.getAttribute('stroke')).toBe('#00FF00')
+  })
+
+  it('renders enemy unit in Hostile Red when ownerId differs from currentPlayerId', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="S"
+          x={3}
+          y={4}
+          ownerId="p2"
+          currentPlayerId="p1"
+          hp={8}
+          maxHp={8}
+          ap={2}
+          maxAp={4}
+        />
+      </svg>,
+    )
+    const rects = container.querySelectorAll('rect')
+    const glowRect = Array.from(rects).find(
+      (r) => r.getAttribute('stroke') && r.getAttribute('stroke') !== 'none',
+    )
+    expect(glowRect).toBeTruthy()
+    expect(glowRect!.getAttribute('stroke')).toBe('#FF4444')
+  })
+
+  it('renders direction indicator in correct enemy color', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="A"
+          x={5}
+          y={5}
+          ownerId="p2"
+          currentPlayerId="p1"
+          direction="N"
+          hp={6}
+          maxHp={10}
+          ap={1}
+          maxAp={3}
+        />
+      </svg>,
+    )
+    const lines = container.querySelectorAll('line')
+    const dirLine = Array.from(lines).find((l) => l.getAttribute('stroke-width') === '3')
+    expect(dirLine).toBeTruthy()
+    expect(dirLine!.getAttribute('stroke')).toBe('#FF4444')
+  })
+
+  it('renders AP dots in correct enemy color', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="M"
+          x={7}
+          y={8}
+          ownerId="p2"
+          currentPlayerId="p1"
+          hp={4}
+          maxHp={12}
+          ap={2}
+          maxAp={3}
+        />
+      </svg>,
+    )
+    const circles = container.querySelectorAll('circle')
+    // At least some filled AP dots should be red
+    const filledDots = Array.from(circles).filter(
+      (c) => c.getAttribute('fill') && c.getAttribute('fill') !== 'none',
+    )
+    expect(filledDots.length).toBeGreaterThan(0)
+    filledDots.forEach((dot) => {
+      expect(dot.getAttribute('fill')).toBe('#FF4444')
+    })
+  })
+
+  it('renders type label text in correct enemy color', () => {
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="K"
+          x={1}
+          y={1}
+          ownerId="p2"
+          currentPlayerId="p1"
+          hp={5}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+        />
+      </svg>,
+    )
+    const text = container.querySelector('text')
+    expect(text).toBeTruthy()
+    expect(text!.getAttribute('fill')).toBe('#FF4444')
+  })
+
+  it('renders health bar fill using default green (no color change needed for HP)', () => {
+    // HP bar color should still be based on HP ratio, not ownership
+    const { container } = render(
+      <svg>
+        <UnitModel
+          type="M"
+          x={2}
+          y={3}
+          ownerId="p2"
+          currentPlayerId="p1"
+          hp={9}
+          maxHp={10}
+          ap={1}
+          maxAp={3}
+        />
+      </svg>,
+    )
+    const fill = container.querySelector('[data-testid="health-bar-fill"]')
+    expect(fill?.getAttribute('fill')).toBe('#00FF00')
+  })
+})
+
 describe('UnitModel - Direction Indicator Type (Task 7.1.0)', () => {
   it('renders with direction prop applied', () => {
     const { container } = render(

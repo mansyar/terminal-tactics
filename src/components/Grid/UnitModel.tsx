@@ -33,11 +33,18 @@ export function UnitModel({
   onClick,
   onMouseEnter,
   onMouseLeave,
-  currentPlayerId: _currentPlayerId,
+  currentPlayerId,
 }: UnitModelProps) {
   // x, y are tile coordinates (0-11)
   // Grid tiles are 100x100
-  const color = ownerId === 'p1' ? '#00FF00' : '#00CC00'
+  const color =
+    currentPlayerId !== undefined
+      ? ownerId === currentPlayerId
+        ? '#00FF00'
+        : '#FF4444'
+      : ownerId === 'p1'
+        ? '#00FF00'
+        : '#00CC00'
 
   const getLineProps = (dir: string) => {
     switch (dir) {

@@ -49,6 +49,8 @@
 | Linting | **ESLint** (TanStack config) | Code quality and consistency |
 | Formatting | **Prettier** | Code formatting |
 | Type Checking | **TypeScript (tsc)** | Static type analysis |
+| Git Hooks | **Husky** | Pre-commit and pre-push hook management |
+| Staged Linting | **Lint-Staged** | Run linters only on staged files |
 
 ## Key Development Scripts
 
@@ -57,7 +59,11 @@
 | `bun run dev` | Start Vite dev server on port 3000 |
 | `bun run build` | Production build + TypeScript check |
 | `bun test` | Run all tests with Bun Test |
+| `bun test --coverage` | Run tests with coverage report (threshold: 80%) |
 | `bun run lint` | Run ESLint |
 | `bun run format` | Run Prettier |
-| `bun run type-check` | TypeScript type checking |
+| `bun run typecheck` | TypeScript type checking |
 | `bun run check` | Format + lint fix |
+| `bun run prepare` | Initialize husky git hooks (auto-runs on bun install) |
+| `bun run pre-commit` | Run lint-staged on staged files |
+| `bun run pre-push` | Run type check + coverage before push |

@@ -1,6 +1,6 @@
 # Implementation Plan: Automatic Code Quality Checks
 
-## Phase 0: Remediate Existing Violations
+## Phase 0: Remediate Existing Violations [checkpoint: 2d6283d]
 
 - [x] Task: Refactor `src/App.tsx` to under 500 lines [adce6db]
     - [x] Extract `cleanErrorMessage()` helper to `src/lib/utils.ts`
@@ -28,7 +28,7 @@
     - [x] Run line count check on all `.ts/.tsx/.js/.jsx` files in `src/` and `convex/` (excluding `convex/_generated/`) and confirm none exceed 500 lines
     - [x] Run `bun run typecheck` and confirm it passes
     - [x] Run `bun run lint` and confirm it passes (only pre-existing lint errors remain in files not touched by this track)
-- [ ] Task: Conductor - User Manual Verification 'Remediate Existing Violations' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Remediate Existing Violations' (Protocol in workflow.md) [2d6283d]
 
 ## Phase 1: Setup Dependencies & Configuration
 

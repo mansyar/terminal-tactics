@@ -4,7 +4,8 @@ import { sendMessageHandler } from './chat'
 import { getFilteredLogsHandler } from './game'
 
 // Mock the Convex mutation context
-const mockDb = {
+// @ts-ignore -- Bun mock types don't match Convex context types
+const mockDb: any = {
   insert: mock(() => 'mock-log-id'),
   get: mock(() => null),
   query: mock(() => ({
@@ -37,7 +38,9 @@ describe('Log Visibility Schema (Task 7.2.1)', () => {
     })
 
     expect(mockDb.insert).toHaveBeenCalled()
-    const [[table, data]] = mockDb.insert.mock.calls
+    // @ts-ignore -- Mock calls type is dynamic
+    const [callArgs] = mockDb.insert.mock.calls as Array<[string, any]>
+    const [table, data] = callArgs
     expect(table).toBe('logs')
     expect(data).toHaveProperty('visibility')
     expect(data.visibility).toBe('private')
@@ -53,12 +56,15 @@ describe('Log Visibility Schema (Task 7.2.1)', () => {
     })
 
     expect(mockDb.insert).toHaveBeenCalled()
-    const [[table, data]] = mockDb.insert.mock.calls
-    expect(table).toBe('logs')
-    expect(data).not.toHaveProperty('visibility')
+    // @ts-ignore -- Mock calls type is dynamic
+    const [callArgs2] = mockDb.insert.mock.calls as Array<[string, any]>
+    const [table2, data2] = callArgs2
+    expect(table2).toBe('logs')
+    expect(data2).not.toHaveProperty('visibility')
   })
 
   test('sendMessage inserts logs with public visibility', async () => {
+    // @ts-ignore -- Mock reassignment type mismatch
     mockDb.get = mock(
       async () => ({ _id: 'mock-game-id', status: 'playing' }) as any,
     )
@@ -74,10 +80,12 @@ describe('Log Visibility Schema (Task 7.2.1)', () => {
     )
 
     expect(mockDb.insert).toHaveBeenCalled()
-    const [[table, data]] = mockDb.insert.mock.calls
-    expect(table).toBe('logs')
-    expect(data).toHaveProperty('visibility')
-    expect(data.visibility).toBe('public')
+    // @ts-ignore -- Mock calls type is dynamic
+    const [callArgs3] = mockDb.insert.mock.calls as Array<[string, any]>
+    const [table3, data3] = callArgs3
+    expect(table3).toBe('logs')
+    expect(data3).toHaveProperty('visibility')
+    expect(data3.visibility).toBe('public')
   })
 
   test('logCommand accepts public visibility value', async () => {
@@ -91,9 +99,11 @@ describe('Log Visibility Schema (Task 7.2.1)', () => {
     })
 
     expect(mockDb.insert).toHaveBeenCalled()
-    const [[table, data]] = mockDb.insert.mock.calls
-    expect(table).toBe('logs')
-    expect(data.visibility).toBe('public')
+    // @ts-ignore -- Mock calls type is dynamic
+    const [callArgs4] = mockDb.insert.mock.calls as Array<[string, any]>
+    const [table4, data4] = callArgs4
+    expect(table4).toBe('logs')
+    expect(data4.visibility).toBe('public')
   })
 })
 

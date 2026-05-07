@@ -119,7 +119,7 @@ export const getLogs = query({
   handler: async (ctx, args) => {
     return await ctx.db
       .query('logs')
-      .withIndex('by_gameId', (q) => q.eq('gameId', args.gameId))
+      .withIndex('by_gameId', (q: any) => q.eq('gameId', args.gameId))
       .order('asc')
       .collect()
   },
@@ -128,7 +128,7 @@ export const getLogs = query({
 export const getFilteredLogsHandler = async (ctx: any, args: any) => {
   const allLogs = await ctx.db
     .query('logs')
-    .withIndex('by_gameId', (q) => q.eq('gameId', args.gameId))
+    .withIndex('by_gameId', (q: any) => q.eq('gameId', args.gameId))
     .order('asc')
     .collect()
 

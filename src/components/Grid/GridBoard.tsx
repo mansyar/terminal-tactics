@@ -5,9 +5,9 @@ export function GridBoard({
   mapData,
   revealedTiles = [],
   currentlyVisibleTiles = [],
-  onUnitClick,
-  onUnitHover,
-  onUnitLeave,
+  onUnitClick: _onUnitClick,
+  onUnitHover: _onUnitHover,
+  onUnitLeave: _onUnitLeave,
 }: {
   children?: React.ReactNode
   mapData?: { tiles: Array<Array<string>>; width: number; height: number }
@@ -17,6 +17,9 @@ export function GridBoard({
   onUnitHover?: (unitId: string) => void
   onUnitLeave?: () => void
 }) {
+  void _onUnitClick
+  void _onUnitHover
+  void _onUnitLeave
   const size = 12
   const tileSize = 100
   const boardSize = size * tileSize

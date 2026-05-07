@@ -74,8 +74,11 @@ function App() {
   const checkTurnTimeout = useMutation(api.timers.checkTurnTimeout)
 
   // Interaction state for visual enhancements (Phase 7)
+  // Used by Phase 7.3 tasks (Attack Range Preview, Hover Tooltips, Last Move Highlight)
   const [selectedUnit, setSelectedUnit] = useState<string | null>(null)
   const [hoveredUnit, setHoveredUnit] = useState<string | null>(null)
+  void selectedUnit
+  void hoveredUnit
 
   const handleUnitClick = useCallback((unitId: string) => {
     setSelectedUnit((prev) => (prev === unitId ? null : unitId))

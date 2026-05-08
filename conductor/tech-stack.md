@@ -22,7 +22,7 @@
 | Styling | **Tailwind CSS v4** | Utility-first CSS with custom Matrix theme |
 | Routing | **TanStack Router** | Client-side routing and navigation |
 | Animation | **Framer Motion** | Unit movement animations and transitions |
-| Icons | **Lucide React** | SVG icon library |
+| Icons | Inline SVGs | Minimal set of SVG icons (Home, Menu, X) — lucide-react removed |
 | Dev Tools | **TanStack Devtools** | React and Router debugging tools |
 
 ## Backend & Database
@@ -40,6 +40,7 @@
 | Test Runner | **Bun Test** | Fast test execution |
 | Testing Library | **@testing-library/react** | React component testing |
 | Testing Library | **@testing-library/dom** | DOM query testing |
+| Testing Library | **@testing-library/jest-dom** | Accessible DOM matchers (toHaveAccessibleName, toHaveRole) |
 | DOM Environment | **jsdom** | Browser environment simulation |
 
 ## Quality Assurance

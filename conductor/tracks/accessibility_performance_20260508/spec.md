@@ -8,8 +8,8 @@ Phase 9 focuses on ensuring Terminal Tactics is accessible, performant, and play
 
 ### 9.1 Performance Audit
 
-- **Lighthouse Audit:** Run full Lighthouse performance test targeting Performance > 90 and Accessibility > 95.
-- **Bundle Optimization:** Tree-shake unused code, implement lazy loading for route-based and heavy components.
+- **Lighthouse Audit:** Run full Lighthouse performance test. Target: Performance ≥ baseline + 10 points, Accessibility ≥ 95. If CRT effects (flicker, SVG glow filter) block Performance > 90, document the trade-off and consider an optional "performance mode" that disables CRT effects. Baseline must be recorded before any optimizations.
+- **Bundle Optimization:** Tree-shake unused dependencies and imports. Remove TanStack Router Devtools from production builds. Replace heavy `lucide-react` icon imports with inline SVGs (only Home, Menu, X used). Remove dead code (unused `Header.tsx` component). Lazy-load heavy components where feasible given the single-route architecture.
 - **Animation Performance:** Ensure unit animations (framer-motion) maintain 60fps during gameplay.
 - **Memory Profiling:** Check for memory leaks during long games (10+ turns), particularly in log accumulation and Convex subscription cleanup.
 
@@ -24,7 +24,7 @@ Phase 9 focuses on ensuring Terminal Tactics is accessible, performant, and play
 ### 9.3 Mobile Responsiveness (Tablet-first)
 
 - **Responsive Grid:** The 12x12 game grid must scale proportionally on tablet-sized screens (768px+ viewport width). Use `viewport` units or CSS `clamp()` to ensure the grid fits without horizontal scrolling.
-- **Touch Support:** Add tap-to-select for grid tiles and unit interactions. The CLI input must still be the primary interaction, but touch-friendly target sizes (44x44px minimum) for any clickable elements.
+- **Touch Support:** Add touch-to-coordinate CLI filling. Tapping a grid tile appends that tile's coordinate to the current CLI input buffer (e.g., tapping C4 while typing `mv ` fills `mv C4`). If CLI is empty, tapping a tile sets input to `inspect <coord>`. Long-press (500ms) copies coordinate without executing. This maintains CLI-first primacy while providing touch convenience. Ensure 44x44px minimum touch targets on all interactive SVG grid tiles (invisible touch overlay).
 - **Virtual Keyboard:** CLI input must work with mobile touch keyboards — avoid `stopPropagation` issues, ensure the input stays visible when the virtual keyboard opens.
 - **Orientation Handling:** Support both portrait and landscape orientations on tablets. Layout must adapt gracefully (sidebar may collapse/stack below the grid in portrait).
 
@@ -35,10 +35,12 @@ Phase 9 focuses on ensuring Terminal Tactics is accessible, performant, and play
 - Accessibility changes must not degrade performance.
 - Performance optimizations must not change visual behavior.
 - Mobile layout must preserve the CLI-first interaction model.
+- All accessibility and responsive changes must preserve the retro terminal aesthetic. High contrast and reduced motion variants are the only visual deviations permitted.
+- Use `data-testid` attributes on new elements for test stability and visual regression detection.
 
 ## Acceptance Criteria
 
-1. Lighthouse Performance Score > 90.
+1. Lighthouse Performance Score ≥ baseline + 10 points (baseline recorded in `perf-baseline.md` before changes). CRT effect trade-offs documented if target blocked.
 2. Lighthouse Accessibility Score > 95.
 3. All interactive elements have appropriate ARIA labels.
 4. Full game is playable using keyboard only (no mouse).

@@ -116,12 +116,12 @@ describe('CLIInput', () => {
     const input = screen.getByPlaceholderText('ENTER_COMMAND...')
     fireEvent.change(input, { target: { value: 's' } })
 
-    const listItems = screen.getAllByRole('listitem')
+    const listItems = screen.getAllByRole('option')
     expect(listItems.length).toBeGreaterThanOrEqual(2)
 
     fireEvent.keyDown(input, { key: 'ArrowDown' })
     fireEvent.keyDown(input, { key: 'ArrowDown' })
-    const index2Item = screen.getAllByRole('listitem')[2]
+    const index2Item = screen.getAllByRole('option')[2]
     const isSelected = index2Item.className.includes('bg-matrix-primary')
     expect(isSelected).toBe(true)
   })

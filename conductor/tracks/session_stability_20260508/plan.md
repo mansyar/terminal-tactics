@@ -30,7 +30,7 @@
 - [x] Task: Initialize presence at game creation [551f530]
     - [x] In `convex/squadBuilder.ts` (`startGame`), initialize `p1Status`/`p2Status` as "connected" and set `lastHeartbeat` timestamps
     - [x] Also initialize P1 presence in `createLobbyHandler` and P2 presence in `joinLobby`/`joinQuickPlay`
-- [ ] Task: Conductor - User Manual Verification 'Schema, Heartbeat & Disconnect Detection' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Schema, Heartbeat & Disconnect Detection' (Protocol in workflow.md) [verified]
 
 ## Phase 2: Grace Period & Auto-Forfeit (Backend)
 

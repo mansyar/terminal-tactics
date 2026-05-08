@@ -53,34 +53,34 @@
     - [x] Note: How this works — if P1 is disconnected and it's P1's turn, game freezes. If it's P2's turn, P2 plays normally. Timer pauses only when the turn belongs to the disconnected player.
 - [x] Task: Wire grace period polling into client [476fa59]
     - [x] Add `checkDisconnectGracePeriod` to the 5s polling interval in `useGameCommands.ts`
-- [ ] Task: Conductor - User Manual Verification 'Grace Period & Auto-Forfeit (Backend)' (Protocol in workflow.md) [pending]
+- [x] Task: Conductor - User Manual Verification 'Grace Period & Auto-Forfeit (Backend)' (Protocol in workflow.md) [verified]
 
 ## Phase 3: Client-Side Heartbeat Hook
 
 **Pattern note:** To match the existing project test patterns (pure function tests with bun:test, no React hook tests), extract the heartbeat timing logic into testable pure functions in `src/lib/heartbeat.ts`. The React hook is a thin wrapper.
 
-- [ ] Task: Write tests for heartbeat pure functions
-    - [ ] Create `src/lib/heartbeat.test.ts` with pure function tests (follows existing patterns: commandParser, combatSystem)
-    - [ ] Test `shouldSendHeartbeat(lastSent, intervalMs, now)` returns true when enough time has passed
-    - [ ] Test `shouldSendHeartbeat` returns false when within interval
-    - [ ] Test `isDisconnected(lastHeartbeat, thresholdMs, now)` returns true after 30s threshold
-    - [ ] Test `isDisconnected` returns false when within threshold
-    - [ ] Test `isDisconnected` returns false when lastHeartbeat is undefined
-    - [ ] Test `isGraceExpired(disconnectTime, graceMs, now)` returns true after 2-minute grace
-    - [ ] Test `isGraceExpired` returns false when within grace period
-- [ ] Task: Implement pure functions in src/lib/heartbeat.ts
-    - [ ] `export function shouldSendHeartbeat(lastSent: number | null, intervalMs: number, now: number): boolean`
-    - [ ] `export function isDisconnected(lastHeartbeat: number | undefined, thresholdMs: number, now: number): boolean`
-    - [ ] `export function isGraceExpired(disconnectStartTime: number | undefined, graceMs: number, now: number): boolean`
-- [ ] Task: Implement useHeartbeat React hook
-    - [ ] Create `src/hooks/useHeartbeat.ts` — thin wrapper around pure functions + Convex heartbeat mutation
-    - [ ] Uses `setInterval` at 10s to call `shouldSendHeartbeat` then fire heartbeat mutation
-    - [ ] Integrate Page Visibility API (pause interval on hidden, send immediate heartbeat on visible)
-    - [ ] Clean up interval on unmount (handles React StrictMode double-mount correctly)
-    - [ ] Uses `useRef` for lastSent timestamp to avoid stale closures
-- [ ] Task: Integrate heartbeat into App.tsx
-    - [ ] Mount `useHeartbeat(gameId, playerId)` only when game status is `"playing"` (not during lobby/drafting)
-- [ ] Task: Conductor - User Manual Verification 'Client-Side Heartbeat Hook' (Protocol in workflow.md)
+- [x] Task: Write tests for heartbeat pure functions [0936afb]
+    - [x] Create `src/lib/heartbeat.test.ts` with pure function tests (follows existing patterns: commandParser, combatSystem)
+    - [x] Test `shouldSendHeartbeat(lastSent, intervalMs, now)` returns true when enough time has passed
+    - [x] Test `shouldSendHeartbeat` returns false when within interval
+    - [x] Test `isDisconnected(lastHeartbeat, thresholdMs, now)` returns true after 30s threshold
+    - [x] Test `isDisconnected` returns false when within threshold
+    - [x] Test `isDisconnected` returns false when lastHeartbeat is undefined
+    - [x] Test `isGraceExpired(disconnectTime, graceMs, now)` returns true after 2-minute grace
+    - [x] Test `isGraceExpired` returns false when within grace period
+- [x] Task: Implement pure functions in src/lib/heartbeat.ts [0936afb]
+    - [x] `export function shouldSendHeartbeat(lastSent: number | null, intervalMs: number, now: number): boolean`
+    - [x] `export function isDisconnected(lastHeartbeat: number | undefined, thresholdMs: number, now: number): boolean`
+    - [x] `export function isGraceExpired(disconnectStartTime: number | undefined, graceMs: number, now: number): boolean`
+- [x] Task: Implement useHeartbeat React hook [0936afb]
+    - [x] Create `src/hooks/useHeartbeat.ts` — thin wrapper around pure functions + Convex heartbeat mutation
+    - [x] Uses `setInterval` at 10s to call `shouldSendHeartbeat` then fire heartbeat mutation
+    - [x] Integrate Page Visibility API (pause interval on hidden, send immediate heartbeat on visible)
+    - [x] Clean up interval on unmount (handles React StrictMode double-mount correctly)
+    - [x] Uses `useRef` for lastSent timestamp to avoid stale closures
+- [x] Task: Integrate heartbeat into App.tsx [0936afb]
+    - [x] Mount `useHeartbeat(gameId, playerId)` only when game status is `"playing"` (not during lobby/drafting)
+- [ ] Task: Conductor - User Manual Verification 'Client-Side Heartbeat Hook' (Protocol in workflow.md) [pending]
 
 ## Phase 4: Multi-Tab Prevention & Session Persistence
 

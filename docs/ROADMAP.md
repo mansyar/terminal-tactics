@@ -177,7 +177,7 @@
 - [x] **Turn Timer:** 90-second countdown per turn.
   - Warning at 15 seconds.
   - Auto-end turn on timeout.
-- [ ] **Disconnect Timeout:** 2-minute grace period for reconnection. _(Deferred)_
+- [x] **Disconnect Timeout:** 2-minute grace period for reconnection.
   - Auto-forfeit if exceeded.
 
 ### 6.2 Game End Commands
@@ -272,37 +272,37 @@
 
 ---
 
-## 🚩 Phase 8: Session Stability ⏳
+## 🚩 Phase 8: Session Stability ✅
 
-**Goal:** Implement robust session management and disconnect handling.
+**Goal:** Robust session management and disconnect handling is now fully implemented.
 
 ### 8.1 Disconnect Detection
 
-- [ ] **Heartbeat System:** Client sends heartbeat every 10 seconds.
-- [ ] **Presence Tracking:** Server tracks last heartbeat timestamp per player.
-- [ ] **Disconnect Detection:** Mark player as "disconnected" if no heartbeat for 30 seconds.
-- [ ] **UI Indicator:** Show "Opponent disconnected" warning message.
+- [x] **Heartbeat System:** Client sends heartbeat every 10 seconds via `useHeartbeat` hook. [0936afb]
+- [x] **Presence Tracking:** Server tracks `lastHeartbeat` timestamps on `games` document. [551f530]
+- [x] **Disconnect Detection:** Mark player as "disconnected" after 30s of inactivity via `checkDisconnect`. [551f530]
+- [x] **UI Indicator:** "ENEMY_DISCONNECTED" banner with grace countdown + TurnIndicator status. [26c3a24]
 
 ### 8.2 Grace Period & Recovery
 
-- [ ] **Grace Period:** 2-minute reconnection window.
-- [ ] **Timer Pause:** Turn timer pauses during opponent disconnection.
-- [ ] **State Preservation:** Game state frozen during grace period.
-- [ ] **Reconnection Flow:** Seamless rejoin with state restoration.
-- [ ] **Auto-Forfeit:** Trigger forfeit if grace period expires.
+- [x] **Grace Period:** 2-minute reconnection window via `checkDisconnectGracePeriod`. [476fa59]
+- [x] **Timer Pause:** Turn timer pauses when disconnected player's turn is active. [476fa59]
+- [x] **State Preservation:** Game state frozen during disconnected player's turn (connected player plays normally). [476fa59]
+- [x] **Reconnection Flow:** Heartbeat on reconnect clears `disconnectStartTime`, restores "connected" status. [551f530]
+- [x] **Auto-Forfeit:** Disconnected player auto-forfeits after 2-minute grace; dual-disconnect results in draw. [476fa59]
 
 ### 8.3 Session Persistence Improvements
 
-- [ ] **Browser Tab Handling:** Detect tab visibility changes.
-- [ ] **Multi-Tab Prevention:** Warn or block duplicate game sessions.
-- [ ] **Graceful Refresh:** Maintain session state through page refresh.
+- [x] **Browser Tab Handling:** `useHeartbeat` uses Page Visibility API — pauses when hidden, sends immediate heartbeat on reveal. [0936afb]
+- [x] **Multi-Tab Prevention:** `TabCoordinator` class via BroadcastChannel API with orphan tab detection (2.5s ping timeout). [2730b73]
+- [x] **Graceful Refresh:** `activeGameId` from localStorage, auto re-queries `getGameState` on mount. [2730b73]
 
 ### Definition of Done
 
-- [ ] Disconnect/reconnect flow tested and stable.
-- [ ] Grace period countdown visible to both players.
-- [ ] No state corruption on reconnection.
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
+- [x] Disconnect/reconnect flow tested and stable (223 tests, 87.15% coverage).
+- [x] Grace period countdown visible to both players via DisconnectBanner component.
+- [x] No state corruption on reconnection (heartbeat clears disconnect timer idempotently).
+- [x] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
 
 ---
 
@@ -548,7 +548,7 @@
 | Phase 5: Combat & FoW         | ✅ Complete | 100%       |
 | Phase 6: Polish               | ✅ Complete | 100%       |
 | Phase 7: Visual & UX Polish   | ✅ Complete | 100%       |
-| Phase 8: Session Stability    | ⏳ Planned  | 0%         |
+| Phase 8: Session Stability    | ✅ Complete | 100%       |
 | Phase 9: Accessibility & Perf | ⏳ Planned  | 0%         |
 | Phase 10: Competitive         | ⏳ Planned  | 0%         |
 | Phase 11: Content Expansion   | ⏳ Planned  | 0%         |
@@ -562,7 +562,7 @@
 | Priority  | Phase    | Rationale                                                     |
 | --------- | -------- | ------------------------------------------------------------- |
 | ✅ Done   | Phase 7  | Visual & UX Polish completed — health bars, colors, logs, readability |
-| 🔴 High   | Phase 8  | Disconnect handling critical for multiplayer stability        |
+| ✅ Done   | Phase 8  | Session stability complete — heartbeat, grace period, reconnection |
 | 🟡 Medium | Phase 9  | Accessibility and performance for broader audience            |
 | 🟡 Medium | Phase 13 | **Early launch on itch.io for player feedback**               |
 | 🟡 Medium | Phase 10 | Competitive features for player retention                     |

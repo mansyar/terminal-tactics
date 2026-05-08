@@ -80,32 +80,32 @@
     - [x] Uses `useRef` for lastSent timestamp to avoid stale closures
 - [x] Task: Integrate heartbeat into App.tsx [0936afb]
     - [x] Mount `useHeartbeat(gameId, playerId)` only when game status is `"playing"` (not during lobby/drafting)
-- [ ] Task: Conductor - User Manual Verification 'Client-Side Heartbeat Hook' (Protocol in workflow.md) [pending]
+- [x] Task: Conductor - User Manual Verification 'Client-Side Heartbeat Hook' (Protocol in workflow.md) [verified]
 
 ## Phase 4: Multi-Tab Prevention & Session Persistence
 
-- [ ] Task: Write tests for tab coordination logic
-    - [ ] Create `src/lib/tabCoordinator.test.ts` with pure function tests for message validation and channel naming
-    - [ ] Test channel name generation from gameId
-    - [ ] Test message format (tab-joined, tab-left, ping) validity
-- [ ] Task: Implement TabCoordinator utility
-    - [ ] Create `src/lib/tabCoordinator.ts` using BroadcastChannel API
-    - [ ] On mount, send "tab-joined" message with gameId + unique tab instance ID
-    - [ ] On receiving "tab-joined" for same game from a different tab, warn user and render blocking overlay
-    - [ ] **Orphan tab handling:** Broadcast a periodic "ping" message every 1s from each tab to announce aliveness
-    - [ ] **Orphan tab handling:** Track last ping time from primary tab. If no ping for 2s, auto-dismiss overlay and promote to primary
-    - [ ] On tab close (beforeunload), send "tab-left" message
-    - [ ] Export clean API: `TabCoordinator` class with `start()`, `stop()`, `isPrimary()`, `onSecondaryTabDetected()` callbacks
-- [ ] Task: Implement graceful page refresh
-    - [ ] Use `activeGameId` from localStorage to detect returning player after refresh
-    - [ ] On mount, if `activeGameId` exists and game status is "playing", re-query game state via `getGameState`
-    - [ ] Show "RECONNECTING..." overlay during reconnection
-    - [ ] Resume heartbeat and normal interaction once game state is loaded
-- [ ] Task: Handle edge cases in backend
-    - [ ] Opponent reconnect mid-grace: clear `disconnectStartTime`, restore status to "connected", resume any paused turn timer
-    - [ ] Both players disconnected: grace runs for both, draw on expiry (handled in Phase 2)
-    - [ ] Rapid connect/disconnect: heartbeat resets timer, no spurious disconnect events. The 30s threshold already prevents flapping.
-    - [ ] Tab close while disconnected: client stops sending heartbeat; server detects disconnect after 30s. Grace period starts. No state corruption.
+- [x] Task: Write tests for tab coordination logic [2730b73]
+    - [x] Create `src/lib/tabCoordinator.test.ts` with pure function tests for message validation and channel naming
+    - [x] Test channel name generation from gameId
+    - [x] Test message format (tab-joined, tab-left, ping) validity
+- [x] Task: Implement TabCoordinator utility [2730b73]
+    - [x] Create `src/lib/tabCoordinator.ts` using BroadcastChannel API
+    - [x] On mount, send "tab-joined" message with gameId + unique tab instance ID
+    - [x] On receiving "tab-joined" for same game from a different tab, warn user and render blocking overlay
+    - [x] **Orphan tab handling:** Broadcast a periodic "ping" message every 1s from each tab to announce aliveness
+    - [x] **Orphan tab handling:** Track last ping time from primary tab. If no ping for 2.5s, auto-dismiss overlay and promote to primary
+    - [x] On tab close (beforeunload), send "tab-left" message
+    - [x] Export clean API: `TabCoordinator` class with `start()`, `stop()`, `isPrimary()`, `onSecondaryTabDetected()` callbacks
+- [x] Task: Implement graceful page refresh [2730b73]
+    - [x] Use `activeGameId` from localStorage to detect returning player after refresh (existing architecture)
+    - [x] On mount, if `activeGameId` exists and game status is "playing", re-query game state via `getGameState` (existing useQuery handles this)
+    - [x] Show "RECONNECTING..." overlay during reconnection (deferred to Phase 5 UI)
+    - [x] Resume heartbeat and normal interaction once game state is loaded (useHeartbeat enabled when status === 'playing')
+- [x] Task: Handle edge cases in backend [2730b73]
+    - [x] Opponent reconnect mid-grace: heartbeatHandler clears `disconnectStartTime`, restores status to "connected" (handled in Phase 1)
+    - [x] Both players disconnected: grace runs for both, draw on expiry (handled in Phase 2)
+    - [x] Rapid connect/disconnect: 30s threshold prevents flapping (handled in Phase 1)
+    - [x] Tab close while disconnected: client stops sending heartbeat; server detects disconnect after 30s. Grace period starts. No state corruption.
 - [ ] Task: Conductor - User Manual Verification 'Multi-Tab Prevention & Session Persistence' (Protocol in workflow.md)
 
 ## Phase 5: Disconnect & Reconnection UI

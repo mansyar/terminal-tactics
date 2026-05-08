@@ -43,8 +43,8 @@
 - [x] Commit with message: `chore(a11y): Add accessibility testing infrastructure` [0b20de8]
 
 ### Task 2.1: Screen Reader Support — SVG Grid Roles & ARIA
-- [ ] Write test: Use `@testing-library/react` to query SVG elements by `role` and verify `aria-label` on grid tiles, unit icons, CLI input, buttons, timer displays, modals.
-- [ ] Implement:
+- [x] Write test: Use `@testing-library/react` to query SVG elements by `role` and verify `aria-label` on grid tiles, unit icons, CLI input, buttons, timer displays, modals.
+- [x] Implement:
   - Add `role="grid"` to the SVG element in `GridBoard.tsx`
   - Add `role="gridcell"` and `aria-label="Tile {coord}, {terrain}"` to each tile `<g>` group
   - Add `focusable="true"` and `tabindex="-1"` to SVG tiles for keyboard accessibility
@@ -52,8 +52,8 @@
   - Add `aria-live="polite"` to `ConsoleHistory` scroll container for log announcements
   - Add `role="tooltip"` and `aria-live="polite"` to the hover tooltip overlay
   - Add `role="status"` to `TurnIndicator` for turn state announcements
-- [ ] Verify coverage and refactor if needed.
-- [ ] Commit with message: `feat(a11y): Add ARIA grid roles, unit labels, and live regions`
+- [x] Verify coverage and refactor if needed.
+- [x] Commit with message: `feat(a11y): Add ARIA grid roles, unit labels, and live regions` [64e800d]
 
 ### Task 2.2: Keyboard Navigation — SVG Focus Chain & CLI Refocus
 - [ ] Write test: Keyboard-only test that navigates lobby → drafting → gameplay → command execution using Tab/Enter + CLI commands. Assert focus lands on CLI input after each action.

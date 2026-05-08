@@ -19,10 +19,10 @@
 - [x] Commit with message: `feat(perf): Optimize bundle — remove devtools, tree-shake icons, delete dead Header` [9896008]
 
 ### Task 1.2: Animation Performance (60fps)
-- [ ] Write test: Use `requestAnimationFrame` timing to verify framer-motion animations maintain consistent frame rate during unit movement.
-- [ ] Implement: Profile and optimize framer-motion animations. If SVG `<filter id="glow">` with `feGaussianBlur` blocks 60fps, replace with CSS `drop-shadow()` filter (GPU-accelerated). Add `will-change: transform` to animated elements. Remove layout-triggering properties from animation loops.
-- [ ] Verify coverage and refactor if needed.
-- [ ] Commit with message: `feat(perf): Optimize animations for 60fps — replace SVG filter with CSS drop-shadow`
+- [x] Write test: Use `requestAnimationFrame` timing to verify framer-motion animations maintain consistent frame rate during unit movement.
+- [x] Implement: Profile and optimize framer-motion animations. If SVG `<filter id="glow">` with `feGaussianBlur` blocks 60fps, replace with CSS `drop-shadow()` filter (GPU-accelerated). Add `will-change: transform` to animated elements. Remove layout-triggering properties from animation loops.
+- [x] Verify coverage and refactor if needed.
+- [x] Commit with message: `feat(perf): Optimize animations for 60fps — replace SVG filter with CSS drop-shadow` [88f8df1]
 
 ### Task 1.3: Memory Profiling & Leak Fixes
 - [ ] Write test: Create a memory leak detection test that simulates a 10-turn game and checks for retained DOM nodes / orphaned Convex subscriptions.

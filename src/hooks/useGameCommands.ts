@@ -30,6 +30,7 @@ interface GameMutations {
   checkDraftTimeout: any
   checkTurnTimeout: any
   checkDisconnect: any
+  checkDisconnectGracePeriod: any
   heartbeat: any
 }
 
@@ -81,6 +82,7 @@ export function useGameCommands({
       } else if (gameState.status === 'playing') {
         mutations.checkTurnTimeout({ gameId: gameState._id })
         mutations.checkDisconnect({ gameId: gameState._id })
+        mutations.checkDisconnectGracePeriod({ gameId: gameState._id })
       }
     }, 5000)
     return () => clearInterval(interval)
@@ -89,6 +91,7 @@ export function useGameCommands({
     mutations.checkDraftTimeout,
     mutations.checkTurnTimeout,
     mutations.checkDisconnect,
+    mutations.checkDisconnectGracePeriod,
   ])
   // Audio effects for game state changes
   const [lastTurn, setLastTurn] = useState<number | undefined>()

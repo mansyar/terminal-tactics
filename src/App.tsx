@@ -52,6 +52,9 @@ function App() {
   const checkDraftTimeout = useMutation(api.timers.checkDraftTimeout)
   const checkTurnTimeout = useMutation(api.timers.checkTurnTimeout)
   const checkDisconnect = useMutation(api.presence.checkDisconnect)
+  const checkDisconnectGracePeriod = useMutation(
+    api.timers.checkDisconnectGracePeriod,
+  )
   const heartbeat = useMutation(api.presence.heartbeat)
 
   const gameCommands = useGameCommands({
@@ -77,6 +80,7 @@ function App() {
       checkDraftTimeout,
       checkTurnTimeout,
       checkDisconnect,
+      checkDisconnectGracePeriod,
       heartbeat,
     },
   })

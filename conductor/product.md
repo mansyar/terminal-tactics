@@ -27,4 +27,4 @@
 
 ## Current State
 
-The game has completed 7 development phases (Foundation, CLI & Grid, Multiplayer, Movement & Stats, Combat & Fog of War, Polish & Juice, Visual & UX Polish). All core gameplay mechanics are implemented and tested. Phase 7 added visual unit enhancements (health bars, enemy color coding, direction arrows, stealth shimmer), a log visibility system (private scan/inspect logs filtered per player), and grid readability improvements (coordinate toggle, last move highlights, attack range preview, overwatch cones, hover tooltips). The project is now in post-core polish, session stability, and expansion phases.
+The game has completed 8 development phases (Foundation, CLI & Grid, Multiplayer, Movement & Stats, Combat & Fog of War, Polish & Juice, Visual & UX Polish, Session Stability). Phase 8 added a heartbeat-based presence system (10s interval), 30s disconnect detection, 2-minute grace period with auto-forfeit, turn timer pause on disconnect, multi-tab prevention via BroadcastChannel, and disconnect/reconnection UI components. All core gameplay mechanics are implemented and tested. The project is now in post-core polish and expansion phases.

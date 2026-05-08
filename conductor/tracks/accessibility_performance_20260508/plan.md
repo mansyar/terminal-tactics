@@ -3,10 +3,10 @@
 ## Phase 1: Performance Audit & Optimization
 
 ### Task 1.0: Performance Baseline & SVG Tooltip Fix
-- [ ] Write test: Capture initial bundle size (analyze Vite `build` output), import `web-vitals` for programmatic CLS/LCP/FID tracking, record baseline Lighthouse scores. Verify tooltip renders at correct grid-relative position via `data-testid`.
-- [ ] Implement: Run Lighthouse against current build, record baseline in `perf-baseline.md`. Fix hardcoded `* 100` in `useGameDerivedState.ts` tooltip position to use dynamic tile size derived from SVG `viewBox` scaling.
-- [ ] Verify coverage and refactor if needed.
-- [ ] Commit with message: `feat(perf): Record baseline metrics and fix SVG tooltip coordinates`
+- [x] Write test: Capture initial bundle size (analyze Vite `build` output), import `web-vitals` for programmatic CLS/LCP/FID tracking, record baseline Lighthouse scores. Verify tooltip renders at correct grid-relative position via `data-testid`.
+- [x] Implement: Run Lighthouse against current build, record baseline in `perf-baseline.md`. Fix hardcoded `* 100` in `useGameDerivedState.ts` tooltip position to use dynamic tile size derived from SVG `viewBox` scaling.
+- [x] Verify coverage and refactor if needed.
+- [x] Commit with message: `feat(perf): Record baseline metrics and fix SVG tooltip coordinates` [aea0fc3]
 
 ### Task 1.1: Bundle Optimization
 - [ ] Write test: Bundle size tracking test that alerts if production chunk exceeds threshold (baseline + 10%).

@@ -34,26 +34,26 @@
 
 ## Phase 2: Grace Period & Auto-Forfeit (Backend)
 
-- [ ] Task: Write tests for grace period and auto-forfeit pure functions
-    - [ ] Test that auto-forfeit triggers after 2-minute grace period expiry
-    - [ ] Test that reconnection resets status before grace expiry cancels forfeit
-    - [ ] Test that connected player cannot be auto-forfeited
-    - [ ] Test that turn timer does NOT advance when it's the disconnected player's turn
-    - [ ] Test that turn timer DOES advance normally when it's the connected player's turn (even if opponent disconnected)
-    - [ ] Test dual-disconnect scenario: both disconnected -> draw (no winner) on grace expiry
-    - [ ] Test sleep/wake scenario: heartbeat after 40s gap resumes status before 2-min grace expires
-- [ ] Task: Implement grace period logic
-    - [ ] Add `checkDisconnectGracePeriodHandler` + `checkDisconnectGracePeriod` mutation to `convex/timers.ts`
-    - [ ] If `disconnectStartTime` is set and `Date.now() - disconnectStartTime > 120000ms`, auto-forfeit
-    - [ ] **Dual-disconnect:** If both players are disconnected when grace expires, set status to "finished" with no winner (draw)
-    - [ ] Expose `getRemainingGraceTime` query for UI (returns remaining ms or 0)
-- [ ] Task: Implement timer pause on disconnect (server-side)
-    - [ ] Modify `checkTurnTimeout` to skip turn advance when the **current player** (whose turn it is) is disconnected
-    - [ ] Modify `endTurn` to check opponent status: if opponent is disconnected but it's THEIR turn, still allow turn end (the connected player can end their own turn)
-    - [ ] Note: How this works — if P1 is disconnected and it's P1's turn, game freezes. If it's P2's turn, P2 plays normally. Timer pauses only when the turn belongs to the disconnected player.
-- [ ] Task: Wire grace period polling into client
-    - [ ] Add `checkDisconnectGracePeriod` to the 5s polling interval in `useGameCommands.ts`
-- [ ] Task: Conductor - User Manual Verification 'Grace Period & Auto-Forfeit (Backend)' (Protocol in workflow.md)
+- [x] Task: Write tests for grace period and auto-forfeit pure functions [476fa59]
+    - [x] Test that auto-forfeit triggers after 2-minute grace period expiry
+    - [x] Test that reconnection resets status before grace expiry cancels forfeit
+    - [x] Test that connected player cannot be auto-forfeited
+    - [x] Test that turn timer does NOT advance when it's the disconnected player's turn
+    - [x] Test that turn timer DOES advance normally when it's the connected player's turn (even if opponent disconnected)
+    - [x] Test dual-disconnect scenario: both disconnected -> draw (no winner) on grace expiry
+    - [x] Test sleep/wake scenario: heartbeat after 40s gap resumes status before 2-min grace expires
+- [x] Task: Implement grace period logic [476fa59]
+    - [x] Add `checkDisconnectGracePeriod` mutation to `convex/timers.ts`
+    - [x] If `disconnectStartTime` is set and `Date.now() - disconnectStartTime > 120000ms`, auto-forfeit
+    - [x] **Dual-disconnect:** If both players are disconnected when grace expires, set status to "finished" with no winner (draw)
+    - [x] Expose `getRemainingGraceTime` query for UI (returns remaining ms or 0)
+- [x] Task: Implement timer pause on disconnect (server-side) [476fa59]
+    - [x] Modify `checkTurnTimeout` to skip turn advance when the **current player** (whose turn it is) is disconnected
+    - [x] Modify `endTurn`: no changes needed — connected player can already end their own turn normally
+    - [x] Note: How this works — if P1 is disconnected and it's P1's turn, game freezes. If it's P2's turn, P2 plays normally. Timer pauses only when the turn belongs to the disconnected player.
+- [x] Task: Wire grace period polling into client [476fa59]
+    - [x] Add `checkDisconnectGracePeriod` to the 5s polling interval in `useGameCommands.ts`
+- [ ] Task: Conductor - User Manual Verification 'Grace Period & Auto-Forfeit (Backend)' (Protocol in workflow.md) [pending]
 
 ## Phase 3: Client-Side Heartbeat Hook
 

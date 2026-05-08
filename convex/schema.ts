@@ -26,6 +26,11 @@ export default defineSchema({
     p2Rap: v.optional(v.number()), // Root Access Points for P2
     kernelPanicActive: v.optional(v.string()), // "SEGFAULT" | "OVERCLOCK" | "REBOOT" | null
     drawOffer: v.optional(v.string()), // "p1" | "p2" | null (who offered)
+    p1LastHeartbeat: v.optional(v.number()), // Timestamp of P1's last heartbeat
+    p2LastHeartbeat: v.optional(v.number()), // Timestamp of P2's last heartbeat
+    p1Status: v.optional(v.string()), // "connected" | "disconnected" | "reconnecting"
+    p2Status: v.optional(v.string()), // "connected" | "disconnected" | "reconnecting"
+    disconnectStartTime: v.optional(v.number()), // Timestamp when disconnect was first detected
   })
     .index('by_status', ['status'])
     .index('by_code', ['code']),

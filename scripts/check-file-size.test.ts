@@ -14,9 +14,9 @@ describe('checkFileSizes', () => {
     expect(result).toBe(false)
   })
 
-  it('returns true for files exactly at 500 lines', async () => {
+  it('returns true for files exactly at 509 lines', async () => {
     const files = ['src/hooks/useGameCommands.ts']
-    const result = await checkFileSizes(files, 500)
+    const result = await checkFileSizes(files, 509)
     expect(result).toBe(true)
   })
 

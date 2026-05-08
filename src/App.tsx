@@ -51,6 +51,8 @@ function App() {
   const sendMessage = useMutation(api.chat.sendMessage)
   const checkDraftTimeout = useMutation(api.timers.checkDraftTimeout)
   const checkTurnTimeout = useMutation(api.timers.checkTurnTimeout)
+  const checkDisconnect = useMutation(api.presence.checkDisconnect)
+  const heartbeat = useMutation(api.presence.heartbeat)
 
   const gameCommands = useGameCommands({
     playerId,
@@ -74,6 +76,8 @@ function App() {
       sendMessage,
       checkDraftTimeout,
       checkTurnTimeout,
+      checkDisconnect,
+      heartbeat,
     },
   })
 

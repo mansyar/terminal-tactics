@@ -29,6 +29,8 @@ interface GameMutations {
   sendMessage: any
   checkDraftTimeout: any
   checkTurnTimeout: any
+  checkDisconnect: any
+  heartbeat: any
 }
 
 interface UseGameCommandsParams {
@@ -78,10 +80,16 @@ export function useGameCommands({
         mutations.checkDraftTimeout({ gameId: gameState._id })
       } else if (gameState.status === 'playing') {
         mutations.checkTurnTimeout({ gameId: gameState._id })
+        mutations.checkDisconnect({ gameId: gameState._id })
       }
     }, 5000)
     return () => clearInterval(interval)
-  }, [gameState, mutations.checkDraftTimeout, mutations.checkTurnTimeout])
+  }, [
+    gameState,
+    mutations.checkDraftTimeout,
+    mutations.checkTurnTimeout,
+    mutations.checkDisconnect,
+  ])
   // Audio effects for game state changes
   const [lastTurn, setLastTurn] = useState<number | undefined>()
   const [lastPanic, setLastPanic] = useState<string | undefined>()
@@ -469,7 +477,8 @@ export function useGameCommands({
       mutations.acceptDraw,
       mutations.sendMessage,
       showCoordinates,
-    ])
+    ],
+  )
 
   const {
     formattedLogs,

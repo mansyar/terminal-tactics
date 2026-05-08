@@ -28,6 +28,7 @@ export const createLobbyHandler = async (ctx: any, args: any) => {
       .unique()
   }
 
+  const now = Date.now()
   const gameId = await ctx.db.insert('games', {
     turnNum: 1,
     currentPlayer: 'p1',
@@ -37,7 +38,9 @@ export const createLobbyHandler = async (ctx: any, args: any) => {
     isPublic: args.isPublic,
     code: code,
     p1: args.p1,
-    lastActionTime: Date.now(),
+    lastActionTime: now,
+    p1LastHeartbeat: now,
+    p1Status: 'connected',
   })
 
   return { gameId, code }
@@ -74,11 +77,14 @@ export const joinLobby = mutation({
       throw new Error('LOBBY_FULL')
     }
 
+    const now = Date.now()
     await ctx.db.patch(game._id, {
       p2: args.p2,
       status: 'drafting',
-      lastActionTime: Date.now(),
-      draftStartTime: Date.now(),
+      lastActionTime: now,
+      draftStartTime: now,
+      p2LastHeartbeat: now,
+      p2Status: 'connected',
     })
 
     return game._id
@@ -98,11 +104,14 @@ export const joinQuickPlay = mutation({
       .first()
 
     if (openLobby) {
+      const now = Date.now()
       await ctx.db.patch(openLobby._id, {
         p2: args.playerId,
         status: 'drafting',
-        lastActionTime: Date.now(),
-        draftStartTime: Date.now(),
+        lastActionTime: now,
+        draftStartTime: now,
+        p2LastHeartbeat: now,
+        p2Status: 'connected',
       })
 
       return openLobby._id
@@ -110,6 +119,7 @@ export const joinQuickPlay = mutation({
 
     // Create new public lobby if none found
     const code = generateCode()
+    const now = Date.now()
     return await ctx.db.insert('games', {
       turnNum: 1,
       currentPlayer: 'p1',
@@ -119,7 +129,9 @@ export const joinQuickPlay = mutation({
       isPublic: true,
       code: code,
       p1: args.playerId,
-      lastActionTime: Date.now(),
+      lastActionTime: now,
+      p1LastHeartbeat: now,
+      p1Status: 'connected',
     })
   },
 })

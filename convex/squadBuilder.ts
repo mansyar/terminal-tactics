@@ -109,14 +109,19 @@ async function startGame(ctx: any, gameId: any) {
     }
   }
 
+  const now = Date.now()
   await ctx.db.patch(gameId, {
     status: 'playing',
     mapData,
-    lastActionTime: Date.now(),
-    turnStartTime: Date.now(),
+    lastActionTime: now,
+    turnStartTime: now,
     p1Rap: 0,
     p2Rap: 0,
-    p1RevealedTiles: [], // Initial vision calculated on first fetch/move or here
+    p1RevealedTiles: [],
     p2RevealedTiles: [],
+    p1LastHeartbeat: now,
+    p2LastHeartbeat: now,
+    p1Status: 'connected',
+    p2Status: 'connected',
   })
 }

@@ -9,14 +9,14 @@
 - [x] Commit with message: `feat(perf): Record baseline metrics and fix SVG tooltip coordinates` [aea0fc3]
 
 ### Task 1.1: Bundle Optimization
-- [ ] Write test: Bundle size tracking test that alerts if production chunk exceeds threshold (baseline + 10%).
-- [ ] Implement:
+- [x] Write test: Bundle size tracking test that alerts if production chunk exceeds threshold (baseline + 10%).
+- [x] Implement:
   - Remove `TanStackRouterDevtools` from production builds (use `import.meta.env.DEV` guard)
   - Tree-shake `lucide-react` — replace `<Menu>`, `<X>`, `<Home>` with inline SVG icons
   - Remove dead `Header.tsx` component (unused TanStack demo artifact)
   - Tree-shake unused imports across all components
-- [ ] Verify coverage and refactor if needed.
-- [ ] Commit with message: `feat(perf): Optimize bundle — remove devtools, tree-shake icons, delete dead Header`
+- [x] Verify coverage and refactor if needed.
+- [x] Commit with message: `feat(perf): Optimize bundle — remove devtools, tree-shake icons, delete dead Header` [9896008]
 
 ### Task 1.2: Animation Performance (60fps)
 - [ ] Write test: Use `requestAnimationFrame` timing to verify framer-motion animations maintain consistent frame rate during unit movement.

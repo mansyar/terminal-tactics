@@ -1,5 +1,7 @@
 import React from 'react'
 
+export const TILE_SIZE = 100
+
 export function GridBoard({
   children,
   mapData,
@@ -23,7 +25,15 @@ export function GridBoard({
   lastMoveOrigin?: { x: number; y: number }
   lastMoveDestination?: { x: number; y: number }
   attackRangeTiles?: Array<string>
-  tooltipData?: { type: string; hp: number; maxHp: number; ap: number; maxAp: number; atk: number; rng: number }
+  tooltipData?: {
+    type: string
+    hp: number
+    maxHp: number
+    ap: number
+    maxAp: number
+    atk: number
+    rng: number
+  }
   tooltipPosition?: { x: number; y: number }
   onUnitClick?: (unitId: string) => void
   onUnitHover?: (unitId: string) => void
@@ -128,32 +138,34 @@ export function GridBoard({
           )}
 
         {/* Labels - Rows */}
-        {showCoordinates && Array.from({ length: size }).map((_, i) => (
-          <text
-            key={`row-${i}`}
-            x="-25"
-            y={i * tileSize + 60}
-            fill="#00FF00"
-            className="text-2xl font-mono opacity-60"
-            textAnchor="middle"
-          >
-            {size - i}
-          </text>
-        ))}
+        {showCoordinates &&
+          Array.from({ length: size }).map((_, i) => (
+            <text
+              key={`row-${i}`}
+              x="-25"
+              y={i * tileSize + 60}
+              fill="#00FF00"
+              className="text-2xl font-mono opacity-60"
+              textAnchor="middle"
+            >
+              {size - i}
+            </text>
+          ))}
 
         {/* Labels - Columns */}
-        {showCoordinates && cols.map((col, i) => (
-          <text
-            key={`col-${i}`}
-            x={i * tileSize + 50}
-            y={boardSize + 30}
-            fill="#00FF00"
-            className="text-2xl font-mono opacity-60"
-            textAnchor="middle"
-          >
-            {col}
-          </text>
-        ))}
+        {showCoordinates &&
+          cols.map((col, i) => (
+            <text
+              key={`col-${i}`}
+              x={i * tileSize + 50}
+              y={boardSize + 30}
+              fill="#00FF00"
+              className="text-2xl font-mono opacity-60"
+              textAnchor="middle"
+            >
+              {col}
+            </text>
+          ))}
 
         {/* Grid Lines */}
         {Array.from({ length: size + 1 }).map((_, i) => (
@@ -264,7 +276,8 @@ export function GridBoard({
               fill="#00FF00"
               className="text-xs font-mono"
             >
-              AP: {tooltipData.ap}/{tooltipData.maxAp} ATK: {tooltipData.atk} RNG: {tooltipData.rng}
+              AP: {tooltipData.ap}/{tooltipData.maxAp} ATK: {tooltipData.atk}{' '}
+              RNG: {tooltipData.rng}
             </text>
           </g>
         )}

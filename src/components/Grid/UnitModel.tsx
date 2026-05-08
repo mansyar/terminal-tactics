@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { TILE_SIZE } from './GridBoard'
 
 interface UnitModelProps {
   type: string
@@ -82,8 +83,8 @@ export function UnitModel({
     <motion.g
       initial={false}
       animate={{
-        x: x * 100,
-        y: y * 100,
+        x: x * TILE_SIZE,
+        y: y * TILE_SIZE,
         opacity: 1,
       }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}

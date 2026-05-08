@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { hasLineOfSight } from '../lib/combatSystem'
+import { TILE_SIZE } from '../components/Grid/GridBoard'
 import type { LogEntry } from '../components/Terminal/ConsoleHistory'
 
 export function useGameDerivedState(
@@ -126,7 +127,7 @@ export function useGameDerivedState(
         atk: unit.atk ?? 0,
         rng: unit.rng ?? 1,
       },
-      position: { x: unit.x * 100, y: unit.y * 100 },
+      position: { x: unit.x * TILE_SIZE, y: unit.y * TILE_SIZE },
     }
   }, [gameState, hoveredUnit])
 

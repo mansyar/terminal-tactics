@@ -157,7 +157,10 @@ function App() {
     gameState.status === 'finished'
   ) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div
+        id="game-content"
+        className="min-h-screen bg-black flex items-center justify-center p-4"
+      >
         {gameState?.status === 'lobby' ? (
           <div className="space-y-4 text-center">
             <div className="text-matrix-primary text-2xl font-mono animate-pulse uppercase glow">
@@ -255,127 +258,144 @@ function App() {
       : gameState.p2RevealedTiles
 
   return (
-    <GameLayout
-      cli={
-        <CLIInput
-          ref={cliRef}
-          onCommand={gameCommands.handleCommand}
-          onTyping={(isTyping) =>
-            setTyping({ gameId: gameState._id, playerId, isTyping })
-          }
-          units={gameCommands.visibleUnits}
-          playerId={gameState.p1 === playerId ? 'p1' : 'p2'}
-        />
-      }
-      sidebar={
-        <div className="flex flex-col h-full overflow-hidden">
-          <div className="p-4 space-y-4 border-b border-matrix-primary/30 text-xs">
-            <div className="border border-matrix-primary/30 p-2">
-              <div className="text-[10px] text-matrix-primary/50 uppercase">
-                Operative_ID
-              </div>
-              <div className="text-matrix-primary italic font-bold truncate">
-                {playerId}
-              </div>
-            </div>
-
-            <DisconnectBanner
-              opponentStatus={opponentStatus}
-              myStatus={myStatus}
-              remainingGraceMs={
-                disconnectStartTime
-                  ? Math.max(0, 120_000 - (Date.now() - disconnectStartTime))
-                  : null
+    <>
+      <a
+        href="#game-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:px-4 focus:py-2 focus:bg-black focus:text-matrix-primary focus:border focus:border-matrix-primary focus:font-mono focus:text-sm"
+      >
+        Skip to game content
+      </a>
+      <div id="game-content">
+        <GameLayout
+          cli={
+            <CLIInput
+              ref={cliRef}
+              onCommand={gameCommands.handleCommand}
+              onTyping={(isTyping) =>
+                setTyping({ gameId: gameState._id, playerId, isTyping })
               }
+              units={gameCommands.visibleUnits}
+              playerId={gameState.p1 === playerId ? 'p1' : 'p2'}
             />
-
-            <TurnIndicator
-              turnNum={gameState.turnNum}
-              isMyTurn={isMyTurn}
-              enemyTyping={otherPlayerTyping}
-              enemyDisconnected={opponentStatus === 'disconnected'}
-            />
-
-            <div className="flex gap-2">
-              <div className="flex-1 border border-matrix-primary/30 p-2">
-                <div className="text-[10px] text-matrix-primary/50 uppercase">
-                  RAP
+          }
+          sidebar={
+            <div className="flex flex-col h-full overflow-hidden">
+              <div className="p-4 space-y-4 border-b border-matrix-primary/30 text-xs">
+                <div className="border border-matrix-primary/30 p-2">
+                  <div className="text-[10px] text-matrix-primary/50 uppercase">
+                    Operative_ID
+                  </div>
+                  <div className="text-matrix-primary italic font-bold truncate">
+                    {playerId}
+                  </div>
                 </div>
-                <div className="text-matrix-primary font-bold text-center">
-                  {(gameState.p1 === playerId
-                    ? gameState.p1Rap
-                    : gameState.p2Rap) || 0}
-                  /3
-                </div>
-              </div>
-              <div className="flex-1">
-                <TimerDisplay
-                  startTime={gameState.turnStartTime || Date.now()}
-                  durationMs={90000}
-                  label="Turn"
-                  paused={isTimerPaused}
-                  onTimeout={() =>
-                    isMyTurn && checkTurnTimeout({ gameId: gameState._id })
+
+                <DisconnectBanner
+                  opponentStatus={opponentStatus}
+                  myStatus={myStatus}
+                  remainingGraceMs={
+                    disconnectStartTime
+                      ? Math.max(
+                          0,
+                          120_000 - (Date.now() - disconnectStartTime),
+                        )
+                      : null
                   }
                 />
-              </div>
-            </div>
 
-            <div className="text-[10px] text-matrix-primary/50 uppercase px-1">
-              Code: {gameState.code}
+                <TurnIndicator
+                  turnNum={gameState.turnNum}
+                  isMyTurn={isMyTurn}
+                  enemyTyping={otherPlayerTyping}
+                  enemyDisconnected={opponentStatus === 'disconnected'}
+                />
+
+                <div className="flex gap-2">
+                  <div className="flex-1 border border-matrix-primary/30 p-2">
+                    <div className="text-[10px] text-matrix-primary/50 uppercase">
+                      RAP
+                    </div>
+                    <div className="text-matrix-primary font-bold text-center">
+                      {(gameState.p1 === playerId
+                        ? gameState.p1Rap
+                        : gameState.p2Rap) || 0}
+                      /3
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <TimerDisplay
+                      startTime={gameState.turnStartTime || Date.now()}
+                      durationMs={90000}
+                      label="Turn"
+                      paused={isTimerPaused}
+                      onTimeout={() =>
+                        isMyTurn && checkTurnTimeout({ gameId: gameState._id })
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className="text-[10px] text-matrix-primary/50 uppercase px-1">
+                  Code: {gameState.code}
+                </div>
+              </div>
+              <ConsoleHistory logs={gameCommands.formattedLogs} />
             </div>
-          </div>
-          <ConsoleHistory logs={gameCommands.formattedLogs} />
-        </div>
-      }
-    >
-      <div
-        className={`flex-1 flex items-center justify-center p-4 h-full relative ${
-          gameState.kernelPanicActive ? 'glitch' : ''
-        }`}
-      >
-        {gameState.kernelPanicActive && (
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-red-900/80 text-white px-8 py-2 border-2 border-red-500 animate-bounce font-bold tracking-[0.2em]">
-            KERNEL_PANIC: {gameState.kernelPanicActive}
-          </div>
-        )}
-        <GridBoard
-          mapData={gameState.mapData}
-          revealedTiles={revealedTiles || []}
-          currentlyVisibleTiles={Array.from(gameCommands.currentlyVisibleTiles)}
-          showCoordinates={gameCommands.showCoordinates}
-          lastMoveOrigin={gameCommands.lastMoveOrigin ?? undefined}
-          lastMoveDestination={gameCommands.lastMoveDestination ?? undefined}
-          attackRangeTiles={gameCommands.attackRangeTiles}
-          tooltipData={gameCommands.hoverTooltipData ?? undefined}
-          tooltipPosition={gameCommands.hoverTooltipPosition ?? undefined}
-          onUnitClick={gameCommands.handleUnitClick}
-          onUnitHover={gameCommands.handleUnitHover}
-          onUnitLeave={gameCommands.handleUnitLeave}
+          }
         >
-          {gameCommands.visibleUnits.map((u: any) => (
-            <UnitModel
-              key={u._id}
-              type={u.type}
-              x={u.x}
-              y={u.y}
-              ownerId={u.ownerId}
-              direction={u.direction}
-              ap={u.ap}
-              maxAp={u.maxAp}
-              isStealthed={u.isStealthed}
-              isOverwatching={u.isOverwatching}
-              hp={u.hp}
-              maxHp={u.maxHp}
-              onClick={() => gameCommands.handleUnitClick(u._id)}
-              onMouseEnter={() => gameCommands.handleUnitHover(u._id)}
-              onMouseLeave={gameCommands.handleUnitLeave}
-              currentPlayerId={myPlayerKey}
-            />
-          ))}
-        </GridBoard>
+          <div
+            className={`flex-1 flex items-center justify-center p-4 h-full relative ${
+              gameState.kernelPanicActive ? 'glitch' : ''
+            }`}
+          >
+            {gameState.kernelPanicActive && (
+              <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-red-900/80 text-white px-8 py-2 border-2 border-red-500 animate-bounce font-bold tracking-[0.2em]">
+                KERNEL_PANIC: {gameState.kernelPanicActive}
+              </div>
+            )}
+            <GridBoard
+              mapData={gameState.mapData}
+              revealedTiles={revealedTiles || []}
+              currentlyVisibleTiles={Array.from(
+                gameCommands.currentlyVisibleTiles,
+              )}
+              showCoordinates={gameCommands.showCoordinates}
+              lastMoveOrigin={gameCommands.lastMoveOrigin ?? undefined}
+              lastMoveDestination={
+                gameCommands.lastMoveDestination ?? undefined
+              }
+              attackRangeTiles={gameCommands.attackRangeTiles}
+              tooltipData={gameCommands.hoverTooltipData ?? undefined}
+              tooltipPosition={gameCommands.hoverTooltipPosition ?? undefined}
+              onUnitClick={gameCommands.handleUnitClick}
+              onUnitHover={gameCommands.handleUnitHover}
+              onUnitLeave={gameCommands.handleUnitLeave}
+            >
+              {gameCommands.visibleUnits.map((u: any) => (
+                <UnitModel
+                  key={u._id}
+                  type={u.type}
+                  x={u.x}
+                  y={u.y}
+                  ownerId={u.ownerId}
+                  direction={u.direction}
+                  ap={u.ap}
+                  maxAp={u.maxAp}
+                  isStealthed={u.isStealthed}
+                  isOverwatching={u.isOverwatching}
+                  hp={u.hp}
+                  maxHp={u.maxHp}
+                  onClick={() => gameCommands.handleUnitClick(u._id)}
+                  onMouseEnter={() => gameCommands.handleUnitHover(u._id)}
+                  onMouseLeave={gameCommands.handleUnitLeave}
+                  currentPlayerId={myPlayerKey}
+                />
+              ))}
+            </GridBoard>
+          </div>
+        </GameLayout>
       </div>
-    </GameLayout>
+    </>
   )
 }
 

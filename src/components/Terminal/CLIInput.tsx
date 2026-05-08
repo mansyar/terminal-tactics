@@ -198,10 +198,18 @@ export const CLIInput = forwardRef<CLIInputHandle, CLIInputProps>(
       <div className="relative">
         {suggestions.length > 0 && (
           <div className="absolute bottom-full left-0 mb-2 bg-black border border-matrix-primary shadow-[0_0_15px_rgba(0,255,0,0.3)] min-w-[200px] z-50 terminal-fade">
-            <ul className="py-1">
+            <ul
+              className="py-1"
+              role="listbox"
+              id="suggestions-list"
+              aria-label="Command suggestions"
+            >
               {suggestions.map((s, i) => (
                 <li
                   key={i}
+                  id={`suggestion-${i}`}
+                  role="option"
+                  aria-selected={i === selectedIndex}
                   onClick={() => applySuggestion(s)}
                   className={`px-3 py-1 font-mono text-xs cursor-pointer flex justify-between gap-4 ${
                     i === selectedIndex
@@ -240,6 +248,14 @@ export const CLIInput = forwardRef<CLIInputHandle, CLIInputProps>(
             spellCheck={false}
             autoComplete="off"
             tabIndex={0}
+            role="combobox"
+            aria-autocomplete="list"
+            aria-controls="suggestions-list"
+            aria-expanded={suggestions.length > 0}
+            aria-activedescendant={
+              selectedIndex >= 0 ? `suggestion-${selectedIndex}` : undefined
+            }
+            aria-label="Command input"
             className="flex-1 bg-transparent border-none outline-none text-matrix-primary font-mono placeholder:text-matrix-primary/20"
             placeholder="ENTER_COMMAND..."
           />

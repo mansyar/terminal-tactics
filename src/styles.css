@@ -16,6 +16,11 @@
   font-family: var(--font-mono);
 }
 
+*:focus-visible {
+  outline: 2px solid var(--color-matrix-primary);
+  outline-offset: 2px;
+}
+
 body {
   margin: 0;
   overflow: hidden;
@@ -227,4 +232,35 @@ body::after {
 .stealth-shimmer {
   animation: stealth-shimmer 3s steps(3) infinite;
   filter: drop-shadow(0 0 2px rgba(0, 255, 255, 0.5));
+}
+
+/* HIGH CONTRAST MODE */
+@media (prefers-contrast: more) {
+  :root {
+    --color-matrix-primary: #33FF33;
+    --color-matrix-secondary: #00FF00;
+  }
+  .terminal-border {
+    box-shadow: none;
+    border-width: 2px;
+  }
+  body::before {
+    opacity: 0 !important;
+  }
+  .glow, .glow-red {
+    text-shadow: none;
+  }
+}
+
+/* REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+  body::after { animation: none !important; }
+  .glitch { animation: none !important; }
+  .stealth-shimmer { animation: none !important; }
+  .terminal-fade { animation: none !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

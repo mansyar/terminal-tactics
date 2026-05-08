@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { TILE_SIZE } from './GridBoard'
 
 interface UnitModelProps {
@@ -85,6 +85,7 @@ export function UnitModel({
       : ownerId === 'p1'
         ? 'p1'
         : 'p2'
+  const prefersReducedMotion = useReducedMotion()
   const arrowPoints = getArrowPoints(direction)
 
   return (
@@ -96,7 +97,11 @@ export function UnitModel({
         y: y * TILE_SIZE,
         opacity: 1,
       }}
-      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      transition={
+        prefersReducedMotion
+          ? { duration: 0 }
+          : { type: 'spring', stiffness: 300, damping: 30 }
+      }
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

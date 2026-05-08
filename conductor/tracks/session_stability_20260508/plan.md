@@ -2,11 +2,11 @@
 
 ## Phase 1: Schema, Heartbeat & Disconnect Detection (Backend)
 
-- [ ] Task: Update Convex schema with presence fields
-    - [ ] Add `p1LastHeartbeat`, `p2LastHeartbeat` (optional `number` — timestamp) to `games` table
-    - [ ] Add `p1Status`, `p2Status` (optional `string` — "connected" | "disconnected" | "reconnecting") to `games` table
-    - [ ] Add `disconnectStartTime` (optional `number` — timestamp) to `games` table
-    - [ ] Run `bunx convex codegen` to regenerate types
+- [x] Task: Update Convex schema with presence fields [0728535]
+    - [x] Add `p1LastHeartbeat`, `p2LastHeartbeat` (optional `number` — timestamp) to `games` table
+    - [x] Add `p1Status`, `p2Status` (optional `string` — "connected" | "disconnected" | "reconnecting") to `games` table
+    - [x] Add `disconnectStartTime` (optional `number` — timestamp) to `games` table
+    - [x] Run `bunx convex codegen` to regenerate types
 - [ ] Task: Write tests for heartbeat and disconnect detection pure functions
     - [ ] Create `convex/presence.test.ts` following existing patterns (standalone handler, mocked ctx)
     - [ ] Test `heartbeatHandler` updates lastHeartbeat and sets status to "connected"

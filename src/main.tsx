@@ -7,13 +7,17 @@ import {
   createRoute,
   createRouter,
 } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { ConvexProvider, ConvexReactClient } from 'convex/react'
 
 import './styles.css'
 import App from './App.tsx'
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string)
+
+// TanStackRouterDevtools: only imported in dev; Vite tree-shakes the dead import branch in production
+const TanStackRouterDevtools = import.meta.env.DEV
+  ? (await import('@tanstack/react-router-devtools')).TanStackRouterDevtools
+  : () => null
 
 const rootRoute = createRootRoute({
   component: () => (

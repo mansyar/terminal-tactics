@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../convex/_generated/api'
 import './styles.css'
@@ -16,8 +16,10 @@ import { DisconnectBanner } from './components/DisconnectBanner'
 import { useGameCommands } from './hooks/useGameCommands'
 import { useHeartbeat } from './hooks/useHeartbeat'
 import { TabCoordinator } from './lib/tabCoordinator'
+import type { CLIInputHandle } from './components/Terminal/CLIInput'
 
 function App() {
+  const cliRef = useRef<CLIInputHandle>(null)
   const [playerId] = useState(() => getOrSetUserId())
   const [activeGameId, setActiveGameId] = useState<any>(() => {
     if (typeof window !== 'undefined') {
@@ -119,6 +121,18 @@ function App() {
     return () => coordinator.stop()
   }, [activeGameId])
 
+  // Global Escape key handler — return focus to CLI
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      cliRef.current?.focusInput()
+    }
+  }, [])
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [handleKeyDown])
+
   // Sync activeGameId to localStorage
   useEffect(() => {
     if (activeGameId) {
@@ -157,6 +171,7 @@ function App() {
             </div>
             <button
               onClick={() => setActiveGameId(null)}
+              tabIndex={0}
               className="px-4 py-2 border border-matrix-primary/30 text-matrix-primary/50 hover:text-matrix-primary hover:border-matrix-primary transition-all font-mono text-xs"
             >
               QUIT_SESSION
@@ -194,6 +209,7 @@ function App() {
             </div>
             <button
               onClick={() => setActiveGameId(null)}
+              tabIndex={0}
               className="mt-8 px-6 py-3 border border-matrix-primary text-matrix-primary hover:bg-matrix-primary hover:text-black transition-all font-mono uppercase tracking-widest text-sm"
             >
               RETURN_TO_BASE
@@ -242,6 +258,7 @@ function App() {
     <GameLayout
       cli={
         <CLIInput
+          ref={cliRef}
           onCommand={gameCommands.handleCommand}
           onTyping={(isTyping) =>
             setTyping({ gameId: gameState._id, playerId, isTyping })

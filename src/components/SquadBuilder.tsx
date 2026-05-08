@@ -64,6 +64,7 @@ export function SquadBuilder({
             key={type}
             onClick={() => addUnit(type)}
             disabled={remaining < stats.cost || squad.length >= 5}
+            tabIndex={0}
             className="border border-matrix-primary/30 p-4 text-left hover:bg-matrix-primary/10 disabled:opacity-30 disabled:hover:bg-transparent transition-all group"
           >
             <div className="flex justify-between items-start">
@@ -116,6 +117,7 @@ export function SquadBuilder({
         <button
           onClick={() => onDeploy(squad)}
           disabled={!isSquadValid}
+          tabIndex={0}
           className="w-full py-3 border-2 border-matrix-primary text-matrix-primary font-bold hover:bg-matrix-primary hover:text-black transition-all disabled:opacity-20 disabled:hover:bg-transparent uppercase glow-sm"
         >
           Initiate_Deployment_Sequence

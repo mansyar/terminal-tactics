@@ -33,4 +33,16 @@ describe('TimerDisplay', () => {
     const timeSpan = container.querySelector('.text-xl.font-bold')
     expect(timeSpan?.className).toContain('glow-red')
   })
+
+  it('shows TIMER_PAUSED when paused prop is true', async () => {
+    render(
+      <TimerDisplay
+        startTime={1000000}
+        durationMs={60000}
+        label="TURN"
+        paused={true}
+      />,
+    )
+    expect(screen.getByText('TIMER_PAUSED')).toBeDefined()
+  })
 })

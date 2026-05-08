@@ -12,6 +12,7 @@ import { TurnIndicator } from './components/TurnIndicator'
 import { getOrSetUserId } from './lib/utils'
 import { SquadBuilder } from './components/SquadBuilder'
 import { TimerDisplay } from './components/TimerDisplay'
+import { DisconnectBanner } from './components/DisconnectBanner'
 import { useGameCommands } from './hooks/useGameCommands'
 import { useHeartbeat } from './hooks/useHeartbeat'
 import { TabCoordinator } from './lib/tabCoordinator'
@@ -32,6 +33,10 @@ function App() {
   const logs = useQuery(
     api.game.getFilteredLogs,
     gameState ? { gameId: gameState._id, playerId } : 'skip',
+  )
+  const connectionStatus = useQuery(
+    api.presence.getConnectionStatus,
+    gameState?._id ? { gameId: gameState._id } : 'skip',
   )
   const logCommand = useMutation(api.game.logCommand)
   const setTyping = useMutation(api.lobby.setTyping)
@@ -209,6 +214,21 @@ function App() {
     (gameState.currentPlayer === 'p2' && gameState.p2 === playerId)
 
   const myPlayerKey = gameState.p1 === playerId ? 'p1' : 'p2'
+  const opponentPlayerKey = myPlayerKey === 'p1' ? 'p2' : 'p1'
+
+  const myStatus = connectionStatus
+    ? myPlayerKey === 'p1'
+      ? connectionStatus.p1Status
+      : connectionStatus.p2Status
+    : 'connected'
+  const opponentStatus = connectionStatus
+    ? opponentPlayerKey === 'p1'
+      ? connectionStatus.p1Status
+      : connectionStatus.p2Status
+    : 'connected'
+  const disconnectStartTime = connectionStatus?.disconnectStartTime ?? null
+
+  const isTimerPaused = isMyTurn && myStatus === 'disconnected'
 
   const otherPlayerTyping =
     playerId === gameState.p1 ? gameState.p2Typing : gameState.p1Typing
@@ -242,10 +262,21 @@ function App() {
               </div>
             </div>
 
+            <DisconnectBanner
+              opponentStatus={opponentStatus}
+              myStatus={myStatus}
+              remainingGraceMs={
+                disconnectStartTime
+                  ? Math.max(0, 120_000 - (Date.now() - disconnectStartTime))
+                  : null
+              }
+            />
+
             <TurnIndicator
               turnNum={gameState.turnNum}
               isMyTurn={isMyTurn}
               enemyTyping={otherPlayerTyping}
+              enemyDisconnected={opponentStatus === 'disconnected'}
             />
 
             <div className="flex gap-2">
@@ -265,6 +296,7 @@ function App() {
                   startTime={gameState.turnStartTime || Date.now()}
                   durationMs={90000}
                   label="Turn"
+                  paused={isTimerPaused}
                   onTimeout={() =>
                     isMyTurn && checkTurnTimeout({ gameId: gameState._id })
                   }

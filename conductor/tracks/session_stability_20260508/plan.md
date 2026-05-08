@@ -7,29 +7,29 @@
     - [x] Add `p1Status`, `p2Status` (optional `string` — "connected" | "disconnected" | "reconnecting") to `games` table
     - [x] Add `disconnectStartTime` (optional `number` — timestamp) to `games` table
     - [x] Run `bunx convex codegen` to regenerate types
-- [ ] Task: Write tests for heartbeat and disconnect detection pure functions
-    - [ ] Create `convex/presence.test.ts` following existing patterns (standalone handler, mocked ctx)
-    - [ ] Test `heartbeatHandler` updates lastHeartbeat and sets status to "connected"
-    - [ ] Test `checkDisconnectHandler` marks player "disconnected" after 30s of no heartbeat
-    - [ ] Test heartbeat fails for non-existent game
-    - [ ] Test heartbeat fails for non-participant player
-    - [ ] Test that a connected player (recent heartbeat) is NOT marked as disconnected
-    - [ ] Test dual-disconnect scenario: neither player is auto-forfeited here (grace period handles it)
-- [ ] Task: Implement heartbeat mutation
-    - [ ] Create `convex/presence.ts` with `heartbeatHandler` (standalone exported function) + `heartbeat` mutation wrapper
-    - [ ] Follow existing pattern: export raw handler for testing (like `createLobbyHandler`), mutation wraps it
-    - [ ] Validate gameId exists and player is a participant (check p1/p2)
-    - [ ] Set player's status to "connected" and update lastHeartbeat timestamp
-- [ ] Task: Implement disconnect detection
-    - [ ] Create `checkDisconnectHandler` + `checkDisconnect` mutation (follow existing pattern)
-    - [ ] Check both players' lastHeartbeat vs Date.now()
-    - [ ] If no heartbeat for 30s, mark player as "disconnected" and set `disconnectStartTime` (if not already set)
-    - [ ] Do NOT mutate state for a player already marked disconnected (idempotent)
-    - [ ] Create `getConnectionStatus` query returning both players' status fields
-    - [ ] Wire `checkDisconnect` into existing timer polling in `useGameCommands.ts` (5s interval)
-- [ ] Task: Initialize presence at game creation
-    - [ ] In `convex/squadBuilder.ts` (`startGame`), initialize `p1Status`/`p2Status` as "connected" and set `lastHeartbeat` timestamps
-    - [ ] Also initialize P1 presence in `createLobbyHandler` and P2 presence in `joinLobby`/`joinQuickPlay`
+- [x] Task: Write tests for heartbeat and disconnect detection pure functions [551f530]
+    - [x] Create `convex/presence.test.ts` following existing patterns (standalone handler, mocked ctx)
+    - [x] Test `heartbeatHandler` updates lastHeartbeat and sets status to "connected"
+    - [x] Test `checkDisconnectHandler` marks player "disconnected" after 30s of no heartbeat
+    - [x] Test heartbeat fails for non-existent game
+    - [x] Test heartbeat fails for non-participant player
+    - [x] Test that a connected player (recent heartbeat) is NOT marked as disconnected
+    - [x] Test dual-disconnect scenario: neither player is auto-forfeited here (grace period handles it)
+- [x] Task: Implement heartbeat mutation [551f530]
+    - [x] Create `convex/presence.ts` with `heartbeatHandler` (standalone exported function) + `heartbeat` mutation wrapper
+    - [x] Follow existing pattern: export raw handler for testing (like `createLobbyHandler`), mutation wraps it
+    - [x] Validate gameId exists and player is a participant (check p1/p2)
+    - [x] Set player's status to "connected" and update lastHeartbeat timestamp
+- [x] Task: Implement disconnect detection [551f530]
+    - [x] Create `checkDisconnectHandler` + `checkDisconnect` mutation (follow existing pattern)
+    - [x] Check both players' lastHeartbeat vs Date.now()
+    - [x] If no heartbeat for 30s, mark player as "disconnected" and set `disconnectStartTime` (if not already set)
+    - [x] Do NOT mutate state for a player already marked disconnected (idempotent)
+    - [x] Create `getConnectionStatus` query returning both players' status fields
+    - [x] Wire `checkDisconnect` into existing timer polling in `useGameCommands.ts` (5s interval)
+- [x] Task: Initialize presence at game creation [551f530]
+    - [x] In `convex/squadBuilder.ts` (`startGame`), initialize `p1Status`/`p2Status` as "connected" and set `lastHeartbeat` timestamps
+    - [x] Also initialize P1 presence in `createLobbyHandler` and P2 presence in `joinLobby`/`joinQuickPlay`
 - [ ] Task: Conductor - User Manual Verification 'Schema, Heartbeat & Disconnect Detection' (Protocol in workflow.md)
 
 ## Phase 2: Grace Period & Auto-Forfeit (Backend)

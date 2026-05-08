@@ -91,7 +91,10 @@ export function UnitModel({
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      style={{ cursor: onClick ? 'pointer' : undefined }}
+      style={{
+        cursor: onClick ? 'pointer' : undefined,
+        willChange: 'transform, opacity',
+      }}
       className={isStealthed ? 'stealth-shimmer' : ''}
     >
       {/* Overwatch Direction Cone */}

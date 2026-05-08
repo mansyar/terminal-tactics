@@ -59,16 +59,6 @@ export function GridBoard({
         viewBox={`-50 -50 ${boardSize + 100} ${boardSize + 100}`}
         className="w-full h-full"
       >
-        <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur" />
-            <feMerge>
-              <feMergeNode in="coloredBlur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
         {/* Tiles / Terrain */}
         {mapData &&
           mapData.tiles.map((row, y) =>

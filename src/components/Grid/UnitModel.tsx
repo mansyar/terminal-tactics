@@ -77,10 +77,19 @@ export function UnitModel({
     }
   }
 
+  const ownerLabel =
+    currentPlayerId !== undefined
+      ? ownerId === currentPlayerId
+        ? 'friendly'
+        : 'enemy'
+      : ownerId === 'p1'
+        ? 'p1'
+        : 'p2'
   const arrowPoints = getArrowPoints(direction)
 
   return (
     <motion.g
+      aria-label={`${type} unit, ${ownerLabel}, HP ${hp} of ${maxHp}`}
       initial={false}
       animate={{
         x: x * TILE_SIZE,

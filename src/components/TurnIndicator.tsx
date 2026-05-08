@@ -14,7 +14,10 @@ export const TurnIndicator: React.FC<TurnIndicatorProps> = ({
   enemyDisconnected,
 }) => {
   return (
-    <div className="border border-matrix-primary/30 p-2 space-y-2">
+    <div
+      className="border border-matrix-primary/30 p-2 space-y-2"
+      role="status"
+    >
       <div className="text-[10px] text-matrix-primary/50 uppercase">
         Session_Status
       </div>

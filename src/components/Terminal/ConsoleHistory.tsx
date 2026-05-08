@@ -19,7 +19,10 @@ export function ConsoleHistory({ logs }: ConsoleHistoryProps) {
   }, [logs])
 
   return (
-    <div className="flex-1 overflow-y-auto font-mono text-sm space-y-1 p-2 scrollbar-hide">
+    <div
+      className="flex-1 overflow-y-auto font-mono text-sm space-y-1 p-2 scrollbar-hide"
+      aria-live="polite"
+    >
       {logs.map((log, i) => (
         <div key={i} className="flex space-x-2">
           <span className="text-matrix-primary/30 shrink-0">
@@ -46,9 +49,7 @@ export function ConsoleHistory({ logs }: ConsoleHistoryProps) {
                   : 'text-matrix-primary'
             }`}
             style={
-              log.isPrivate
-                ? { fontStyle: 'italic', opacity: 0.6 }
-                : undefined
+              log.isPrivate ? { fontStyle: 'italic', opacity: 0.6 } : undefined
             }
           >
             {log.type === 'input' && '> '}

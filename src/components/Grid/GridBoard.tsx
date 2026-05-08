@@ -58,6 +58,7 @@ export function GridBoard({
       <svg
         viewBox={`-50 -50 ${boardSize + 100} ${boardSize + 100}`}
         className="w-full h-full"
+        role="grid"
       >
         {/* Tiles / Terrain */}
         {mapData &&
@@ -67,11 +68,21 @@ export function GridBoard({
               const isRevealed = revealedSet.has(coord)
               const isVisible = visibleSet.has(coord)
 
+              const tileLabel = `${cols[x]}${size - y}`
+              const terrainLabel =
+                type === 'wall'
+                  ? 'wall'
+                  : type === 'highground'
+                    ? 'high ground'
+                    : 'floor'
+
               if (!isRevealed && !isVisible) {
                 return (
                   <g
                     key={`${x}-${y}`}
                     transform={`translate(${x * tileSize}, ${y * tileSize})`}
+                    role="gridcell"
+                    aria-label={`Tile ${tileLabel}, fog of war`}
                   >
                     <rect
                       width={tileSize}
@@ -94,6 +105,8 @@ export function GridBoard({
                 <g
                   key={`${x}-${y}`}
                   transform={`translate(${x * tileSize}, ${y * tileSize})`}
+                  role="gridcell"
+                  aria-label={`Tile ${tileLabel}, ${terrainLabel}`}
                 >
                   <rect
                     width={tileSize}
@@ -240,7 +253,7 @@ export function GridBoard({
 
         {/* Hover Tooltip */}
         {tooltipData && tooltipPosition && (
-          <g data-testid="hover-tooltip">
+          <g data-testid="hover-tooltip" role="tooltip">
             <rect
               x={tooltipPosition.x + 60}
               y={tooltipPosition.y - 30}

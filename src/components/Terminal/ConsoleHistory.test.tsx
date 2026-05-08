@@ -1,13 +1,14 @@
 import { describe, expect, test } from 'bun:test'
 import { render } from '@testing-library/react'
-import { ConsoleHistory, type LogEntry } from './ConsoleHistory'
+import { ConsoleHistory } from './ConsoleHistory'
+import type { LogEntry } from './ConsoleHistory'
 
 // Mock scrollIntoView
 Element.prototype.scrollIntoView = () => {}
 
 describe('ConsoleHistory - Private Log Styling (Task 7.2.4)', () => {
   test('renders public log output normally (green text)', () => {
-    const logs: LogEntry[] = [
+    const logs: Array<LogEntry> = [
       { timestamp: 1000, content: 'MOVE_SUCCESS', type: 'output' },
     ]
     const { container } = render(<ConsoleHistory logs={logs} />)
@@ -17,7 +18,7 @@ describe('ConsoleHistory - Private Log Styling (Task 7.2.4)', () => {
   })
 
   test('renders private log output with italic styling', () => {
-    const logs: LogEntry[] = [
+    const logs: Array<LogEntry> = [
       {
         timestamp: 1000,
         content: 'SCAN_COMPLETE',
@@ -31,7 +32,7 @@ describe('ConsoleHistory - Private Log Styling (Task 7.2.4)', () => {
   })
 
   test('renders private log with dimmed opacity', () => {
-    const logs: LogEntry[] = [
+    const logs: Array<LogEntry> = [
       {
         timestamp: 1000,
         content: 'SCAN_COMPLETE',
@@ -42,13 +43,11 @@ describe('ConsoleHistory - Private Log Styling (Task 7.2.4)', () => {
     const { container } = render(<ConsoleHistory logs={logs} />)
     const italicSpan = container.querySelector('span[style*="italic"]')
     expect(italicSpan).toBeTruthy()
-    expect(italicSpan!.getAttribute('style')?.toLowerCase()).toMatch(
-      /opacity/i,
-    )
+    expect(italicSpan!.getAttribute('style')?.toLowerCase()).toMatch(/opacity/i)
   })
 
   test('renders [PRIVATE] label for private log entries', () => {
-    const logs: LogEntry[] = [
+    const logs: Array<LogEntry> = [
       {
         timestamp: 1000,
         content: 'SCAN_COMPLETE: Area revealed.',
@@ -65,7 +64,7 @@ describe('ConsoleHistory - Private Log Styling (Task 7.2.4)', () => {
   })
 
   test('does not render [PRIVATE] label for public log entries', () => {
-    const logs: LogEntry[] = [
+    const logs: Array<LogEntry> = [
       { timestamp: 1000, content: 'MOVE_SUCCESS', type: 'output' },
     ]
     const { container } = render(<ConsoleHistory logs={logs} />)
@@ -77,7 +76,7 @@ describe('ConsoleHistory - Private Log Styling (Task 7.2.4)', () => {
   })
 
   test('private input entries also show italic styling', () => {
-    const logs: LogEntry[] = [
+    const logs: Array<LogEntry> = [
       {
         timestamp: 1000,
         content: 'scan D4',

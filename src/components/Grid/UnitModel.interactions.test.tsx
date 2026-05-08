@@ -1,5 +1,5 @@
 import { describe, expect, it, mock } from 'bun:test'
-import { render, fireEvent } from '@testing-library/react'
+import { fireEvent, render } from '@testing-library/react'
 import { UnitModel } from './UnitModel'
 
 describe('UnitModel - Interaction Callbacks (Task 7.1.0)', () => {
@@ -7,17 +7,17 @@ describe('UnitModel - Interaction Callbacks (Task 7.1.0)', () => {
     const onClick = mock(() => {})
     const { container } = render(
       <svg>
-          <UnitModel
-            type="K"
-            x={5}
-            y={3}
-            ownerId="p1"
-            hp={10}
-            maxHp={10}
-            ap={3}
-            maxAp={3}
-            onClick={onClick}
-          />
+        <UnitModel
+          type="K"
+          x={5}
+          y={3}
+          ownerId="p1"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+          onClick={onClick}
+        />
       </svg>,
     )
     const unitGroup = container.querySelector('g')
@@ -30,17 +30,17 @@ describe('UnitModel - Interaction Callbacks (Task 7.1.0)', () => {
     const onMouseEnter = mock(() => {})
     const { container } = render(
       <svg>
-          <UnitModel
-            type="S"
-            x={2}
-            y={5}
-            ownerId="p2"
-            hp={8}
-            maxHp={8}
-            ap={2}
-            maxAp={4}
-            onMouseEnter={onMouseEnter}
-          />
+        <UnitModel
+          type="S"
+          x={2}
+          y={5}
+          ownerId="p2"
+          hp={8}
+          maxHp={8}
+          ap={2}
+          maxAp={4}
+          onMouseEnter={onMouseEnter}
+        />
       </svg>,
     )
     const unitGroup = container.querySelector('g')
@@ -53,17 +53,17 @@ describe('UnitModel - Interaction Callbacks (Task 7.1.0)', () => {
     const onMouseLeave = mock(() => {})
     const { container } = render(
       <svg>
-          <UnitModel
-            type="M"
-            x={7}
-            y={8}
-            ownerId="p1"
-            hp={6}
-            maxHp={10}
-            ap={1}
-            maxAp={3}
-            onMouseLeave={onMouseLeave}
-          />
+        <UnitModel
+          type="M"
+          x={7}
+          y={8}
+          ownerId="p1"
+          hp={6}
+          maxHp={10}
+          ap={1}
+          maxAp={3}
+          onMouseLeave={onMouseLeave}
+        />
       </svg>,
     )
     const unitGroup = container.querySelector('g')
@@ -75,17 +75,17 @@ describe('UnitModel - Interaction Callbacks (Task 7.1.0)', () => {
   it('accepts currentPlayerId prop without crashing', () => {
     const { container } = render(
       <svg>
-          <UnitModel
-            type="A"
-            x={0}
-            y={0}
-            ownerId="p1"
-            hp={10}
-            maxHp={10}
-            ap={3}
-            maxAp={3}
-            currentPlayerId="p1"
-          />
+        <UnitModel
+          type="A"
+          x={0}
+          y={0}
+          ownerId="p1"
+          hp={10}
+          maxHp={10}
+          ap={3}
+          maxAp={3}
+          currentPlayerId="p1"
+        />
       </svg>,
     )
     expect(container.querySelector('g')).toBeTruthy()
@@ -94,7 +94,16 @@ describe('UnitModel - Interaction Callbacks (Task 7.1.0)', () => {
   it('does not throw when optional callbacks are omitted', () => {
     const { container } = render(
       <svg>
-        <UnitModel type="K" x={3} y={4} ownerId="p2" hp={5} maxHp={5} ap={2} maxAp={2} />
+        <UnitModel
+          type="K"
+          x={3}
+          y={4}
+          ownerId="p2"
+          hp={5}
+          maxHp={5}
+          ap={2}
+          maxAp={2}
+        />
       </svg>,
     )
     expect(container.querySelector('g')).toBeTruthy()

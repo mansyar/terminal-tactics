@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, mock, test } from 'bun:test'
-import { logCommandHandler } from './game'
+import { getFilteredLogsHandler, logCommandHandler } from './game'
 import { sendMessageHandler } from './chat'
-import { getFilteredLogsHandler } from './game'
 
 // Mock the Convex mutation context
 // @ts-ignore -- Bun mock types don't match Convex context types
@@ -109,11 +108,45 @@ describe('Log Visibility Schema (Task 7.2.1)', () => {
 
 describe('Log Filter Query (Task 7.2.3)', () => {
   const mockLogs = [
-    { gameId: 'g1', playerId: 'user_a', commandString: 'mv C2 C5', result: 'MOVE_SUCCESS', timestamp: 100, visibility: 'public' },
-    { gameId: 'g1', playerId: 'user_a', commandString: 'scan D4', result: 'SCAN_COMPLETE', timestamp: 200, visibility: 'private' },
-    { gameId: 'g1', playerId: 'user_b', commandString: 'inspect C2', result: 'UNIT_ID: [K]', timestamp: 300, visibility: 'private' },
-    { gameId: 'g1', playerId: 'user_b', commandString: 'atk D4 E5', result: 'ATTACK_HIT', timestamp: 400 },
-    { gameId: 'g1', playerId: 'user_b', commandString: 'end', result: 'TURN_ENDED', timestamp: 500, visibility: 'public' },
+    {
+      gameId: 'g1',
+      playerId: 'user_a',
+      commandString: 'mv C2 C5',
+      result: 'MOVE_SUCCESS',
+      timestamp: 100,
+      visibility: 'public',
+    },
+    {
+      gameId: 'g1',
+      playerId: 'user_a',
+      commandString: 'scan D4',
+      result: 'SCAN_COMPLETE',
+      timestamp: 200,
+      visibility: 'private',
+    },
+    {
+      gameId: 'g1',
+      playerId: 'user_b',
+      commandString: 'inspect C2',
+      result: 'UNIT_ID: [K]',
+      timestamp: 300,
+      visibility: 'private',
+    },
+    {
+      gameId: 'g1',
+      playerId: 'user_b',
+      commandString: 'atk D4 E5',
+      result: 'ATTACK_HIT',
+      timestamp: 400,
+    },
+    {
+      gameId: 'g1',
+      playerId: 'user_b',
+      commandString: 'end',
+      result: 'TURN_ENDED',
+      timestamp: 500,
+      visibility: 'public',
+    },
   ]
 
   let mockFilteredDb: any
@@ -137,7 +170,9 @@ describe('Log Filter Query (Task 7.2.3)', () => {
       { gameId: 'g1', playerId: 'user_a' },
     )
 
-    const publicLogs = result.filter((l: any) => l.visibility === 'public' || !l.visibility)
+    const publicLogs = result.filter(
+      (l: any) => l.visibility === 'public' || !l.visibility,
+    )
     expect(publicLogs.length).toBeGreaterThanOrEqual(2)
   })
 
@@ -173,7 +208,9 @@ describe('Log Filter Query (Task 7.2.3)', () => {
   test('returns logs ordered ascending by timestamp', () => {
     // Verify mock data is already sorted
     for (let i = 1; i < mockLogs.length; i++) {
-      expect(mockLogs[i].timestamp).toBeGreaterThanOrEqual(mockLogs[i - 1].timestamp)
+      expect(mockLogs[i].timestamp).toBeGreaterThanOrEqual(
+        mockLogs[i - 1].timestamp,
+      )
     }
   })
 })

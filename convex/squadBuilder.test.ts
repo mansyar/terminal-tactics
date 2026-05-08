@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
-import { submitDraft, UNIT_TEMPLATES } from './squadBuilder'
+import { UNIT_TEMPLATES, submitDraft } from './squadBuilder'
 
 const mockDb = {
   get: mock(() => null),
@@ -52,8 +52,14 @@ describe('squadBuilding logic', () => {
         p2: 'user_456',
       }))
 
-      const args = { gameId: 'game-1', playerId: 'user_123', squad: ['K', 'K', 'A', 'A'] }
-      await expect((submitDraft as any)._handler(mockCtx, args)).rejects.toThrow('INVALID_GAME_STATE')
+      const args = {
+        gameId: 'game-1',
+        playerId: 'user_123',
+        squad: ['K', 'K', 'A', 'A'],
+      }
+      await expect(
+        (submitDraft as any)._handler(mockCtx, args),
+      ).rejects.toThrow('INVALID_GAME_STATE')
     })
 
     it('throws error for invalid unit type', async () => {
@@ -64,8 +70,14 @@ describe('squadBuilding logic', () => {
         p2: 'user_456',
       }))
 
-      const args = { gameId: 'game-1', playerId: 'user_123', squad: ['X', 'K', 'A'] }
-      await expect((submitDraft as any)._handler(mockCtx, args)).rejects.toThrow('INVALID_UNIT_TYPE')
+      const args = {
+        gameId: 'game-1',
+        playerId: 'user_123',
+        squad: ['X', 'K', 'A'],
+      }
+      await expect(
+        (submitDraft as any)._handler(mockCtx, args),
+      ).rejects.toThrow('INVALID_UNIT_TYPE')
     })
 
     it('throws error for exceeding budget', async () => {
@@ -77,8 +89,14 @@ describe('squadBuilding logic', () => {
       }))
 
       // K(300) + K(300) + K(300) + S(150) + S(150) = 1200 > 1000
-      const args = { gameId: 'game-1', playerId: 'user_123', squad: ['K', 'K', 'K', 'S', 'S'] }
-      await expect((submitDraft as any)._handler(mockCtx, args)).rejects.toThrow('BUDGET_EXCEEDED')
+      const args = {
+        gameId: 'game-1',
+        playerId: 'user_123',
+        squad: ['K', 'K', 'K', 'S', 'S'],
+      }
+      await expect(
+        (submitDraft as any)._handler(mockCtx, args),
+      ).rejects.toThrow('BUDGET_EXCEEDED')
     })
 
     it('throws error when player is not part of the game', async () => {
@@ -89,8 +107,14 @@ describe('squadBuilding logic', () => {
         p2: 'user_456',
       }))
 
-      const args = { gameId: 'game-1', playerId: 'user_999', squad: ['K', 'K', 'A', 'A'] }
-      await expect((submitDraft as any)._handler(mockCtx, args)).rejects.toThrow('NOT_A_PLAYER')
+      const args = {
+        gameId: 'game-1',
+        playerId: 'user_999',
+        squad: ['K', 'K', 'A', 'A'],
+      }
+      await expect(
+        (submitDraft as any)._handler(mockCtx, args),
+      ).rejects.toThrow('NOT_A_PLAYER')
     })
 
     it('updates p1Squad correctly for p1 player', async () => {
@@ -98,15 +122,32 @@ describe('squadBuilding logic', () => {
       ;(mockDb as any).get = mock(() => {
         getCalls++
         if (getCalls === 1) {
-          return { _id: 'game-1', status: 'drafting', p1: 'user_123', p2: 'user_456' }
+          return {
+            _id: 'game-1',
+            status: 'drafting',
+            p1: 'user_123',
+            p2: 'user_456',
+          }
         }
-        return { _id: 'game-1', status: 'drafting', p1: 'user_123', p2: 'user_456', p1Squad: ['K', 'K', 'A', 'A'] }
+        return {
+          _id: 'game-1',
+          status: 'drafting',
+          p1: 'user_123',
+          p2: 'user_456',
+          p1Squad: ['K', 'K', 'A', 'A'],
+        }
       })
 
-      const args = { gameId: 'game-1', playerId: 'user_123', squad: ['K', 'K', 'A', 'A'] }
+      const args = {
+        gameId: 'game-1',
+        playerId: 'user_123',
+        squad: ['K', 'K', 'A', 'A'],
+      }
       await (submitDraft as any)._handler(mockCtx, args)
 
-      expect(mockDb.patch).toHaveBeenCalledWith('game-1', { p1Squad: ['K', 'K', 'A', 'A'] })
+      expect(mockDb.patch).toHaveBeenCalledWith('game-1', {
+        p1Squad: ['K', 'K', 'A', 'A'],
+      })
     })
   })
 })

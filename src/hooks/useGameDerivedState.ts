@@ -96,7 +96,7 @@ export function useGameDerivedState(
     const unit = gameState.units.find((u: any) => u._id === targetId)
     if (!unit) return []
     const rng = unit.rng || 1
-    const tiles: string[] = []
+    const tiles: Array<string> = []
     for (let dy = -rng; dy <= rng; dy++) {
       for (let dx = -rng; dx <= rng; dx++) {
         if (Math.abs(dx) + Math.abs(dy) <= rng) {

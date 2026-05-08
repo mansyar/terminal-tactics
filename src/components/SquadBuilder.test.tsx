@@ -1,7 +1,7 @@
-import { describe, expect, it, mock, afterEach } from 'bun:test'
-import { render, screen, fireEvent, cleanup } from '@testing-library/react'
-import { SquadBuilder } from './SquadBuilder'
+import { afterEach, describe, expect, it, mock } from 'bun:test'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { UNIT_TEMPLATES } from '../../convex/squadBuilder'
+import { SquadBuilder } from './SquadBuilder'
 
 afterEach(cleanup)
 
@@ -96,8 +96,6 @@ describe('SquadBuilder', () => {
 
     fireEvent.click(screen.getByText(/Knight/).closest('button')!)
 
-    expect(
-      screen.getByText('> ERROR: MINIMUM_2_UNITS_REQUIRED'),
-    ).toBeTruthy()
+    expect(screen.getByText('> ERROR: MINIMUM_2_UNITS_REQUIRED')).toBeTruthy()
   })
 })

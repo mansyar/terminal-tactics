@@ -14,6 +14,7 @@ import { SquadBuilder } from './components/SquadBuilder'
 import { TimerDisplay } from './components/TimerDisplay'
 import { useGameCommands } from './hooks/useGameCommands'
 import { useHeartbeat } from './hooks/useHeartbeat'
+import { TabCoordinator } from './lib/tabCoordinator'
 
 function App() {
   const [playerId] = useState(() => getOrSetUserId())
@@ -93,6 +94,25 @@ function App() {
     heartbeatMutation: heartbeat,
     enabled: gameState?.status === 'playing',
   })
+
+  // Multi-tab prevention: start TabCoordinator when game is active
+  const [multiTabDetected, setMultiTabDetected] = useState(false)
+  void multiTabDetected // Suppress TS warning — used in Phase 5 UI
+  useEffect(() => {
+    if (!activeGameId) return
+
+    const coordinator = new TabCoordinator(activeGameId, {
+      onSecondaryTabDetected: () => {
+        setMultiTabDetected(true)
+      },
+      onPrimaryAbsent: () => {
+        setMultiTabDetected(false)
+      },
+    })
+
+    coordinator.start()
+    return () => coordinator.stop()
+  }, [activeGameId])
 
   // Sync activeGameId to localStorage
   useEffect(() => {

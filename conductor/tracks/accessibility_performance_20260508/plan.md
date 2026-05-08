@@ -25,22 +25,22 @@
 - [x] Commit with message: `feat(perf): Optimize animations for 60fps — replace SVG filter with CSS drop-shadow` [88f8df1]
 
 ### Task 1.3: Memory Profiling & Leak Fixes
-- [ ] Write test: Create a memory leak detection test that simulates a 10-turn game and checks for retained DOM nodes / orphaned Convex subscriptions.
-- [ ] Implement: Profile heap snapshots, clean up Convex subscriptions in `useEffect` return callbacks, truncate in-memory log history beyond 200 entries, fix any identified leaks.
-- [ ] Verify coverage and refactor if needed.
-- [ ] Commit with message: `feat(perf): Fix memory leaks in long game sessions`
+- [x] Write test: Create a memory leak detection test that simulates a 10-turn game and checks for retained DOM nodes / orphaned Convex subscriptions.
+- [x] Implement: Profile heap snapshots, clean up Convex subscriptions in `useEffect` return callbacks, truncate in-memory log history beyond 200 entries, fix any identified leaks.
+- [x] Verify coverage and refactor if needed.
+- [x] Commit with message: `feat(perf): Fix memory leaks in long game sessions` [a4d4ca8]
 
-- [ ] Task: Conductor - User Manual Verification 'Phase 1: Performance Audit & Optimization' (Protocol in workflow.md)
+- [~] Task: Conductor - User Manual Verification 'Phase 1: Performance Audit & Optimization' (Protocol in workflow.md)
 
 ---
 
 ## Phase 2: Accessibility (WCAG 2.1 AA)
 
 ### Task 2.0: Foundation — Install A11y Testing Infrastructure
-- [ ] Write test: Verify `toHaveAccessibleName`, `toHaveRole`, `toHaveAccessibleDescription` matchers work in test suite.
-- [ ] Implement: Install `@testing-library/jest-dom` for accessible DOM matchers. Add `ConvexProvider` mock updates if needed for a11y test compatibility.
-- [ ] Verify coverage and refactor if needed.
-- [ ] Commit with message: `chore(a11y): Add accessibility testing infrastructure`
+- [x] Write test: Verify `toHaveAccessibleName`, `toHaveRole`, `toHaveAccessibleDescription` matchers work in test suite.
+- [x] Implement: Install `@testing-library/jest-dom` for accessible DOM matchers. Add `ConvexProvider` mock updates if needed for a11y test compatibility.
+- [x] Verify coverage and refactor if needed.
+- [x] Commit with message: `chore(a11y): Add accessibility testing infrastructure` [0b20de8]
 
 ### Task 2.1: Screen Reader Support — SVG Grid Roles & ARIA
 - [ ] Write test: Use `@testing-library/react` to query SVG elements by `role` and verify `aria-label` on grid tiles, unit icons, CLI input, buttons, timer displays, modals.

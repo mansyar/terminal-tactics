@@ -16,6 +16,7 @@ export function GridBoard({
   onUnitClick: _onUnitClick,
   onUnitHover: _onUnitHover,
   onUnitLeave: _onUnitLeave,
+  onTileTouch,
 }: {
   children?: React.ReactNode
   mapData?: { tiles: Array<Array<string>>; width: number; height: number }
@@ -38,6 +39,7 @@ export function GridBoard({
   onUnitClick?: (unitId: string) => void
   onUnitHover?: (unitId: string) => void
   onUnitLeave?: () => void
+  onTileTouch?: (coord: string) => void
 }) {
   // Unused internally — callbacks are wired directly in App.tsx via unit children.
   // Reserved for future use when GridBoard assumes click-delegation responsibility.
@@ -83,6 +85,7 @@ export function GridBoard({
                     transform={`translate(${x * tileSize}, ${y * tileSize})`}
                     role="gridcell"
                     aria-label={`Tile ${tileLabel}, fog of war`}
+                    onTouchStart={() => onTileTouch?.(tileLabel)}
                   >
                     <rect
                       width={tileSize}
@@ -107,6 +110,7 @@ export function GridBoard({
                   transform={`translate(${x * tileSize}, ${y * tileSize})`}
                   role="gridcell"
                   aria-label={`Tile ${tileLabel}, ${terrainLabel}`}
+                  onTouchStart={() => onTileTouch?.(tileLabel)}
                 >
                   <rect
                     width={tileSize}

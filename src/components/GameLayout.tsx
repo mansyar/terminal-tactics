@@ -12,7 +12,7 @@ export const GameLayout: React.FC<GameLayoutProps> = ({
   sidebar,
 }) => {
   return (
-    <div className="h-screen w-screen bg-matrix-bg flex flex-col md:flex-row p-4 gap-4 overflow-hidden font-mono selection:bg-matrix-primary selection:text-matrix-bg">
+    <div className="h-screen w-screen bg-matrix-bg flex flex-col landscape:flex-row md:flex-row p-4 gap-4 overflow-hidden font-mono selection:bg-matrix-primary selection:text-matrix-bg">
       {/* MAIN TERMINAL AREA */}
       <div className="flex-1 flex flex-col gap-4 min-w-0 h-full">
         {/* VIEWPORT / GRID AREA */}

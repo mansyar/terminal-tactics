@@ -248,6 +248,7 @@ export const CLIInput = forwardRef<CLIInputHandle, CLIInputProps>(
             spellCheck={false}
             autoComplete="off"
             tabIndex={0}
+            inputMode="text"
             role="combobox"
             aria-autocomplete="list"
             aria-controls="suggestions-list"

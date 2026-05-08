@@ -20,7 +20,7 @@ export function ConsoleHistory({ logs }: ConsoleHistoryProps) {
 
   return (
     <div
-      className="flex-1 overflow-y-auto font-mono text-sm space-y-1 p-2 scrollbar-hide"
+      className="flex-1 overflow-y-auto font-mono text-sm space-y-1 p-2 md:scrollbar-hide"
       aria-live="polite"
     >
       {logs.map((log, i) => (

@@ -13,6 +13,7 @@ import { getOrSetUserId } from './lib/utils'
 import { SquadBuilder } from './components/SquadBuilder'
 import { TimerDisplay } from './components/TimerDisplay'
 import { useGameCommands } from './hooks/useGameCommands'
+import { useHeartbeat } from './hooks/useHeartbeat'
 
 function App() {
   const [playerId] = useState(() => getOrSetUserId())
@@ -83,6 +84,14 @@ function App() {
       checkDisconnectGracePeriod,
       heartbeat,
     },
+  })
+
+  // Heartbeat: only active during "playing" phase
+  useHeartbeat({
+    gameId: activeGameId,
+    playerId,
+    heartbeatMutation: heartbeat,
+    enabled: gameState?.status === 'playing',
   })
 
   // Sync activeGameId to localStorage

@@ -1,5 +1,5 @@
-import { describe, expect, it, mock, afterEach } from 'bun:test'
-import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { afterEach, describe, expect, it, mock } from 'bun:test'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { CLIInput } from './CLIInput'
 
 mock.module('../../lib/audio', () => ({
@@ -18,9 +18,7 @@ afterEach(cleanup)
 describe('CLIInput', () => {
   it('renders the input field with placeholder ENTER_COMMAND...', () => {
     render(<CLIInput onCommand={mock()} />)
-    expect(
-      screen.getByPlaceholderText('ENTER_COMMAND...'),
-    ).toBeTruthy()
+    expect(screen.getByPlaceholderText('ENTER_COMMAND...')).toBeTruthy()
   })
 
   it('renders the > prompt', () => {
@@ -44,11 +42,11 @@ describe('CLIInput', () => {
     const onCommand = mock()
     render(<CLIInput onCommand={onCommand} />)
 
-    const input = screen.getByPlaceholderText('ENTER_COMMAND...') as HTMLInputElement
+    const input = screen.getByPlaceholderText('ENTER_COMMAND...')
     fireEvent.change(input, { target: { value: 'help' } })
     fireEvent.submit(input.closest('form')!)
 
-    expect(input.value).toBe('')
+    expect((input as HTMLInputElement).value).toBe('')
   })
 
   it('calls onTyping(true) when input changes to non-empty', () => {
@@ -94,11 +92,11 @@ describe('CLIInput', () => {
   it('Tab key applies the first suggestion', () => {
     render(<CLIInput onCommand={mock()} />)
 
-    const input = screen.getByPlaceholderText('ENTER_COMMAND...') as HTMLInputElement
+    const input = screen.getByPlaceholderText('ENTER_COMMAND...')
     fireEvent.change(input, { target: { value: 'h' } })
     fireEvent.keyDown(input, { key: 'Tab' })
 
-    expect(input.value).toBe('help')
+    expect((input as HTMLInputElement).value).toBe('help')
   })
 
   it('Escape key clears suggestions', () => {

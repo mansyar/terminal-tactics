@@ -10,6 +10,8 @@ export function useGameDerivedState(
   selectedUnit: string | null,
   hoveredUnit: string | null,
 ) {
+  const MAX_LOG_ENTRIES = 200
+
   const formattedLogs = useMemo(() => {
     const result: Array<LogEntry> = []
     if (!logs) return result
@@ -28,6 +30,10 @@ export function useGameDerivedState(
         type: l.result.startsWith('ERROR') ? 'error' : 'output',
         isPrivate,
       })
+    }
+    // Truncate to prevent unbounded memory growth in long game sessions
+    if (result.length > MAX_LOG_ENTRIES) {
+      return result.slice(result.length - MAX_LOG_ENTRIES)
     }
     return result
   }, [logs])

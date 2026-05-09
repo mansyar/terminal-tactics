@@ -79,10 +79,47 @@ function App() {
   )
   const playerHandle = playerData?.handle ?? playerId
 
+  // Phase 10: Opponent handle & stats
+  const opponentUserKey = gameState?.p1 === playerId ? 'p2' : 'p1'
+  const opponentId = gameState ? gameState[opponentUserKey] : null
+  const playersData = useQuery(
+    api.players.getPlayersByUserIds,
+    gameState &&
+      (gameState.status === 'playing' || gameState.status === 'finished')
+      ? {
+          userIds: [gameState.p1, gameState.p2].filter(
+            (id): id is string => !!id,
+          ),
+        }
+      : 'skip',
+  )
+  const enemyHandle = opponentId
+    ? (playersData?.[opponentId]?.handle ?? opponentId)
+    : undefined
+
+  const playerStats = useQuery(
+    api.players.getPlayerStats,
+    playerId ? { userId: playerId } : 'skip',
+  )
+  const opponentStats = useQuery(
+    api.players.getPlayerStats,
+    opponentId ? { userId: opponentId } : 'skip',
+  )
+
+  // Phase 10: Rematch
+  const initiateRematchMutation = useMutation(api.rematch.initiateRematch)
+  const clearRematchMutation = useMutation(api.rematch.clearRematch)
+  const rematchInfo = useQuery(
+    api.rematch.getRematchInfo,
+    activeGameId ? { gameId: activeGameId } : 'skip',
+  )
+
   // Suppress TS warnings — used in CLI commands and UI (Phase D/E)
   void setHandle
   void getMatchHistory
   void playerHandle
+  void initiateRematchMutation
+  void clearRematchMutation
 
   // Ensure player doc exists on mount
   useEffect(() => {
@@ -193,12 +230,23 @@ function App() {
             <div className="text-matrix-primary text-2xl font-mono animate-pulse uppercase glow">
               &gt; Waiting_for_Opponent...
             </div>
+            <div className="text-matrix-primary font-mono text-sm">
+              OPERATOR: <span className="font-bold">{playerHandle}</span>
+            </div>
             <div className="text-matrix-primary/60 font-mono text-sm">
               LOBBY_CODE:{' '}
               <span className="text-matrix-primary font-bold">
                 {gameState.code}
               </span>
             </div>
+            {gameState.p2 && (
+              <div className="text-matrix-primary/70 font-mono text-sm">
+                OPPONENT_JOINED:{' '}
+                <span className="text-matrix-primary">
+                  {playersData?.[gameState.p2]?.handle ?? gameState.p2}
+                </span>
+              </div>
+            )}
             <button
               onClick={() => setActiveGameId(null)}
               tabIndex={0}
@@ -221,7 +269,9 @@ function App() {
             <h1 className="text-4xl font-mono font-bold uppercase tracking-widest animate-pulse">
               {gameState.winner === playerId
                 ? 'MISSION_COMPLETE'
-                : 'MISSION_FAILED'}
+                : gameState.winner
+                  ? 'MISSION_FAILED'
+                  : 'DRAW'}
             </h1>
             <div
               className={`text-xl font-mono ${
@@ -232,18 +282,110 @@ function App() {
             >
               {gameState.winner === playerId
                 ? 'TARGET_NEUTRALIZED. SYSTEM SECURE.'
-                : 'CRITICAL FAILURE. SYSTEM COMPROMISED.'}
+                : gameState.winner
+                  ? 'CRITICAL FAILURE. SYSTEM COMPROMISED.'
+                  : 'MUTUAL_DESTRUCTION. CONNECTION_TERMINATED.'}
             </div>
-            <div className="text-xs text-matrix-primary/50 font-mono">
+
+            {/* Player stats */}
+            <div className="grid grid-cols-2 gap-4 border border-matrix-primary/20 p-3 text-xs font-mono">
+              <div>
+                <div className="text-matrix-primary/50 uppercase text-[10px]">
+                  {playerHandle}
+                </div>
+                <div className="text-matrix-primary">
+                  {playerStats
+                    ? `${playerStats.wins}W / ${playerStats.losses}L / ${playerStats.draws}D`
+                    : '--'}
+                </div>
+              </div>
+              <div>
+                <div className="text-matrix-primary/50 uppercase text-[10px]">
+                  {enemyHandle ?? 'ENEMY'}
+                </div>
+                <div className="text-red-400">
+                  {opponentStats
+                    ? `${opponentStats.wins}W / ${opponentStats.losses}L / ${opponentStats.draws}D`
+                    : '--'}
+                </div>
+              </div>
+            </div>
+
+            {/* Game details */}
+            <div className="text-xs text-matrix-primary/70 font-mono space-y-1">
+              <div>
+                TURNS_PLAYED:{' '}
+                <span className="text-matrix-primary">{gameState.turnNum}</span>
+              </div>
+              <div>
+                DURATION:{' '}
+                <span className="text-matrix-primary">
+                  {(gameState as any).gameStartTime &&
+                  (gameState as any).finishedAt
+                    ? (() => {
+                        const ms =
+                          (gameState as any).finishedAt -
+                          (gameState as any).gameStartTime
+                        const m = Math.floor(ms / 60000)
+                        const s = Math.round((ms % 60000) / 1000)
+                        return `${m}m ${s}s`
+                      })()
+                    : '--'}
+                </span>
+              </div>
+              <div>
+                RESULT:{' '}
+                <span className="text-matrix-primary">
+                  {gameState.winner === playerId
+                    ? 'VICTORY'
+                    : gameState.winner
+                      ? 'DEFEAT'
+                      : 'DRAW'}
+                </span>
+              </div>
+            </div>
+
+            <div className="text-[10px] text-matrix-primary/50 font-mono">
               OPERATION_LOG_SAVED &gt;&gt; /var/logs/{gameState._id}
             </div>
-            <button
-              onClick={() => setActiveGameId(null)}
-              tabIndex={0}
-              className="mt-8 px-6 py-3 border border-matrix-primary text-matrix-primary hover:bg-matrix-primary hover:text-black transition-all font-mono uppercase tracking-widest text-sm"
-            >
-              RETURN_TO_BASE
-            </button>
+
+            <div className="flex gap-3 justify-center mt-4">
+              {rematchInfo?.rematchCode ? (
+                <button
+                  onClick={() => {
+                    setActiveGameId(rematchInfo.rematchLobbyId)
+                  }}
+                  tabIndex={0}
+                  className="px-4 py-2 border border-matrix-primary text-matrix-primary hover:bg-matrix-primary hover:text-black transition-all font-mono uppercase tracking-widest text-xs"
+                >
+                  REMATCH_AVAILABLE &gt; {rematchInfo.rematchCode}
+                </button>
+              ) : (
+                <button
+                  onClick={async () => {
+                    try {
+                      await initiateRematchMutation({
+                        gameId: gameState._id,
+                        playerId,
+                      })
+                    } catch {
+                      // Rematch initiation failed
+                    }
+                  }}
+                  tabIndex={0}
+                  className="px-4 py-2 border border-matrix-primary text-matrix-primary hover:bg-matrix-primary hover:text-black transition-all font-mono uppercase tracking-widest text-xs"
+                >
+                  REMATCH
+                </button>
+              )}
+              <button
+                onClick={() => setActiveGameId(null)}
+                tabIndex={0}
+                className="px-4 py-2 border border-matrix-primary/50 text-matrix-primary/50 hover:text-matrix-primary hover:border-matrix-primary transition-all font-mono uppercase tracking-widest text-xs"
+              >
+                RETURN_TO_BASE
+              </button>
+            </div>
           </div>
         ) : (
           <LobbyScreen
@@ -314,7 +456,7 @@ function App() {
                     Operative_ID
                   </div>
                   <div className="text-matrix-primary italic font-bold truncate">
-                    {playerId}
+                    {playerHandle}
                   </div>
                 </div>
 
@@ -336,6 +478,7 @@ function App() {
                   isMyTurn={isMyTurn}
                   enemyTyping={otherPlayerTyping}
                   enemyDisconnected={opponentStatus === 'disconnected'}
+                  enemyHandle={enemyHandle}
                 />
 
                 <div className="flex gap-2">

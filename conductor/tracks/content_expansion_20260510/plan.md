@@ -2,31 +2,31 @@
 
 ## Phase A: Unit Templates & Schema Infrastructure
 
-- [ ] Task: Update UNIT_TEMPLATES with 3 new unit classes
-    - [ ] Add `E` (Engineer: cost 200, HP 60, AP 3, ATK 10, RNG 1, VIS 3) to `src/lib/unitTemplates.ts`
-    - [ ] Add `R` (Sniper: cost 350, HP 40, AP 2, ATK 40, RNG 8, VIS 6) to `src/lib/unitTemplates.ts`
-    - [ ] Add `C` (Commander: cost 400, HP 80, AP 2, ATK 20, RNG 2, VIS 4) to `src/lib/unitTemplates.ts`
-    - [ ] Update `UnitType` type union in `combatSystem.ts` to include `'E' | 'R' | 'C'`
-    - [ ] NOTE: `getScannedHostiles` needs no change — its filter `u.type !== 'S'` already correctly includes E, R, C in scan results
-- [ ] Task: Write failing tests for UNIT_TEMPLATES update (Red Phase)
-    - [ ] Test that all 3 new unit types exist in UNIT_TEMPLATES with correct stats
-    - [ ] Test UnitType union accepts 'E', 'R', 'C'
-- [ ] Task: Run tests to confirm failures (Red Phase verification)
-- [ ] Task: Implement UNIT_TEMPLATES changes (Green Phase)
-    - [ ] Add new templates to `unitTemplates.ts`
-    - [ ] Update `UnitType` type in `combatSystem.ts`
-    - [ ] Run tests to confirm passing
-- [ ] Task: Update Convex schema for new fields
-    - [ ] Add `mapPreset` (v.optional(v.string())) to `games` table in `convex/schema.ts`
-    - [ ] Add `engineerWallCount` (v.optional(v.number())) to `units` table — tracks remaining `build` uses
-    - [ ] Add `sniperMovedThisTurn` (v.optional(v.boolean())) to `units` table
-    - [ ] NOTE: `rallyBuff` field is NOT needed — rally directly increments `ap` by 1; the existing turn-end AP reset (`ap = unit.maxAp`) auto-cleans the bonus
-    - [ ] Run `bunx convex codegen` to regenerate types
-    - [ ] Write tests for schema field access
-- [ ] Task: Verify coverage and commit
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
-    - [ ] Commit with message: `feat(units): Add Engineer, Sniper, Commander unit templates and schema fields`
-    - [ ] Attach git note with task summary
+- [x] Task: Update UNIT_TEMPLATES with 3 new unit classes
+    - [x] Add `E` (Engineer: cost 200, HP 60, AP 3, ATK 10, RNG 1, VIS 3) to `src/lib/unitTemplates.ts`
+    - [x] Add `R` (Sniper: cost 350, HP 40, AP 2, ATK 40, RNG 8, VIS 6) to `src/lib/unitTemplates.ts`
+    - [x] Add `C` (Commander: cost 400, HP 80, AP 2, ATK 20, RNG 2, VIS 4) to `src/lib/unitTemplates.ts`
+    - [x] Update `UnitType` type union in `combatSystem.ts` to include `'E' | 'R' | 'C'`
+    - [x] NOTE: `getScannedHostiles` needs no change — its filter `u.type !== 'S'` already correctly includes E, R, C in scan results
+- [x] Task: Write failing tests for UNIT_TEMPLATES update (Red Phase)
+    - [x] Test that all 3 new unit types exist in UNIT_TEMPLATES with correct stats
+    - [x] Test UnitType union accepts 'E', 'R', 'C'
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+- [x] Task: Implement UNIT_TEMPLATES changes (Green Phase)
+    - [x] Add new templates to `unitTemplates.ts`
+    - [x] Update `UnitType` type in `combatSystem.ts`
+    - [x] Run tests to confirm passing
+- [x] Task: Update Convex schema for new fields
+    - [x] Add `mapPreset` (v.optional(v.string())) to `games` table in `convex/schema.ts`
+    - [x] Add `engineerWallCount` (v.optional(v.number())) to `units` table — tracks remaining `build` uses
+    - [x] Add `sniperMovedThisTurn` (v.optional(v.boolean())) to `units` table
+    - [x] NOTE: `rallyBuff` field is NOT needed — rally directly increments `ap` by 1; the existing turn-end AP reset (`ap = unit.maxAp`) auto-cleans the bonus
+    - [x] Run `bunx convex codegen` to regenerate types
+    - [x] Write tests for schema field access
+- [x] Task: Verify coverage and commit (9d62beb)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(units): Add Engineer, Sniper, Commander unit templates and schema fields`
+    - [x] Attach git note with task summary
 - [ ] NOTE: The Squad Builder (`SquadBuilder.tsx`) iterates over `Object.entries(UNIT_TEMPLATES)` — new unit types automatically appear. No Squad Builder UI code changes needed.
 - [ ] Task: Conductor - User Manual Verification 'Phase A: Unit Templates & Schema' (Protocol in workflow.md)
 

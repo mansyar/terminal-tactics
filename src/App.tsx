@@ -66,6 +66,26 @@ function App() {
   )
   const heartbeat = useMutation(api.presence.heartbeat)
 
+  // Phase 10: Player identity
+  const getOrCreatePlayer = useMutation(api.players.getOrCreatePlayer)
+  const setHandle = useMutation(api.players.setHandle)
+  const playerData = useQuery(
+    api.players.getPlayerByUserId,
+    playerId ? { userId: playerId } : 'skip',
+  )
+  const playerHandle = playerData?.handle ?? playerId
+
+  // Suppress TS warnings — used in Phases C-E (LobbyScreen, CLI commands, TurnIndicator)
+  void setHandle
+  void playerHandle
+
+  // Ensure player doc exists on mount
+  useEffect(() => {
+    getOrCreatePlayer({ userId: playerId }).catch(() => {
+      // Silently handle — will retry on next mount
+    })
+  }, [getOrCreatePlayer, playerId])
+
   const gameCommands = useGameCommands({
     playerId,
     gameState,

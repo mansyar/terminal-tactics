@@ -5,7 +5,7 @@ import { render, screen } from '@testing-library/react'
 mock.module('convex/react', () => ({
   ConvexProvider: ({ children }: { children: any }) => children,
   useQuery: () => undefined,
-  useMutation: () => () => {},
+  useMutation: () => () => Promise.resolve({}),
   useAction: () => () => {},
 }))
 

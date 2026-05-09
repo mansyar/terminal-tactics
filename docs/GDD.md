@@ -271,17 +271,12 @@ The game is controlled via Command Line Interface (CLI).
 ```typescript
 // players _(Phase 10)_
 {
-  ;(userId, handle, gamesPlayed, wins, losses, elo, achievements)
+  ;(userId, handle, gamesPlayed, wins, losses, draws)
 }
 
-// replays _(Phase 12)_
+// achievements _(Phase 12)_
 {
-  ;(gameId, commands, states, createdAt)
-}
-
-// spectators _(Phase 12)_
-{
-  ;(gameId, sessionIds, count)
+  ;(userId, unlockedBadges)
 }
 ```
 

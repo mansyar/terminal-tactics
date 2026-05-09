@@ -347,50 +347,49 @@
 
 ---
 
-## 🚩 Phase 10: Competitive Features ⏳
+## 🚩 Phase 10: Player Profiles & Match History ⏳
 
-**Goal:** Add ranked play and statistical tracking for competitive players.
+**Goal:** Give players a persistent identity, track their record, and let them review past games. No ranked, no ELO, no leaderboards.
 
-### 10.1 Player Profiles
+### 10.1 Player Identity
 
-- [ ] **Profile Schema:** Create `players` table with persistent stats.
-  - `userId`, `handle`, `gamesPlayed`, `wins`, `losses`, `elo`
-- [ ] **Profile Page:** View own stats and match history.
-- [ ] **Handle System:** Allow players to set a custom handle (3-15 chars).
-- [ ] **Handle Uniqueness:** Ensure no duplicate handles.
+- [ ] **`players` Table:** Create Convex `players` table with:
+  - `userId`, `handle`, `gamesPlayed`, `wins`, `losses`, `draws`
+- [ ] **Handle Command:** Add `handle <name>` CLI command to set/change display name.
+- [ ] **Auto-Handle:** Auto-generate handle as `user_xxxx` on first visit (tied to existing localStorage ID).
+- [ ] **In-Game Display:** Show handles in lobby and TurnIndicator instead of "Player 1" / "Player 2".
 
-### 10.2 ELO Rating System
+### 10.2 Stats Tracking
 
-- [ ] **Initial ELO:** New players start at 1200.
-- [ ] **ELO Calculation:** Standard K=32 ELO formula.
-- [ ] **Ranked Queue:** Separate "Ranked" matchmaking queue.
-- [ ] **ELO Display:** Show rating in lobby and game UI.
-- [ ] **Rank Tiers:** Bronze, Silver, Gold, Platinum, Diamond.
+- [ ] **Win/Loss Recording:** Increment counters on `players` document after each finished game.
+- [ ] **Draw Handling:** Track draws separately from wins/losses.
+- [ ] **Post-Game Screen:** Show final stats (your record, opponent's record, game duration, turns played).
+- [ ] **Forfeit Tracking:** Record method of victory (`elimination`, `forfeit`, `disconnect`, `timeout`).
 
-### 10.3 Leaderboard
+### 10.3 Match History
 
-- [ ] **Global Leaderboard:** Top 100 players by ELO.
-- [ ] **Weekly Leaderboard:** Reset weekly with rewards tracking.
-- [ ] **Personal Rank:** Show your current position.
+- [ ] **`matches` Table:** Create Convex `matches` table with:
+  - `gameId`, `p1Id`, `p2Id`, `p1Handle`, `p2Handle`, `winner`, `turns`, `duration`, `finishedAt`
+- [ ] **Match History Command:** Add `history` CLI command to show last 20 games.
+- [ ] **Profile View:** Stats panel visible in lobby showing your record and recent matches.
 
-### 10.4 Match History
+### 10.4 Quick Wins
 
-- [ ] **Game Archive:** Store completed games with summary data.
-- [ ] **Match List:** View past 50 games with outcome and opponent.
-- [ ] **Stats Breakdown:** Track unit kills, deaths, damage dealt.
+- [ ] **Rematch Button:** Post-game button to create a new lobby with the same opponent.
 
 ### Definition of Done
 
-- [ ] ELO system calculating correctly.
-- [ ] Leaderboard displaying top players.
-- [ ] Match history viewable per player.
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
+- [ ] Player handles display correctly in lobby and game.
+- [ ] Win/loss/draw counters update correctly after each game.
+- [ ] Match history shows last 20 games with outcome and opponent.
+- [ ] Rematch button creates a new lobby with the same opponent.
+- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test`
 
 ---
 
 ## 🚩 Phase 11: Content Expansion ⏳
 
-**Goal:** Extend gameplay depth with new units and map options.
+**Goal:** Extend gameplay depth with new unit classes and curated map selection.
 
 ### 11.1 New Unit Classes
 
@@ -405,59 +404,50 @@
   - Cost: 400, HP: 80, AP: 2, ATK: 20, RNG: 2, VIS: 4
   - Ability: `rally [coord]` — Grant +1 AP to adjacent friendly units
 
-### 11.2 Map Customization
+### 11.2 Map Presets
 
-- [ ] **Preset Maps:** 5 curated competitive maps with balanced layouts.
-- [ ] **Map Size Options:** 8×8 (Quick), 12×12 (Standard), 16×16 (Large).
-- [ ] **Map Selection:** Allow lobby host to choose map before game.
-- [ ] **Map Preview:** Show map layout in lobby before starting.
+*Note: Random procedural map generation (cellular automata) was implemented in Phase 4 and remains the default. Presets are an alternative selection for the lobby host.*
 
-### 11.3 Game Mode: King of the Hill
-
-- [ ] **Control Point:** Central 2×2 area marked as objective.
-- [ ] **Capture Mechanic:** Own the point by having only your units inside.
-- [ ] **Win Condition:** Control for 5 consecutive turns to win.
-- [ ] **Alternative Victory:** Elimination still valid.
+- [ ] **Preset Maps:** 3 curated 12×12 maps with balanced layouts and distinct playstyles:
+  - *The Grid* — Symmetrical, open sightlines (showcase: core tactics)
+  - *The Maze* — Tight corridors, heavy cover (showcase: Engineer wall plays)
+  - *The Ridge* — High ground focus (showcase: Archer/Sniper elevation)
+- [ ] **Map Selection:** Allow lobby host to choose between **Random** (procedural) or a preset before game starts.
+- [ ] **Map Preview:** Show preset map layout in lobby before starting (rendered as ASCII/mini-grid).
 
 ### Definition of Done
 
-- [ ] At least 2 new unit classes playable and balanced.
-- [ ] At least 3 preset maps available.
-- [ ] King of the Hill mode functional.
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
+- [ ] All 3 new unit classes playable with correct abilities.
+- [ ] At least 3 preset maps available and selectable in lobby.
+- [ ] Map preview renders in lobby UI.
+- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test`
 
 ---
 
-## 🚩 Phase 12: Advanced Features ⏳
+## 🚩 Phase 12: AI & Achievements ⏳
 
-**Goal:** Add spectating, replays, and AI opponent for enhanced experience.
+**Goal:** Enable single-player mode with a rule-based AI opponent and add achievement-based meta-progression.
 
-### 12.1 Spectator Mode
+### 12.1 AI Opponent (Single Player)
 
-- [ ] **Spectate Link:** Generate shareable link to watch live game.
-- [ ] **Spectator View:** Full visibility of both sides (no FoW).
-- [ ] **Spectator Count:** Show number of viewers to players.
-- [ ] **Spectator Chat:** Separate chat channel for spectators.
+- [ ] **Bot as Player:** Allow creating a game where `p2` is a bot ID (`__ai_easy__`, `__ai_medium__`, `__ai_hard__`).
+- [ ] **Decision Engine:** Rule-based AI using existing game logic (movement, combat, LoS, heal).
+  - Reads game state via Convex queries
+  - Evaluates valid actions using pure scoring functions
+  - Executes best action via same mutations as human players
+- [ ] **Difficulty Levels:**
+  - *Easy* — Random valid actions with basic self-preservation (avoid walking into danger)
+  - *Medium* — Score-based heuristics (prioritize killing low-HP targets, healing injured allies, advancing toward enemies, using high ground)
+  - *Hard* — One-turn lookahead via light MCTS (~50 simulations per decision):
+      1. Generate all valid actions for all AI units
+      2. For each action, simulate resulting game state using existing pure combat/move functions
+      3. Run randomized playouts from that state (opponent responds with Medium-level heuristics)
+      4. Pick the action sequence with the highest win-rate across simulations
+- [ ] **AI Squad Builder:** Generate a valid AI squad using the point-buy system.
 
-### 12.2 Game Replay
+### 12.2 Achievements System
 
-- [ ] **Replay Recording:** Store all commands and state changes.
-- [ ] **Replay Viewer:** Step-through replay of any completed match.
-- [ ] **Playback Controls:** Play, pause, speed up, rewind.
-- [ ] **Share Link:** Generate shareable link to specific replay.
-
-### 12.3 AI Opponent (Single Player)
-
-- [ ] **Basic AI:** Rule-based opponent for practice.
-  - Prioritizes attacking low-HP targets
-  - Moves toward nearest enemy if out of range
-  - Uses heal when allies are injured
-- [ ] **Difficulty Levels:** Easy (random), Medium (smart), Hard (optimal).
-- [ ] **Offline Play:** Play against AI without network connection.
-
-### 12.4 Achievements System
-
-- [ ] **Achievement Schema:** Track unlockable badges.
+- [ ] **Achievement Schema:** Track unlockable badges on `players` document.
 - [ ] **Achievements:**
   - "First Blood" — Win your first game
   - "Tactician" — Win without losing a unit
@@ -465,80 +455,62 @@
   - "Sudo Master" — Win using a sudo command
   - "Patience" — Win a game lasting 20+ turns
   - "Speed Demon" — Win a game in under 5 turns
-- [ ] **Achievement Display:** Show earned badges on profile.
+- [ ] **Achievement Check:** Evaluate and unlock on game-over flow.
+- [ ] **Achievement Display:** Show earned badges on profile page.
 
 ### Definition of Done
 
-- [ ] Spectator mode functional for live games.
-- [ ] Replay viewer working for completed games.
-- [ ] Basic AI opponent playable.
-- [ ] At least 10 achievements implemented.
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
+- [ ] AI opponent playable at all 3 difficulty levels.
+- [ ] AI generates valid squad and makes legal moves only.
+- [ ] All 6 achievements unlock correctly on matching conditions.
+- [ ] Achievements persist and display on player profile.
+- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test`
 
 ---
 
-## 🚩 Phase 13: Deployment & Distribution ⏳
+## 🚩 Phase 13: Deployment ⏳
 
-**Goal:** Publish Terminal Tactics to gaming platforms, starting with itch.io and optionally Steam.
+**Goal:** Publish Terminal Tactics on itch.io as a playable web game and share it with the world.
 
-### 13.1 Production Build Setup
+### 13.1 Production Build
 
-- [ ] **Build Script:** Create `build:prod` script for optimized production build.
-- [ ] **Environment Config:** Separate dev/prod Convex endpoints.
-- [ ] **Asset Optimization:** Compress images, minify CSS/JS.
-- [ ] **Bundle Analysis:** Ensure bundle size is reasonable (<5MB).
+- [ ] **Build Script:** Create `build:prod` script for optimized production build (`Vite` minification, tree-shaking, code splitting).
+- [ ] **Environment Config:** Separate dev/prod Convex endpoints with environment variables.
+- [ ] **Bundle Analysis:** Verify bundle size is reasonable (< 5MB).
+- [ ] **Build Verification:** `bun run build` produces a deployable `dist/` bundle with zero errors.
 
 ### 13.2 Convex Production Deployment
 
 - [ ] **Deploy Backend:** Run `bunx convex deploy` for production.
-- [ ] **Environment Variables:** Configure production secrets.
-- [ ] **Rate Limiting:** Ensure production rate limits are appropriate.
-- [ ] **Monitoring:** Set up Convex dashboard alerts.
+- [ ] **Environment Variables:** Configure production secrets (no `.env.local` in prod).
+- [ ] **Rate Limiting:** Ensure Convex rate limits are appropriate for public traffic.
+- [ ] **Monitoring:** Set up Convex dashboard alerts for errors and usage spikes.
 
-### 13.3 itch.io Web Deployment
+### 13.3 itch.io Deployment
 
-- [ ] **Create itch.io Account:** Register at itch.io.
-- [ ] **Game Page Setup:** Create Terminal Tactics game page.
+- [ ] **itch.io Account:** Register at itch.io.
+- [ ] **Game Page:** Create Terminal Tactics page with description and tags.
 - [ ] **Store Assets:**
   - Cover image (630×500)
-  - Banner (960×540)
   - Screenshots (min 3)
-  - GIF preview
-- [ ] **Upload Build:** ZIP `dist/` and upload as HTML5 game.
-- [ ] **Embed Configuration:**
-  - Viewport: 1280×720 or 1920×1080
-  - Enable fullscreen
-  - Set appropriate embed options
-- [ ] **Description & Tags:** Write compelling game description.
-- [ ] **Butler Setup:** Configure itch.io butler for automated deployments.
+  - Animated GIF preview
+- [ ] **Upload:** ZIP `dist/` and upload as HTML5 game.
+- [ ] **Embed Config:** 1280×720 viewport, fullscreen enabled.
+- [ ] **Share Link:** Get the public itch.io URL for portfolio and recruiting.
 
-### 13.4 Steam Desktop Build (Optional)
+### 13.4 Launch
 
-- [ ] **Desktop Wrapper:** Integrate Tauri or Electron.
-- [ ] **Steam Partner Account:** Register at Steamworks ($100 fee).
-- [ ] **Steamworks SDK:** Integrate for achievements/overlay.
-- [ ] **Build Executables:** Windows (.exe), Mac (.dmg), Linux (.AppImage).
-- [ ] **Steam Store Assets:**
-  - Capsule images (various sizes)
-  - Screenshots
-  - Trailer video
-- [ ] **Submit for Review:** Steam review process (2-5 days).
-
-### 13.5 Marketing & Launch
-
-- [ ] **Landing Page:** Simple website with game info + links.
-- [ ] **Social Media:** Twitter/X, Reddit posts for launch.
-- [ ] **Press Kit:** Screenshots, description, logos for press.
-- [ ] **Community:** Discord server or subreddit.
-- [ ] **Analytics:** Track player counts, session length.
+- [ ] **Analytics:** Add basic page-view or game-start tracking (e.g., Convex event logging) to know if anyone is playing.
+- [ ] **Share:** Post the itch.io link on social media (Twitter/X, Reddit r/playmygame, relevant Discord servers).
+- [ ] **Portfolio Ready:** The game is playable at a single URL — no install, no friction, no account required.
 
 ### Definition of Done
 
-- [ ] Game playable on itch.io in browser.
-- [ ] Convex production backend stable.
-- [ ] At least 10 players have tested the public build.
-- [ ] Store page has all required assets.
-- [ ] Execute: `bun run build` produces deployable bundle.
+- [ ] `bun run build` produces a deployable bundle.
+- [ ] Convex production backend is stable and accessible.
+- [ ] Game is playable on itch.io in a browser.
+- [ ] itch.io page has cover art, screenshots, and description.
+- [ ] No Steam, no desktop wrapper, no press kit, no Discord.
 
 ---
 
@@ -555,9 +527,9 @@
 | Phase 7: Visual & UX Polish   | ✅ Complete | 100%       |
 | Phase 8: Session Stability    | ✅ Complete | 100%       |
 | Phase 9: Accessibility & Perf | ✅ Complete | 100%       |
-| Phase 10: Competitive         | ⏳ Planned  | 0%         |
+| Phase 10: Player Profiles     | ⏳ Planned  | 0%         |
 | Phase 11: Content Expansion   | ⏳ Planned  | 0%         |
-| Phase 12: Advanced Features   | ⏳ Planned  | 0%         |
+| Phase 12: AI & Achievements   | ⏳ Planned  | 0%         |
 | Phase 13: Deployment          | ⏳ Planned  | 0%         |
 
 ---
@@ -569,10 +541,10 @@
 | ✅ Done   | Phase 7  | Visual & UX Polish completed — health bars, colors, logs, readability |
 | ✅ Done   | Phase 8  | Session stability complete — heartbeat, grace period, reconnection |
 | ✅ Done   | Phase 9  | Accessibility and performance complete — ARIA, keyboard nav, contrast, reduced motion, responsive tablet layout |
-| 🟡 Medium | Phase 13 | **Early launch on itch.io for player feedback**               |
-| 🟡 Medium | Phase 10 | Competitive features for player retention                     |
+| 🟡 Medium | Phase 13 | **Launch on itch.io — portfolio-ready URL**                   |
+| 🟡 Medium | Phase 10 | Player profiles and match history for identity + retention    |
 | 🟢 Low    | Phase 11 | Content expansion extends game lifespan                       |
-| 🟢 Low    | Phase 12 | Advanced features for long-term engagement                    |
+| 🟢 Low    | Phase 12 | AI opponent for single-player + achievements for retention    |
 
 ---
 
@@ -586,6 +558,11 @@ Ideas for beyond Phase 13:
 - **Workshop:** Community-created maps and mods
 - **Cross-Platform:** Native mobile apps (React Native)
 - **Monetization:** Cosmetic skins, unit visual variants
+- **King of the Hill Mode:** Control point objective with capture mechanics
+- **Variable Map Sizes:** 8×8 (Quick) and 16×16 (Large) layout support
+- **Spectator Mode:** Shareable links to watch live games
+- **Game Replay:** Step-through playback of completed matches
+- **Steam Release:** Desktop wrapper (Tauri) + Steamworks integration
 
 ---
 

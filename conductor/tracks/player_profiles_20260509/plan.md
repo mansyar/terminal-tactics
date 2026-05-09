@@ -8,26 +8,26 @@
     - [ ] Add `matches` table to schema: `gameId` (id of games), `p1Id` (string), `p2Id` (string), `p1Handle` (string), `p2Handle` (string), `winner` (optional string), `endReason` (string), `turns` (number), `duration` (number), `finishedAt` (number)
     - [ ] Add indexes: `players` by `userId` (unique), `players` by `handle` (unique), `matches` by `p1Id`, `matches` by `p2Id`
     - [ ] Run `bunx convex codegen` to regenerate types
-- [ ] Task: Write tests for players CRUD operations
-    - [ ] Create `convex/players.test.ts` following existing patterns
-    - [ ] Test `getOrCreatePlayer` handler: creates new player doc with auto-handle `user_xxxx`
-    - [ ] Test `getOrCreatePlayer` handler: returns existing player doc on repeat calls (idempotent)
-    - [ ] Test `setHandle` handler: validates 2-20 char length (rejects too short / too long)
-    - [ ] Test `setHandle` handler: validates alphanumeric + underscore only (rejects special chars)
-    - [ ] Test `setHandle` handler: rejects duplicate handles with `HANDLE_TAKEN`
-    - [ ] Test `setHandle` handler: successfully updates handle
-    - [ ] Test `getPlayerByUserId` query: returns correct player
-    - [ ] Test `getPlayersByUserIds` query: returns map of userId → player for batch lookup
-- [ ] Task: Implement players CRUD mutations and queries
-    - [ ] Create `convex/players.ts` with `getOrCreatePlayerHandler` (standalone, exported for testing)
-    - [ ] Implement `getOrCreatePlayer`: check if player doc exists by userId, if not create with auto-handle `user_xxxx`
-    - [ ] Implement `setHandleHandler`: validate length (2-20), chars (alphanumeric + `_`), uniqueness (query `by_handle` index), then update
-    - [ ] Create `getPlayerByUserId` query
-    - [ ] Create `getPlayersByUserIds` query (batch fetch, returns Map<userId, playerDoc> — used for lobby display of both players)
-    - [ ] Create `getOrCreatePlayer` mutation wrapper
-    - [ ] Create `setHandle` mutation wrapper
-- [ ] Task: Set `gameStartTime` on game start
-    - [ ] In `convex/squadBuilder.ts` `startGame()`: add `gameStartTime: Date.now()` to the patch that transitions game to `status: 'playing'`
+- [x] Task: Write tests for players CRUD operations (7a60bff)
+    - [x] Create `convex/players.test.ts` following existing patterns
+    - [x] Test `getOrCreatePlayer` handler: creates new player doc with auto-handle `user_xxxx`
+    - [x] Test `getOrCreatePlayer` handler: returns existing player doc on repeat calls (idempotent)
+    - [x] Test `setHandle` handler: validates 2-20 char length (rejects too short / too long)
+    - [x] Test `setHandle` handler: validates alphanumeric + underscore only (rejects special chars)
+    - [x] Test `setHandle` handler: rejects duplicate handles with `HANDLE_TAKEN`
+    - [x] Test `setHandle` handler: successfully updates handle
+    - [x] Test `getPlayerByUserId` query: returns correct player
+    - [x] Test `getPlayersByUserIds` query: returns map of userId → player for batch lookup
+- [x] Task: Implement players CRUD mutations and queries (7a60bff)
+    - [x] Create `convex/players.ts` with `getOrCreatePlayerHandler` (standalone, exported for testing)
+    - [x] Implement `getOrCreatePlayer`: check if player doc exists by userId, if not create with auto-handle `user_xxxx`
+    - [x] Implement `setHandleHandler`: validate length (2-20), chars (alphanumeric + `_`), uniqueness (query `by_handle` index), then update
+    - [x] Create `getPlayerByUserId` query
+    - [x] Create `getPlayersByUserIds` query (batch fetch, returns Map<userId, playerDoc> — used for lobby display of both players)
+    - [x] Create `getOrCreatePlayer` mutation wrapper
+    - [x] Create `setHandle` mutation wrapper
+- [x] Task: Set `gameStartTime` on game start (1e2460d)
+    - [x] In `convex/squadBuilder.ts` `startGame()`: add `gameStartTime: Date.now()` to the patch that transitions game to `status: 'playing'`
 - [ ] Task: Conductor - User Manual Verification 'Phase A: Schema & Players Table' (Protocol in workflow.md)
 
 ## Phase B: Stats Recording Hook (Backend)

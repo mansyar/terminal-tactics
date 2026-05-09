@@ -179,20 +179,14 @@ export const getMatchHistoryHandler = async (
 ) => {
   const limit = args.limit ?? 20
 
-  const asP1 = await ctx.db
-    .query('matches')
-    .withIndex('by_p1Id', (q: any) => q.eq('p1Id', args.userId))
-    .collect()
+  const allMatches = await ctx.db.query('matches').collect()
 
-  const asP2 = await ctx.db
-    .query('matches')
-    .withIndex('by_p2Id', (q: any) => q.eq('p2Id', args.userId))
-    .collect()
+  const relevant = allMatches.filter(
+    (m: any) => m.p1Id === args.userId || m.p2Id === args.userId,
+  )
+  relevant.sort((a: any, b: any) => b.finishedAt - a.finishedAt)
 
-  const all = [...asP1, ...asP2]
-  all.sort((a: any, b: any) => b.finishedAt - a.finishedAt)
-
-  return all.slice(0, limit)
+  return relevant.slice(0, limit)
 }
 
 export const getMatchHistory = query({
@@ -218,12 +212,12 @@ export const recordGameEndHandler = async (
 ) => {
   const { gameId, p1Id, p2Id, winner, endReason, turns, duration } = args
 
+  // Collect all existing players to find by userId in memory
+  const allPlayers = await ctx.db.query('players').collect()
+
   // Fetch or auto-create player docs
   const getOrCreate = async (userId: string) => {
-    let player = await ctx.db
-      .query('players')
-      .withIndex('by_userId', (q: any) => q.eq('userId', userId))
-      .unique()
+    let player = allPlayers.find((p: any) => p.userId === userId)
 
     if (!player) {
       const id = await ctx.db.insert('players', {

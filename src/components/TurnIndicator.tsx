@@ -5,6 +5,7 @@ interface TurnIndicatorProps {
   isMyTurn: boolean
   enemyTyping?: boolean
   enemyDisconnected?: boolean
+  enemyHandle?: string
 }
 
 export const TurnIndicator: React.FC<TurnIndicatorProps> = ({
@@ -12,6 +13,7 @@ export const TurnIndicator: React.FC<TurnIndicatorProps> = ({
   isMyTurn,
   enemyTyping,
   enemyDisconnected,
+  enemyHandle,
 }) => {
   return (
     <div
@@ -22,7 +24,11 @@ export const TurnIndicator: React.FC<TurnIndicatorProps> = ({
         Session_Status
       </div>
       <div className="text-matrix-primary font-bold">
-        {isMyTurn ? 'MY_TURN' : 'WAITING_FOR_ENEMY'}
+        {isMyTurn
+          ? 'MY_TURN'
+          : enemyHandle
+            ? `WAITING_FOR ${enemyHandle.toUpperCase()}`
+            : 'WAITING_FOR_ENEMY'}
       </div>
       {enemyDisconnected && (
         <div className="text-[9px] text-red-400/80 animate-pulse mt-1">

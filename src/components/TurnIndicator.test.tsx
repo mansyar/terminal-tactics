@@ -38,4 +38,14 @@ describe('TurnIndicator', () => {
     expect(container.textContent).toContain('Turn_Num:')
     cleanup()
   })
+
+  it('shows WAITING_FOR [enemyHandle] when enemyHandle prop is provided', () => {
+    const { container } = render(
+      <TurnIndicator turnNum={1} isMyTurn={false} enemyHandle="Morpheus" />,
+    )
+    expect(container.textContent).toContain('WAITING_FOR')
+    expect(container.textContent).toContain('MORPHEUS')
+    expect(container.textContent).not.toContain('ENEMY')
+    cleanup()
+  })
 })

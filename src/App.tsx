@@ -95,6 +95,7 @@ function App() {
     playerId,
     gameState,
     logs,
+    matchHistory: getMatchHistory,
     mutations: {
       logCommand,
       setTyping,

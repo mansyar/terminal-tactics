@@ -40,6 +40,7 @@ interface UseGameCommandsParams {
   gameState: any
   logs: any
   mutations: GameMutations
+  matchHistory?: Array<any>
 }
 
 export function useGameCommands({
@@ -47,6 +48,7 @@ export function useGameCommands({
   gameState,
   logs,
   mutations,
+  matchHistory,
 }: UseGameCommandsParams) {
   const [selectedUnit, setSelectedUnit] = useState<string | null>(null)
   const [hoveredUnit, setHoveredUnit] = useState<string | null>(null)
@@ -455,6 +457,43 @@ export function useGameCommands({
             result = `ERROR: ${cleanErrorMessage(err.message)}`
             playError()
           }
+        }
+      } else if (cmd.type === 'history') {
+        if (!matchHistory || matchHistory.length === 0) {
+          result = 'NO_MATCHES_FOUND'
+          playSuccess()
+        } else {
+          const entries = matchHistory.slice(0, 20)
+          const myPlayerKey = gameState.p1 === playerId ? 'p1' : ('p2' as const)
+          const opponentKey = myPlayerKey === 'p1' ? 'p2' : 'p1'
+
+          const rows = entries.map((match: any, i: number) => {
+            const isWin =
+              match.winner === myPlayerKey
+                ? true
+                : match.winner === opponentKey
+                  ? false
+                  : undefined
+            const resultLabel =
+              isWin === true ? 'WIN' : isWin === false ? 'LOSS' : 'DRAW'
+            const opponentHandle = match[`${opponentKey}Handle`]
+            const minutes = Math.floor(match.duration / 60000)
+            const seconds = Math.round((match.duration % 60000) / 1000)
+            const durationStr = `${minutes}m ${seconds}s`
+            return `  ${String(i + 1).padStart(2)}  │ ${opponentHandle.padEnd(10)} │ ${resultLabel.padEnd(5)} │ ${String(match.turns).padEnd(7)} │ ${durationStr.padEnd(7)}`
+          })
+
+          const header =
+            '┌──────┬────────────┬──────────┬──────────┬──────────┐\n' +
+            '│ #    │ Opponent   │ Result   │ Turns    │ Duration │\n' +
+            '├──────┼────────────┼──────────┼──────────┼──────────┤\n' +
+            rows.join('\n') +
+            '\n' +
+            '└──────┴────────────┴──────────┴──────────┴──────────┘'
+
+          result = header
+          logVisibility = 'private'
+          playSuccess()
         }
       } else if (cmd.type === 'say') {
         const message = cmd.args.join(' ')

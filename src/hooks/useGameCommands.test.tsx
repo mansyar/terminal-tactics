@@ -141,3 +141,112 @@ describe('handleCommand - handle', () => {
     expect(logCall[0].result).toContain('HANDLE_TAKEN')
   })
 })
+
+describe('handleCommand - history', () => {
+  it('displays NO_MATCHES_FOUND when match history is empty', async () => {
+    const mockMutations = createMockMutations()
+    const gameState = createMockGameState()
+    const mockLogCommand = mockMutations.logCommand as jest.Mock
+
+    const { result } = renderHook(() =>
+      useGameCommands({
+        playerId: 'user_p1',
+        gameState,
+        logs: [],
+        mutations: mockMutations,
+        matchHistory: [],
+      }),
+    )
+
+    await act(async () => {
+      await result.current.handleCommand('history')
+    })
+
+    const logCall = mockLogCommand.mock.calls[0]
+    expect(logCall[0].result).toContain('NO_MATCHES_FOUND')
+  })
+
+  it('displays match history formatted as ASCII table when matches exist', async () => {
+    const mockMutations = createMockMutations()
+    const gameState = createMockGameState()
+    const mockLogCommand = mockMutations.logCommand as jest.Mock
+
+    const { result } = renderHook(() =>
+      useGameCommands({
+        playerId: 'user_p1',
+        gameState,
+        logs: [],
+        mutations: mockMutations,
+        matchHistory: [
+          {
+            _id: 'm1',
+            p1Id: 'user_p1',
+            p2Id: 'user_p2',
+            p1Handle: 'Neo',
+            p2Handle: 'Morpheus',
+            winner: 'p1',
+            endReason: 'elimination',
+            turns: 12,
+            duration: 512000,
+            finishedAt: Date.now(),
+          },
+        ],
+      }),
+    )
+
+    await act(async () => {
+      await result.current.handleCommand('history')
+    })
+
+    const logCall = mockLogCommand.mock.calls[0]
+    expect(logCall[0].result).toContain('Morpheus')
+    expect(logCall[0].result).toContain('WIN')
+    expect(logCall[0].result).toContain('12')
+    expect(logCall[0].result).toContain('8m 32s')
+  })
+
+  it('truncates match history display to 20 entries', async () => {
+    const mockMutations = createMockMutations()
+    const gameState = createMockGameState()
+    const mockLogCommand = mockMutations.logCommand as jest.Mock
+
+    const matches = Array.from({ length: 25 }, (_, i) => ({
+      _id: `m${i}`,
+      p1Id: 'user_p1',
+      p2Id: 'user_p2',
+      p1Handle: 'Neo',
+      p2Handle: `player${i}`,
+      winner: i % 2 === 0 ? 'p1' : 'p2',
+      endReason: 'elimination',
+      turns: 5 + i,
+      duration: 60000 * (i + 1),
+      finishedAt: Date.now() - i * 10000,
+    }))
+
+    const { result } = renderHook(() =>
+      useGameCommands({
+        playerId: 'user_p1',
+        gameState,
+        logs: [],
+        mutations: mockMutations,
+        matchHistory: matches,
+      }),
+    )
+
+    await act(async () => {
+      await result.current.handleCommand('history')
+    })
+
+    const logCall = mockLogCommand.mock.calls[0]
+    const output = logCall[0].result
+    // Should have 20 entries (not 25)
+    const lines = output.split('\n')
+    // Count lines that match data row pattern (start with spacing and a number)
+    const dataRows = lines.filter((l: string) => {
+      const trimmed = l.trim()
+      return /^\d+\s+│/.test(trimmed)
+    })
+    expect(dataRows.length).toBeLessThanOrEqual(20)
+    expect(dataRows.length).toBe(20)
+  })
+})

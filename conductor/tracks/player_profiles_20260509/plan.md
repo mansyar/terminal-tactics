@@ -94,20 +94,20 @@
     - [x] Test `handleCommand` calls `setHandle` mutation with correct args
     - [x] Test handle command captures and displays returned handle
     - [x] Test handle command displays error message on server rejection
-- [ ] Task: Write tests for history CLI command handler
-    - [ ] Test history command calls `getMatchHistory` query
-    - [ ] Test history command formats output as ASCII table with correct columns
-    - [ ] Test history command handles empty history gracefully (`NO_MATCHES_FOUND`)
-    - [ ] Test history command truncates to 20 entries
+- [x] Task: Write tests for history CLI command handler (4de9731)
+    - [x] Test history command calls `getMatchHistory` query
+    - [x] Test history command formats output as ASCII table with correct columns
+    - [x] Test history command handles empty history gracefully (`NO_MATCHES_FOUND`)
+    - [x] Test history command truncates to 20 entries
 - [x] Task: Implement handle command in useGameCommands (eb55910)
     - [x] Wire up `setHandle` mutation in `src/App.tsx` (add to useGameCommands mutations)
     - [x] Add `handle` case in `useGameCommands.handleCommand`: call `setHandle`, display result/error
     - [x] Result format: `HANDLE_SET: newname` or `ERROR: HANDLE_TAKEN`
-- [ ] Task: Implement history command in useGameCommands
-    - [ ] Wire up `getMatchHistory` query in `src/App.tsx`
-    - [ ] Add `history` case in `useGameCommands.handleCommand`: call query, format ASCII table output
-    - [ ] Handle empty history: `NO_MATCHES_FOUND`
-    - [ ] Format: `# | OPPONENT | RESULT | TURNS | DURATION`
+- [x] Task: Implement history command in useGameCommands (4de9731)
+    - [x] Wire up `getMatchHistory` query in `src/App.tsx`
+    - [x] Add `history` case in `useGameCommands.handleCommand`: call query, format ASCII table output
+    - [x] Handle empty history: `NO_MATCHES_FOUND`
+    - [x] Format: `# | OPPONENT | RESULT | TURNS | DURATION`
 - [ ] Task: Conductor - User Manual Verification 'Phase D: CLI Commands' (Protocol in workflow.md)
 
 ## Phase E: UI Polish — TurnIndicator, Post-Game, Rematch

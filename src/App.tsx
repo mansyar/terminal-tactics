@@ -241,6 +241,7 @@ function App() {
         ) : (
           <LobbyScreen
             playerId={playerId}
+            handle={playerHandle}
             onGameJoined={(id) => setActiveGameId(id)}
           />
         )}

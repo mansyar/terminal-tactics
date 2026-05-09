@@ -4,20 +4,27 @@ import { api } from '../../convex/_generated/api'
 
 interface LobbyScreenProps {
   playerId: string
+  handle: string
   onGameJoined: (gameId: string) => void
 }
 
 export const LobbyScreen: React.FC<LobbyScreenProps> = ({
   playerId,
+  handle,
   onGameJoined,
 }) => {
   const [code, setCode] = useState('')
   const [isCreating, setIsCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isEditingHandle, setIsEditingHandle] = useState(false)
+  const [editHandleValue, setEditHandleValue] = useState(handle)
+  const [handleError, setHandleError] = useState<string | null>(null)
+  const [handleSuccess, setHandleSuccess] = useState(false)
 
   const createLobby = useMutation(api.lobby.createLobby)
   const joinLobby = useMutation(api.lobby.joinLobby)
   const joinQuickPlay = useMutation(api.lobby.joinQuickPlay)
+  const setHandleMutation = useMutation(api.players.setHandle)
 
   const handleCreate = async (isPublic: boolean) => {
     setIsCreating(true)
@@ -52,6 +59,47 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({
       onGameJoined(gameId)
     } catch (e: any) {
       setError(e.message)
+    }
+  }
+
+  const handleStartEdit = () => {
+    setEditHandleValue(handle)
+    setHandleError(null)
+    setHandleSuccess(false)
+    setIsEditingHandle(true)
+  }
+
+  const handleCancelEdit = () => {
+    setIsEditingHandle(false)
+    setHandleError(null)
+    setHandleSuccess(false)
+  }
+
+  const handleSubmitHandle = async () => {
+    const newHandle = editHandleValue.trim()
+    setHandleError(null)
+    setHandleSuccess(false)
+
+    // Client-side validation
+    if (newHandle.length < 2) {
+      setHandleError('HANDLE_TOO_SHORT (min 2 chars)')
+      return
+    }
+    if (newHandle.length > 20) {
+      setHandleError('HANDLE_TOO_LONG (max 20 chars)')
+      return
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(newHandle)) {
+      setHandleError('HANDLE_INVALID_CHARS (alphanumeric + underscore only)')
+      return
+    }
+
+    try {
+      await setHandleMutation({ userId: playerId, newHandle })
+      setHandleSuccess(true)
+      setIsEditingHandle(false)
+    } catch (e: any) {
+      setHandleError(e.message)
     }
   }
 
@@ -140,8 +188,86 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({
         </div>
       </div>
 
-      <div className="text-[10px] text-matrix-primary/30 font-mono uppercase">
-        Operative_ID: <span className="text-matrix-primary/50">{playerId}</span>
+      {/* Handle Display / Edit */}
+      <div
+        className="w-full max-w-2xl border-t border-matrix-primary/20 pt-6 text-center space-y-3"
+        data-testid="handle-section"
+      >
+        {isEditingHandle ? (
+          <div className="space-y-2">
+            <div className="text-[10px] text-matrix-primary/50 font-mono uppercase tracking-wider">
+              SET_YOUR_HANDLE (or use /handle &lt;name&gt; in-game)
+            </div>
+            <div className="flex gap-2 justify-center">
+              <input
+                type="text"
+                value={editHandleValue}
+                onChange={(e) => {
+                  setEditHandleValue(e.target.value)
+                  setHandleError(null)
+                  setHandleSuccess(false)
+                }}
+                placeholder="Enter handle"
+                maxLength={20}
+                className="w-64 bg-black border border-matrix-primary/50 p-2 text-matrix-primary font-mono text-sm focus:border-matrix-primary outline-none focus:ring-1 focus:ring-matrix-primary transition-all placeholder:text-matrix-primary/20"
+                data-testid="handle-input"
+              />
+              <button
+                onClick={handleSubmitHandle}
+                className="px-4 py-2 border border-matrix-primary text-matrix-primary hover:bg-matrix-primary hover:text-black transition-all font-mono text-xs uppercase"
+                data-testid="handle-save-btn"
+              >
+                SET
+              </button>
+              <button
+                onClick={handleCancelEdit}
+                className="px-4 py-2 border border-matrix-primary/50 text-matrix-primary/60 hover:text-matrix-primary hover:border-matrix-primary transition-all font-mono text-xs uppercase"
+                data-testid="handle-cancel-btn"
+              >
+                CANCEL
+              </button>
+            </div>
+            {handleError && (
+              <div
+                className="text-red-500 font-mono text-xs animate-pulse"
+                data-testid="handle-error"
+              >
+                ERROR: {handleError}
+              </div>
+            )}
+            {handleSuccess && (
+              <div
+                className="text-matrix-primary font-mono text-xs animate-pulse"
+                data-testid="handle-success"
+              >
+                HANDLE_UPDATED
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-1">
+            <div className="text-[10px] text-matrix-primary/30 font-mono uppercase">
+              Operative_ID:{' '}
+              <button
+                onClick={handleStartEdit}
+                className="text-matrix-primary/60 hover:text-matrix-primary transition-colors cursor-pointer border-b border-dotted border-matrix-primary/30 hover:border-matrix-primary"
+                data-testid="handle-display"
+              >
+                {handle}
+              </button>
+              <button
+                onClick={handleStartEdit}
+                className="ml-2 text-[9px] text-matrix-primary/40 hover:text-matrix-primary transition-colors font-mono uppercase tracking-wider"
+                data-testid="handle-edit-btn"
+              >
+                [EDIT]
+              </button>
+            </div>
+            <div className="text-[9px] text-matrix-primary/20 font-mono">
+              Use /handle &lt;name&gt; in-game to change
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

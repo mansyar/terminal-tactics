@@ -4,6 +4,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Player Profiles & Match History**
-*Link: [./tracks/player_profiles_20260509/](./tracks/player_profiles_20260509/)*
+- [x] **Track: Player Profiles & Match History** *(Archived 2026-05-10)*
+*Link: [./archive/player_profiles_20260509/](./archive/player_profiles_20260509/)*
 

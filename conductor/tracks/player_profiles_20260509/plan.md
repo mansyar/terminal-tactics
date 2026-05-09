@@ -84,7 +84,7 @@
     - [x] Add instructional text: "Use /handle <name> in-game to change"
 - [ ] Task: Conductor - User Manual Verification 'Phase C: Lobby Handle UI' (Protocol in workflow.md)
 
-## Phase D: CLI Commands — handle & history
+## Phase D: CLI Commands — handle & history [checkpoint: d5c4684]
 
 - [x] Task: Add handle and history to command parser (cb06881)
     - [x] Update `CommandType` union in `src/lib/commandParser.ts`: add `'handle'`, `'history'`
@@ -108,7 +108,7 @@
     - [x] Add `history` case in `useGameCommands.handleCommand`: call query, format ASCII table output
     - [x] Handle empty history: `NO_MATCHES_FOUND`
     - [x] Format: `# | OPPONENT | RESULT | TURNS | DURATION`
-- [ ] Task: Conductor - User Manual Verification 'Phase D: CLI Commands' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase D: CLI Commands' (Protocol in workflow.md)
 
 ## Phase E: UI Polish — TurnIndicator, Post-Game, Rematch
 

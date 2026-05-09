@@ -89,7 +89,7 @@ describe('handleCommand - handle', () => {
 
     expect(mockMutations.setHandle).toHaveBeenCalledWith({
       userId: 'user_p1',
-      handle: 'Neo',
+      newHandle: 'Neo',
     })
   })
 

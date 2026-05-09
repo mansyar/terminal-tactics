@@ -60,7 +60,7 @@ export const setHandleHandler = async (
     throw new Error('HANDLE_INVALID_CHARS')
   }
 
-  // Collect all players (index scan for the prefix) to check uniqueness and find current user
+  // Collect all players to check uniqueness and find current user
   const allPlayers = await ctx.db.query('players').collect()
 
   const player = allPlayers.find((p: any) => p.userId === userId)

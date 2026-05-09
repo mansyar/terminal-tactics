@@ -10,6 +10,15 @@ import {
   playTurnEnd,
 } from '../lib/audio'
 import { useGameDerivedState } from './useGameDerivedState'
+import {
+  handleHandleCommand,
+  handleHistoryCommand,
+} from './commands/profileCommands'
+import {
+  handleSudoAttackCommand,
+  handleSudoMoveCommand,
+  handleSudoScanCommand,
+} from './commands/sudoCommands'
 
 export interface GameMutations {
   logCommand: any
@@ -349,80 +358,21 @@ export function useGameCommands({
           playSuccess()
         }
       } else if (cmd.type === 'sudo mv') {
-        const [unitCoord, targetCoord] = cmd.args
-        const unitPos = parseCoord(unitCoord)
-        const targetPos = parseCoord(targetCoord)
-        if (!unitPos || !targetPos) {
-          result = 'ERROR: INVALID_ARGS. USAGE: sudo mv [unit] [target]'
-          playError()
-        } else {
-          const unit = gameState.units.find(
-            (u: any) => u.x === unitPos.x && u.y === unitPos.y,
-          )
-          if (!unit) {
-            result = `ERROR: NO_UNIT_AT ${unitPos.label}`
-            playError()
-          } else {
-            try {
-              await mutations.sudoMove({
-                gameId: gameState._id,
-                playerId,
-                unitId: unit._id,
-                targetX: targetPos.x,
-                targetY: targetPos.y,
-              })
-              result = `SUDO_MOVE: [${unit.type}] bypassed security to ${targetPos.label}`
-              playSuccess()
-            } catch (err: any) {
-              result = `ERROR: ${cleanErrorMessage(err.message)}`
-              playError()
-            }
-          }
-        }
+        result = await handleSudoMoveCommand(
+          { playerId, gameState, mutations },
+          cmd.args,
+        )
       } else if (cmd.type === 'sudo scan') {
-        try {
-          await mutations.sudoScan({ gameId: gameState._id, playerId })
-          result = 'SUDO_SCAN: FULL_MAP_DECRYPTED'
-          playSuccess()
-        } catch (err: any) {
-          result = `ERROR: ${cleanErrorMessage(err.message)}`
-          playError()
-        }
+        result = await handleSudoScanCommand({
+          playerId,
+          gameState,
+          mutations,
+        })
       } else if (cmd.type === 'sudo atk') {
-        const [atkCoord, targetCoord] = cmd.args
-        const atkPos = parseCoord(atkCoord)
-        const targetPos = parseCoord(targetCoord)
-        if (!atkPos || !targetPos) {
-          result = 'ERROR: INVALID_ARGS. USAGE: sudo atk [atk] [target]'
-          playError()
-        } else {
-          const attacker = gameState.units.find(
-            (u: any) => u.x === atkPos.x && u.y === atkPos.y,
-          )
-          const defender = gameState.units.find(
-            (u: any) => u.x === targetPos.x && u.y === targetPos.y,
-          )
-          if (!attacker || !defender) {
-            result = 'ERROR: UNIT_NOT_FOUND'
-            playError()
-          } else {
-            try {
-              const res = await mutations.sudoAttack({
-                gameId: gameState._id,
-                playerId,
-                attackerId: attacker._id,
-                targetId: defender._id,
-                damage: 0,
-              })
-              result = `SUDO_ATTACK: [${attacker.type}] dealt ${res.damage} DMG to [${defender.type}] bypassing systems.`
-              playAttack()
-              if (res.destroyed) result += ' [ELIMINATED]'
-            } catch (err: any) {
-              result = `ERROR: ${cleanErrorMessage(err.message)}`
-              playError()
-            }
-          }
-        }
+        result = await handleSudoAttackCommand(
+          { playerId, gameState, mutations },
+          cmd.args,
+        )
       } else if (cmd.type === 'forfeit') {
         await mutations.forfeit({ gameId: gameState._id, playerId })
         result = 'FORFEIT_ACCEPTED. INITIATING_SHUTDOWN.'
@@ -441,60 +391,21 @@ export function useGameCommands({
           playError()
         }
       } else if (cmd.type === 'handle') {
-        const [newHandle] = cmd.args
-        if (!newHandle) {
-          result = 'ERROR: MISSING_HANDLE. USAGE: handle [name]'
-          playError()
-        } else {
-          try {
-            const res = await mutations.setHandle({
-              userId: playerId,
-              handle: newHandle,
-            })
-            result = `HANDLE_SET: ${res.handle}`
-            playSuccess()
-          } catch (err: any) {
-            result = `ERROR: ${cleanErrorMessage(err.message)}`
-            playError()
-          }
-        }
+        const profileResult = await handleHandleCommand(
+          { playerId, gameState, matchHistory, mutations },
+          cmd.args,
+        )
+        result = profileResult.result
+        logVisibility = profileResult.visibility
       } else if (cmd.type === 'history') {
-        if (!matchHistory || matchHistory.length === 0) {
-          result = 'NO_MATCHES_FOUND'
-          playSuccess()
-        } else {
-          const entries = matchHistory.slice(0, 20)
-          const myPlayerKey = gameState.p1 === playerId ? 'p1' : ('p2' as const)
-          const opponentKey = myPlayerKey === 'p1' ? 'p2' : 'p1'
-
-          const rows = entries.map((match: any, i: number) => {
-            const isWin =
-              match.winner === myPlayerKey
-                ? true
-                : match.winner === opponentKey
-                  ? false
-                  : undefined
-            const resultLabel =
-              isWin === true ? 'WIN' : isWin === false ? 'LOSS' : 'DRAW'
-            const opponentHandle = match[`${opponentKey}Handle`]
-            const minutes = Math.floor(match.duration / 60000)
-            const seconds = Math.round((match.duration % 60000) / 1000)
-            const durationStr = `${minutes}m ${seconds}s`
-            return `  ${String(i + 1).padStart(2)}  │ ${opponentHandle.padEnd(10)} │ ${resultLabel.padEnd(5)} │ ${String(match.turns).padEnd(7)} │ ${durationStr.padEnd(7)}`
-          })
-
-          const header =
-            '┌──────┬────────────┬──────────┬──────────┬──────────┐\n' +
-            '│ #    │ Opponent   │ Result   │ Turns    │ Duration │\n' +
-            '├──────┼────────────┼──────────┼──────────┼──────────┤\n' +
-            rows.join('\n') +
-            '\n' +
-            '└──────┴────────────┴──────────┴──────────┴──────────┘'
-
-          result = header
-          logVisibility = 'private'
-          playSuccess()
-        }
+        const profileResult = await handleHistoryCommand({
+          playerId,
+          gameState,
+          matchHistory,
+          mutations,
+        })
+        result = profileResult.result
+        logVisibility = profileResult.visibility
       } else if (cmd.type === 'say') {
         const message = cmd.args.join(' ')
         if (message) {

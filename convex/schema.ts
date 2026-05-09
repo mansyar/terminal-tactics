@@ -34,6 +34,7 @@ export default defineSchema({
     gameStartTime: v.optional(v.number()), // Timestamp when game transitioned from drafting → playing
     rematchCode: v.optional(v.string()), // 4-char lobby code for rematch
     rematchLobbyId: v.optional(v.id('games')), // ID of the rematch lobby game
+    mapPreset: v.optional(v.string()), // "grid" | "maze" | "ridge" | undefined for random/procedural
   })
     .index('by_status', ['status'])
     .index('by_code', ['code']),
@@ -55,6 +56,8 @@ export default defineSchema({
     isOverwatching: v.optional(v.boolean()),
     overwatchDirection: v.optional(v.optional(v.string())),
     isStealthed: v.optional(v.boolean()),
+    engineerWallCount: v.optional(v.number()), // Remaining build uses for Engineer units
+    sniperMovedThisTurn: v.optional(v.boolean()), // Tracks if Sniper has moved this turn
   }).index('by_gameId', ['gameId']),
 
   players: defineTable({

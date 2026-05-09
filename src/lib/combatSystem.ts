@@ -2,7 +2,7 @@ import type { MapData } from './mapGenerator'
 import type { Coord } from './movementValidator'
 
 export type Direction = 'N' | 'E' | 'S' | 'W'
-export type UnitType = 'K' | 'A' | 'S' | 'M'
+export type UnitType = 'K' | 'A' | 'S' | 'M' | 'E' | 'R' | 'C'
 
 export interface CombatUnit {
   type: UnitType

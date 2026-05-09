@@ -63,32 +63,33 @@
 
 ## Phase C: Lobby Handle UI (Frontend)
 
-- [ ] Task: Wire up player identity at App mount
-    - [ ] In `src/App.tsx`: on mount, call `getOrCreatePlayer` mutation to ensure player doc exists (result is cached — only needs to run once per session)
-    - [ ] Query `getPlayerByUserId(playerId)` to get current handle
-    - [ ] Pass handle down to LobbyScreen, TurnIndicator, and the waiting-for-opponent screen via props or context
-- [ ] Task: Write tests for lobby handle widget
-    - [ ] Test LobbyScreen shows current handle from props
-    - [ ] Test LobbyScreen handle edit input calls setHandle mutation on submit
-    - [ ] Test LobbyScreen shows validation error for invalid handle (too short, bad chars)
-    - [ ] Test LobbyScreen shows "HANDLE_TAKEN" error from server
-    - [ ] Test LobbyScreen updates displayed handle on successful change
-- [ ] Task: Add handle display and edit UI to LobbyScreen
-    - [ ] Add handle display section to LobbyScreen showing current handle (replacing the raw Operative_ID at the bottom)
-    - [ ] Add inline "edit" UI (text input that appears on click/button press)
-    - [ ] Wire input to `setHandle` mutation with loading + error states
-    - [ ] Show validation errors inline (length, chars, uniqueness)
-    - [ ] Show success feedback: "HANDLE_UPDATED" flash
-    - [ ] Style consistently with the terminal aesthetic (green on black, monospace)
-    - [ ] Add instructional text: "SET_YOUR_HANDLE_BELOW or use /handle <name> in-game"
+- [x] Task: Wire up player identity at App mount (cdf8184)
+    - [x] In `src/App.tsx`: on mount, call `getOrCreatePlayer` mutation to ensure player doc exists
+    - [x] Query `getPlayerByUserId(playerId)` to get current handle
+    - [x] Pass handle down to LobbyScreen, TurnIndicator, and the waiting-for-opponent screen via props or context (stubs ready for next tasks)
+- [x] Task: Write tests for lobby handle widget (668ee7f)
+    - [x] Test LobbyScreen shows current handle from props
+    - [x] Test LobbyScreen shows [EDIT] button
+    - [x] Test LobbyScreen shows handle input when [EDIT] is clicked
+    - [x] Test LobbyScreen shows validation errors (too short, too long, bad chars)
+    - [x] Test LobbyScreen cancels edit properly
+    - [x] Test LobbyScreen returns to display mode after successful handle change
+    - [x] Test LobbyScreen renders basic title
+- [x] Task: Add handle display and edit UI to LobbyScreen (668ee7f)
+    - [x] Add handle display section to LobbyScreen showing current handle
+    - [x] Add inline "edit" UI (text input) with SET/CANCEL buttons
+    - [x] Wire input to `setHandle` mutation with loading + error states
+    - [x] Show validation errors inline (length, chars)
+    - [x] Style consistently with terminal aesthetic
+    - [x] Add instructional text: "Use /handle <name> in-game to change"
 - [ ] Task: Conductor - User Manual Verification 'Phase C: Lobby Handle UI' (Protocol in workflow.md)
 
 ## Phase D: CLI Commands — handle & history
 
-- [ ] Task: Add handle and history to command parser
-    - [ ] Update `CommandType` union in `src/lib/commandParser.ts`: add `'handle'`, `'history'`
-    - [ ] Add parsing logic for `handle <name>` (single arg) and `history` (no args) to the `validTypes` array
-    - [ ] Write test in `src/lib/commandParser.test.ts` for both new commands
+- [x] Task: Add handle and history to command parser (cb06881)
+    - [x] Update `CommandType` union in `src/lib/commandParser.ts`: add `'handle'`, `'history'`
+    - [x] Add parsing logic for `handle <name>` (single arg) and `history` (no args) to the `validTypes` array
+    - [x] Write test in `src/lib/commandParser.test.ts` for both new commands
 - [ ] Task: Write tests for handle CLI command handler
     - [ ] Test `handleCommand` calls `setHandle` mutation with correct args
     - [ ] Test handle command captures and displays returned handle

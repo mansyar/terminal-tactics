@@ -36,6 +36,11 @@ export const attackUnit = mutation({
     // 2. AP Check
     if (attacker.ap < 1) throw new Error('INSUFFICIENT_AP')
 
+    // 2b. Sniper Stationary Check
+    if (attacker.type === 'R' && attacker.sniperMovedThisTurn) {
+      throw new Error('SNIPER_MOVED_THIS_TURN')
+    }
+
     // 3. Range & LoS Check
     const attackerOnHighGround =
       game.mapData.tiles[attacker.y]?.[attacker.x] === 'highground'

@@ -176,6 +176,7 @@ export const moveUnit = mutation({
         ap: unit.ap - cost,
         direction,
         isStealthed: unit.type === 'S' ? !isVisible : undefined,
+        sniperMovedThisTurn: unit.type === 'R' ? true : undefined,
       })
     }
 

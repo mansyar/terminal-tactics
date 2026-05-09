@@ -30,6 +30,7 @@ export const sudoMove = mutation({
       x: args.targetX,
       y: args.targetY,
       isStealthed: false,
+      sniperMovedThisTurn: unit.type === 'R' ? true : undefined,
     })
 
     await ctx.db.patch(game._id, {

@@ -134,7 +134,8 @@ export const getFilteredLogsHandler = async (ctx: any, args: any) => {
 
   return allLogs.filter((log: any) => {
     const isPublic = log.visibility === 'public' || !log.visibility
-    const isMyPrivate = log.visibility === 'private' && log.playerId === args.playerId
+    const isMyPrivate =
+      log.visibility === 'private' && log.playerId === args.playerId
     return isPublic || isMyPrivate
   })
 }
@@ -214,6 +215,10 @@ export const endTurn = mutation({
       // Re-cloak Scouts if not adjacent to enemies
       if (unit.type === 'S' && !unit.isStealthed) {
         unitPatch.isStealthed = true
+      }
+      // Clear Sniper moved flag at start of turn
+      if (unit.sniperMovedThisTurn) {
+        unitPatch.sniperMovedThisTurn = undefined
       }
       await ctx.db.patch(unit._id, unitPatch)
     }

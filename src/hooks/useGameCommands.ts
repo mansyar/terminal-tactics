@@ -42,6 +42,8 @@ export interface GameMutations {
   checkDisconnectGracePeriod: any
   heartbeat: any
   setHandle: any
+  buildWall: any
+  demolishWall: any
 }
 
 interface UseGameCommandsParams {
@@ -323,6 +325,79 @@ export function useGameCommands({
             }
           }
         }
+      } else if (cmd.type === 'build') {
+        const [coord] = cmd.args
+        const target = parseCoord(coord)
+
+        if (!target) {
+          result = 'ERROR: INVALID_ARGUMENTS. USAGE: build [coord]'
+        } else {
+          // Find the first friendly Engineer unit with AP (prefer selected unit)
+          const engineer = gameState.units.find(
+            (u: any) =>
+              u.ownerId ===
+                (gameState.currentPlayer === 'p1'
+                  ? gameState.p1
+                  : gameState.p2) &&
+              u.type === 'E' &&
+              u.ap >= 1,
+          )
+
+          if (!engineer) {
+            result = 'ERROR: NO_ENGINEER_WITH_AP'
+          } else {
+            try {
+              await mutations.buildWall({
+                gameId: gameState._id,
+                playerId,
+                unitId: engineer._id,
+                targetX: target.x,
+                targetY: target.y,
+              })
+              result = `BUILD_SUCCESS: Engineer [${engineer.type}] built wall at ${target.label}.`
+              playSuccess()
+            } catch (err: any) {
+              result = `ERROR: ${cleanErrorMessage(err.message)}`
+              playError()
+            }
+          }
+        }
+      } else if (cmd.type === 'demolish') {
+        const [coord] = cmd.args
+        const target = parseCoord(coord)
+
+        if (!target) {
+          result = 'ERROR: INVALID_ARGUMENTS. USAGE: demolish [coord]'
+        } else {
+          const engineer = gameState.units.find(
+            (u: any) =>
+              u.ownerId ===
+                (gameState.currentPlayer === 'p1'
+                  ? gameState.p1
+                  : gameState.p2) &&
+              u.type === 'E' &&
+              u.ap >= 1,
+          )
+
+          if (!engineer) {
+            result = 'ERROR: NO_ENGINEER_WITH_AP'
+          } else {
+            try {
+              await mutations.demolishWall({
+                gameId: gameState._id,
+                playerId,
+                unitId: engineer._id,
+                targetX: target.x,
+                targetY: target.y,
+              })
+              result = `DEMOLISH_SUCCESS: Engineer [${engineer.type}] demolished wall at ${target.label}.`
+              playSuccess()
+            } catch (err: any) {
+              result = `ERROR: ${cleanErrorMessage(err.message)}`
+              playError()
+            }
+          }
+        }
       } else if (cmd.type === 'inspect') {
         const [coord] = cmd.args
         const target = parseCoord(coord)
@@ -449,6 +524,8 @@ export function useGameCommands({
       mutations.acceptDraw,
       mutations.sendMessage,
       mutations.setHandle,
+      mutations.buildWall,
+      mutations.demolishWall,
       showCoordinates,
     ],
   )

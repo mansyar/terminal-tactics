@@ -112,4 +112,22 @@ describe('commandParser', () => {
       raw: 'history',
     })
   })
+
+  it('parses "build" command with coordinate argument', () => {
+    const result = parseCommand('build C4')
+    expect(result).toEqual({
+      type: 'build',
+      args: ['C4'],
+      raw: 'build C4',
+    })
+  })
+
+  it('parses "demolish" command with coordinate argument', () => {
+    const result = parseCommand('demolish D5')
+    expect(result).toEqual({
+      type: 'demolish',
+      args: ['D5'],
+      raw: 'demolish D5',
+    })
+  })
 })

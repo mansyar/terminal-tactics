@@ -51,6 +51,8 @@ function createMockMutations(): GameMutations {
     checkDisconnectGracePeriod: jest.fn(() => Promise.resolve()),
     heartbeat: jest.fn(() => Promise.resolve()),
     setHandle: jest.fn(),
+    buildWall: jest.fn(() => Promise.resolve()),
+    demolishWall: jest.fn(() => Promise.resolve()),
   }
 }
 

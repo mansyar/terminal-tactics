@@ -66,6 +66,10 @@ function App() {
   )
   const heartbeat = useMutation(api.presence.heartbeat)
 
+  // Phase 11: Engineer abilities
+  const buildWall = useMutation(api.engineer.buildWall)
+  const demolishWall = useMutation(api.engineer.demolishWall)
+
   // Phase 10: Player identity
   const getOrCreatePlayer = useMutation(api.players.getOrCreatePlayer)
   const setHandle = useMutation(api.players.setHandle)
@@ -155,6 +159,8 @@ function App() {
       checkDisconnectGracePeriod,
       heartbeat,
       setHandle,
+      buildWall,
+      demolishWall,
     },
   })
 

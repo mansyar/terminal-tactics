@@ -5,6 +5,8 @@ export type CommandType =
   | 'scan'
   | 'inspect'
   | 'ovw'
+  | 'build'
+  | 'demolish'
   | 'help'
   | 'clear'
   | 'end'
@@ -60,6 +62,8 @@ export function parseCommand(input: string): ParsedCommand {
     'scan',
     'inspect',
     'ovw',
+    'build',
+    'demolish',
     'help',
     'clear',
     'end',

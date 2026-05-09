@@ -76,6 +76,7 @@ async function startGame(ctx: any, gameId: any) {
         y: 10,
         direction: 'N',
         isStealthed: type === 'S',
+        engineerWallCount: type === 'E' ? 1 : undefined,
       })
     }
   }
@@ -100,6 +101,7 @@ async function startGame(ctx: any, gameId: any) {
         y: 1,
         direction: 'S',
         isStealthed: type === 'S',
+        engineerWallCount: type === 'E' ? 1 : undefined,
       })
     }
   }

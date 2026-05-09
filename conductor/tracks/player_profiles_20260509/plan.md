@@ -1,13 +1,13 @@
 # Implementation Plan: Player Profiles & Match History
 
-## Phase A: Schema & Players Table (Backend)
+## Phase A: Schema & Players Table (Backend) [checkpoint: b4f749d]
 
 - [x] Task: Update games schema and create new tables (1e2460d)
-    - [ ] Add `gameStartTime` (optional number) to `games` table in `convex/schema.ts`
-    - [ ] Add `players` table to schema: `userId` (string, unique), `handle` (string, unique), `gamesPlayed` (number), `wins` (number), `losses` (number), `draws` (number)
-    - [ ] Add `matches` table to schema: `gameId` (id of games), `p1Id` (string), `p2Id` (string), `p1Handle` (string), `p2Handle` (string), `winner` (optional string), `endReason` (string), `turns` (number), `duration` (number), `finishedAt` (number)
-    - [ ] Add indexes: `players` by `userId` (unique), `players` by `handle` (unique), `matches` by `p1Id`, `matches` by `p2Id`
-    - [ ] Run `bunx convex codegen` to regenerate types
+    - [x] Add `gameStartTime` (optional number) to `games` table in `convex/schema.ts`
+    - [x] Add `players` table to schema: `userId` (string, unique), `handle` (string, unique), `gamesPlayed` (number), `wins` (number), `losses` (number), `draws` (number)
+    - [x] Add `matches` table to schema: `gameId` (id of games), `p1Id` (string), `p2Id` (string), `p1Handle` (string), `p2Handle` (string), `winner` (optional string), `endReason` (string), `turns` (number), `duration` (number), `finishedAt` (number)
+    - [x] Add indexes: `players` by `userId` (unique), `players` by `handle` (unique), `matches` by `p1Id`, `matches` by `p2Id`
+    - [x] Run `bunx convex codegen` to regenerate types
 - [x] Task: Write tests for players CRUD operations (7a60bff)
     - [x] Create `convex/players.test.ts` following existing patterns
     - [x] Test `getOrCreatePlayer` handler: creates new player doc with auto-handle `user_xxxx`
@@ -28,7 +28,7 @@
     - [x] Create `setHandle` mutation wrapper
 - [x] Task: Set `gameStartTime` on game start (1e2460d)
     - [x] In `convex/squadBuilder.ts` `startGame()`: add `gameStartTime: Date.now()` to the patch that transitions game to `status: 'playing'`
-- [ ] Task: Conductor - User Manual Verification 'Phase A: Schema & Players Table' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase A: Schema & Players Table' (Protocol in workflow.md)
 
 ## Phase B: Stats Recording Hook (Backend)
 

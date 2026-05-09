@@ -16,6 +16,8 @@ export type CommandType =
   | 'accept draw'
   | 'say'
   | 'toggle labels'
+  | 'handle'
+  | 'history'
   | 'unknown'
 
 export interface ParsedCommand {
@@ -63,6 +65,8 @@ export function parseCommand(input: string): ParsedCommand {
     'end',
     'forfeit',
     'say',
+    'handle',
+    'history',
   ]
 
   if (validTypes.includes(type)) {

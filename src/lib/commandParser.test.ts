@@ -85,4 +85,31 @@ describe('commandParser', () => {
       raw: 'say hello world',
     })
   })
+
+  it('parses "handle" command with a name argument', () => {
+    const result = parseCommand('handle Neo')
+    expect(result).toEqual({
+      type: 'handle',
+      args: ['Neo'],
+      raw: 'handle Neo',
+    })
+  })
+
+  it('parses "handle" command with underscore name', () => {
+    const result = parseCommand('handle neo_da_man')
+    expect(result).toEqual({
+      type: 'handle',
+      args: ['neo_da_man'],
+      raw: 'handle neo_da_man',
+    })
+  })
+
+  it('parses "history" command with no arguments', () => {
+    const result = parseCommand('history')
+    expect(result).toEqual({
+      type: 'history',
+      args: [],
+      raw: 'history',
+    })
+  })
 })

@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { UNIT_TEMPLATES } from '../../convex/squadBuilder'
 import { TimerDisplay } from './TimerDisplay'
+import { UNIT_TEMPLATES } from '@/lib/unitTemplates'
 
 interface SquadBuilderProps {
   onDeploy: (squad: Array<string>) => void

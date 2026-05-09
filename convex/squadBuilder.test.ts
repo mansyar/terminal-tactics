@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test'
-import { UNIT_TEMPLATES, submitDraft } from './squadBuilder'
+import { UNIT_TEMPLATES } from '../src/lib/unitTemplates'
+import { submitDraft } from './squadBuilder'
 
 const mockDb = {
   get: mock(() => null),

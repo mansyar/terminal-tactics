@@ -1,13 +1,7 @@
 import { v } from 'convex/values'
 import { generateMap } from '../src/lib/mapGenerator'
+import { UNIT_TEMPLATES } from '../src/lib/unitTemplates'
 import { mutation } from './_generated/server'
-
-export const UNIT_TEMPLATES: Record<string, any> = {
-  K: { cost: 300, hp: 100, ap: 2, atk: 30, rng: 1, vis: 3, label: 'Knight' },
-  A: { cost: 200, hp: 60, ap: 2, atk: 20, rng: 5, vis: 5, label: 'Archer' },
-  S: { cost: 150, hp: 50, ap: 4, atk: 15, rng: 2, vis: 4, label: 'Scout' },
-  M: { cost: 250, hp: 70, ap: 3, atk: 0, rng: 2, vis: 3, label: 'Medic' },
-}
 
 export const submitDraft = mutation({
   args: {
@@ -25,6 +19,7 @@ export const submitDraft = mutation({
     let totalCost = 0
     for (const type of args.squad) {
       const template = UNIT_TEMPLATES[type]
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- runtime guard for invalid unit types
       if (!template) throw new Error('INVALID_UNIT_TYPE')
       totalCost += template.cost
     }

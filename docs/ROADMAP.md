@@ -2,7 +2,7 @@
 
 **Project Status:** 🔄 In Progress  
 **GDD Version:** v1.7.0  
-**Last Updated:** 2026-05-09
+**Last Updated:** 2026-05-10
 
 ---
 
@@ -347,43 +347,50 @@
 
 ---
 
-## 🚩 Phase 10: Player Profiles & Match History ⏳
+## 🚩 Phase 10: Player Profiles & Match History ✅ [checkpoint: 1c7a809]
 
-**Goal:** Give players a persistent identity, track their record, and let them review past games. No ranked, no ELO, no leaderboards.
+**Goal:** Give players a persistent identity, track their record, and let them review past games. All player identity, stats tracking, match history, and rematch features implemented. [8fc9e70] [1e2460d] [b4f749d] [3462b6c] [cdf8184] [668ee7f] [d5c4684] [f661927] [48dd03b] [f0c5430] [1c7a809]
 
 ### 10.1 Player Identity
 
-- [ ] **`players` Table:** Create Convex `players` table with:
-  - `userId`, `handle`, `gamesPlayed`, `wins`, `losses`, `draws`
-- [ ] **Handle Command:** Add `handle <name>` CLI command to set/change display name.
-- [ ] **Auto-Handle:** Auto-generate handle as `user_xxxx` on first visit (tied to existing localStorage ID).
-- [ ] **In-Game Display:** Show handles in lobby and TurnIndicator instead of "Player 1" / "Player 2".
+- [x] **`players` Table:** Created Convex `players` table with `userId`, `handle`, `gamesPlayed`, `wins`, `losses`, `draws`. [1e2460d]
+- [x] **`gameStartTime` Field:** Added to `games` table, set when game transitions drafting → playing. [1e2460d]
+- [x] **Auto-Handle:** On App mount, `getOrCreatePlayer` creates player doc with auto-handle `user_xxxx`. [cdf8184]
+- [x] **Handle Setting (Lobby UI):** Inline edit text input with validation (2-20 chars, alphanumeric + underscores). [668ee7f]
+- [x] **`handle <name>` CLI Command:** Secondary mechanism with same validation. [eb55910]
+- [x] **In-Game Display:** Handles shown in lobby, waiting-for-opponent screen, TurnIndicator ("WAITING_FOR [handle]"), and Operative_ID panel. [f0c5430] [f661927]
 
 ### 10.2 Stats Tracking
 
-- [ ] **Win/Loss Recording:** Increment counters on `players` document after each finished game.
-- [ ] **Draw Handling:** Track draws separately from wins/losses.
-- [ ] **Post-Game Screen:** Show final stats (your record, opponent's record, game duration, turns played).
-- [ ] **Forfeit Tracking:** Record method of victory (`elimination`, `forfeit`, `disconnect`, `timeout`).
+- [x] **Win/Loss Recording:** `recordGameEnd` increments counters after every finished game. [3462b6c]
+- [x] **Draw Handling:** Both players get +1 draws (no winner). [3462b6c]
+- [x] **Draft Timeout Guard:** Games cancelled during drafting (both failed to submit) do NOT record stats. [8f8cbdc]
+- [x] **5 Game-Finish Paths:** Stats recorded for elimination, forfeit, draw, turn timeout, and disconnect. [8f8cbdc]
+- [x] **Post-Game Screen:** Shows your record (W/L/D), opponent's record, game duration (Xm Ys), turns played, and method of victory. [f0c5430]
 
 ### 10.3 Match History
 
-- [ ] **`matches` Table:** Create Convex `matches` table with:
-  - `gameId`, `p1Id`, `p2Id`, `p1Handle`, `p2Handle`, `winner`, `turns`, `duration`, `finishedAt`
-- [ ] **Match History Command:** Add `history` CLI command to show last 20 games.
-- [ ] **Profile View:** Stats panel visible in lobby showing your record and recent matches.
+- [x] **`matches` Table:** Created Convex `matches` table with handle snapshot at game-end. [1e2460d]
+- [x] **`history` CLI Command:** Queries last 20 games, formatted as ASCII table with #, opponent, result, turns, duration. [4de9731]
+- [x] **Handle Snapshots:** Historical records remain accurate even if player changes handle later. [3462b6c]
+- [x] **Stats Panel:** Visible in lobby (handle, W/L/D record). [f0c5430]
 
-### 10.4 Quick Wins
+### 10.4 Rematch Protocol
 
-- [ ] **Rematch Button:** Post-game button to create a new lobby with the same opponent.
+- [x] **Rematch Button:** Post-game "REMATCH" button on finished screen. [f0c5430]
+- [x] **Backend Protocol:** `initiateRematch` creates private lobby, stores `rematchCode`/`rematchLobbyId` on finished game. [48dd03b]
+- [x] **P2 Flow:** `getRematchInfo` picks up code → shows "REMATCH_AVAILABLE" → P2 clicks to join. [f0c5430]
+- [x] **Cleanup:** `clearRematch` removes code when either player joins/closes. [48dd03b]
 
 ### Definition of Done
 
-- [ ] Player handles display correctly in lobby and game.
-- [ ] Win/loss/draw counters update correctly after each game.
-- [ ] Match history shows last 20 games with outcome and opponent.
-- [ ] Rematch button creates a new lobby with the same opponent.
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test`
+- [x] Player handles display correctly in lobby and game.
+- [x] Win/loss/draw counters update correctly after each game (all 5 paths + draft guard).
+- [x] Match history shows last 20 games as ASCII table via `history` CLI.
+- [x] Rematch button creates new lobby with same opponent.
+- [x] CLI `handle` command fixed — arg name mismatch resolved. [37d1062]
+- [x] Code extracted into modules to stay under 512-line limit. [37d1062]
+- [x] Execute: `bun run type-check && bun run lint && bun run build && bun test` (311 tests, 0 failures). [37d1062]
 
 ---
 
@@ -537,7 +544,7 @@
 | Phase 7: Visual & UX Polish   | ✅ Complete | 100%       |
 | Phase 8: Session Stability    | ✅ Complete | 100%       |
 | Phase 9: Accessibility & Perf | ✅ Complete | 100%       |
-| Phase 10: Player Profiles     | ⏳ Planned  | 0%         |
+| Phase 10: Player Profiles     | ✅ Complete | 100%       |
 | Phase 11: Content Expansion   | ⏳ Planned  | 0%         |
 | Phase 12: AI & Achievements   | ⏳ Planned  | 0%         |
 | Phase 13: Deployment          | ⏳ Planned  | 0%         |
@@ -551,8 +558,8 @@
 | ✅ Done   | Phase 7  | Visual & UX Polish completed — health bars, colors, logs, readability |
 | ✅ Done   | Phase 8  | Session stability complete — heartbeat, grace period, reconnection |
 | ✅ Done   | Phase 9  | Accessibility and performance complete — ARIA, keyboard nav, contrast, reduced motion, responsive tablet layout |
+| ✅ Done   | Phase 10 | Player profiles and match history complete — identity, stats, history CLI, rematch |
 | 🟡 Medium | Phase 13 | **Launch on itch.io — portfolio-ready URL**                   |
-| 🟡 Medium | Phase 10 | Player profiles and match history for identity + retention    |
 | 🟢 Low    | Phase 11 | Content expansion extends game lifespan                       |
 | 🟢 Low    | Phase 12 | AI opponent for single-player + achievements for retention    |
 

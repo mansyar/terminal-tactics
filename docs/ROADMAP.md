@@ -498,7 +498,17 @@
 - [ ] **Embed Config:** 1280×720 viewport, fullscreen enabled.
 - [ ] **Share Link:** Get the public itch.io URL for portfolio and recruiting.
 
-### 13.4 Launch
+### 13.4 README Polish
+
+- [ ] **Game Overview:** Replace placeholder README with compelling indie game intro — what it is, why it's cool, one-line hook.
+- [ ] **Visuals:** Add gameplay GIF/animated preview at the top (same one used for itch.io).
+- [ ] **Quick Start:** Single command to run locally (`bun install && bun run dev`).
+- [ ] **Tech Stack Badges:** Add shields.io badges (React, Convex, TypeScript, Tailwind, Bun).
+- [ ] **itch.io Link:** Prominent "Play Now" button linking to the live game.
+- [ ] **Screenshots:** Embedded screenshots showing the CLI, grid, and combat.
+- [ ] **Features List:** Bullet-point the key selling points (deterministic combat, fog of war, 4 unit classes, sudo abilities, etc).
+
+### 13.5 Launch
 
 - [ ] **Analytics:** Add basic page-view or game-start tracking (e.g., Convex event logging) to know if anyone is playing.
 - [ ] **Share:** Post the itch.io link on social media (Twitter/X, Reddit r/playmygame, relevant Discord servers).

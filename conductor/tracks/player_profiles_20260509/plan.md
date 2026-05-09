@@ -144,3 +144,6 @@
     - [x] On P2 click "ACCEPT": navigate to new lobby
     - [x] When either player joins the new lobby or navigates away, clear `rematchCode`/`rematchLobbyId` from the finished game
 - [x] Task: Conductor - User Manual Verification 'Phase E: UI Polish' (Protocol in workflow.md)
+
+## Phase: Review Fixes
+- [x] Task: Apply review suggestions 37d1062

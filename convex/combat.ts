@@ -6,6 +6,7 @@ import {
   isInRange,
 } from '../src/lib/combatSystem'
 import { mutation } from './_generated/server'
+import { recordGameEndHandler } from './players'
 
 export const attackUnit = mutation({
   args: {
@@ -109,6 +110,17 @@ export const attackUnit = mutation({
         await ctx.db.patch(args.gameId, {
           status: 'finished',
           winner: attacker.ownerId,
+        })
+
+        // Record game stats
+        await recordGameEndHandler(ctx, {
+          gameId: args.gameId,
+          p1Id: game.p1 ?? '',
+          p2Id: game.p2 ?? '',
+          winner: attacker.ownerId,
+          endReason: 'elimination',
+          turns: game.turnNum,
+          duration: Date.now() - (game.gameStartTime ?? Date.now()),
         })
       }
     }

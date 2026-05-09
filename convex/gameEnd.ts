@@ -1,5 +1,6 @@
 import { v } from 'convex/values'
 import { mutation } from './_generated/server'
+import { recordGameEndHandler } from './players'
 
 export const forfeit = mutation({
   args: { gameId: v.id('games'), playerId: v.string() },
@@ -11,9 +12,21 @@ export const forfeit = mutation({
     const isP2 = game.p2 === args.playerId
     if (!isP1 && !isP2) throw new Error('NOT_A_PLAYER')
 
+    const winner = isP1 ? (game.p2 ?? '') : (game.p1 ?? '')
+
     await ctx.db.patch(args.gameId, {
       status: 'finished',
-      winner: isP1 ? game.p2 : game.p1,
+      winner,
+    })
+
+    await recordGameEndHandler(ctx, {
+      gameId: args.gameId,
+      p1Id: game.p1 ?? '',
+      p2Id: game.p2 ?? '',
+      winner,
+      endReason: 'forfeit',
+      turns: game.turnNum,
+      duration: Date.now() - (game.gameStartTime ?? Date.now()),
     })
   },
 })
@@ -54,6 +67,16 @@ export const acceptDraw = mutation({
       status: 'finished',
       winner: undefined, // It's a draw
       drawOffer: undefined,
+    })
+
+    await recordGameEndHandler(ctx, {
+      gameId: args.gameId,
+      p1Id: game.p1 ?? '',
+      p2Id: game.p2 ?? '',
+      winner: null,
+      endReason: 'draw',
+      turns: game.turnNum,
+      duration: Date.now() - (game.gameStartTime ?? Date.now()),
     })
   },
 })

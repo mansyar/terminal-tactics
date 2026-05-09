@@ -1,5 +1,6 @@
 import { v } from 'convex/values'
 import { mutation, query } from './_generated/server'
+import { recordGameEndHandler } from './players'
 
 const GRACE_PERIOD_MS = 120_000 // 2 minutes
 
@@ -18,14 +19,34 @@ export const checkDraftTimeout = mutation({
       const p2Ready = !!game.p2Squad
 
       if (!p1Ready && !p2Ready) {
+        // Guard: Both failed to submit — game never reached "playing" status
+        // Do NOT record stats (not a real match per spec)
         await ctx.db.patch(args.gameId, {
           status: 'finished',
           winner: undefined,
         })
       } else if (!p1Ready) {
         await ctx.db.patch(args.gameId, { status: 'finished', winner: game.p2 })
+        await recordGameEndHandler(ctx, {
+          gameId: args.gameId,
+          p1Id: game.p1 ?? '',
+          p2Id: game.p2 ?? '',
+          winner: 'p2',
+          endReason: 'timeout',
+          turns: 0,
+          duration: Date.now() - (game.draftStartTime ?? Date.now()),
+        })
       } else if (!p2Ready) {
         await ctx.db.patch(args.gameId, { status: 'finished', winner: game.p1 })
+        await recordGameEndHandler(ctx, {
+          gameId: args.gameId,
+          p1Id: game.p1 ?? '',
+          p2Id: game.p2 ?? '',
+          winner: 'p1',
+          endReason: 'timeout',
+          turns: 0,
+          duration: Date.now() - (game.draftStartTime ?? Date.now()),
+        })
       }
     }
   },
@@ -106,6 +127,17 @@ export const checkDisconnectGracePeriod = mutation({
         status: 'finished',
         winner: undefined,
       })
+      await recordGameEndHandler(ctx, {
+        gameId: args.gameId,
+        p1Id: game.p1 ?? '',
+        p2Id: game.p2 ?? '',
+        winner: null,
+        endReason: 'disconnect',
+        turns: game.turnNum,
+        duration:
+          Date.now() -
+          (game.gameStartTime ?? game.draftStartTime ?? Date.now()),
+      })
       return
     }
 
@@ -115,10 +147,32 @@ export const checkDisconnectGracePeriod = mutation({
         status: 'finished',
         winner: game.p2,
       })
+      await recordGameEndHandler(ctx, {
+        gameId: args.gameId,
+        p1Id: game.p1 ?? '',
+        p2Id: game.p2 ?? '',
+        winner: 'p2',
+        endReason: 'disconnect',
+        turns: game.turnNum,
+        duration:
+          Date.now() -
+          (game.gameStartTime ?? game.draftStartTime ?? Date.now()),
+      })
     } else {
       await ctx.db.patch(args.gameId, {
         status: 'finished',
         winner: game.p1,
+      })
+      await recordGameEndHandler(ctx, {
+        gameId: args.gameId,
+        p1Id: game.p1 ?? '',
+        p2Id: game.p2 ?? '',
+        winner: 'p1',
+        endReason: 'disconnect',
+        turns: game.turnNum,
+        duration:
+          Date.now() -
+          (game.gameStartTime ?? game.draftStartTime ?? Date.now()),
       })
     }
   },

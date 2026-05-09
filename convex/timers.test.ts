@@ -28,6 +28,7 @@ function freshMockDb() {
             first: mock(() => null),
           })),
         })),
+        collect: mock(() => collectorFns.collectResult),
       })),
       insert: mock(() => 'mock-id'),
       patch: mock(() => {}),

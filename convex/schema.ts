@@ -31,6 +31,9 @@ export default defineSchema({
     p1Status: v.optional(v.string()), // "connected" | "disconnected" | "reconnecting"
     p2Status: v.optional(v.string()), // "connected" | "disconnected" | "reconnecting"
     disconnectStartTime: v.optional(v.number()), // Timestamp when disconnect was first detected
+    gameStartTime: v.optional(v.number()), // Timestamp when game transitioned from drafting → playing
+    rematchCode: v.optional(v.string()), // 4-char lobby code for rematch
+    rematchLobbyId: v.optional(v.id('games')), // ID of the rematch lobby game
   })
     .index('by_status', ['status'])
     .index('by_code', ['code']),
@@ -53,6 +56,32 @@ export default defineSchema({
     overwatchDirection: v.optional(v.optional(v.string())),
     isStealthed: v.optional(v.boolean()),
   }).index('by_gameId', ['gameId']),
+
+  players: defineTable({
+    userId: v.string(), // The existing user_xxxx ID from localStorage
+    handle: v.string(), // Display name, unique across all players
+    gamesPlayed: v.number(), // Total games played that reached "playing" status
+    wins: v.number(),
+    losses: v.number(),
+    draws: v.number(),
+  })
+    .index('by_userId', ['userId'])
+    .index('by_handle', ['handle']),
+
+  matches: defineTable({
+    gameId: v.id('games'),
+    p1Id: v.string(),
+    p2Id: v.string(),
+    p1Handle: v.string(), // Snapshot of handle at game end
+    p2Handle: v.string(), // Snapshot of handle at game end
+    winner: v.optional(v.string()), // "p1" | "p2" | undefined for draw
+    endReason: v.string(), // "elimination" | "forfeit" | "disconnect" | "timeout" | "draw"
+    turns: v.number(),
+    duration: v.number(), // In milliseconds
+    finishedAt: v.number(), // Timestamp
+  })
+    .index('by_p1Id', ['p1Id'])
+    .index('by_p2Id', ['p2Id']),
 
   logs: defineTable({
     gameId: v.id('games'),

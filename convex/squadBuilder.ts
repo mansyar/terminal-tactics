@@ -118,5 +118,6 @@ async function startGame(ctx: any, gameId: any) {
     p2LastHeartbeat: now,
     p1Status: 'connected',
     p2Status: 'connected',
+    gameStartTime: now,
   })
 }

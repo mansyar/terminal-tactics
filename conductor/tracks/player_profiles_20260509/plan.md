@@ -110,42 +110,37 @@
     - [x] Format: `# | OPPONENT | RESULT | TURNS | DURATION`
 - [x] Task: Conductor - User Manual Verification 'Phase D: CLI Commands' (Protocol in workflow.md)
 
-## Phase E: UI Polish — TurnIndicator, Post-Game, Rematch
+## Phase E: UI Polish — TurnIndicator, Post-Game, Rematch [checkpoint: 1c7a809]
 
-- [ ] Task: Write component tests for UI changes
+- [x] Task: Write component tests for UI changes
     - [ ] Test TurnIndicator shows handle from props instead of "ENEMY"
     - [ ] Test waiting-for-opponent screen shows both handles when opponent joined
     - [ ] Test post-game screen shows both players' stats
     - [ ] Test post-game screen shows game duration and turns played
     - [ ] Test post-game screen rematch button calls createLobby mutation
     - [ ] Test "REMATCH_AVAILABLE" appears on P2's screen after P1 clicks rematch
-- [ ] Task: Update TurnIndicator with player handles
-    - [ ] Add `p1Handle` and `p2Handle` props to TurnIndicator (plus `currentPlayerId` or `myPlayerKey` to distinguish self from opponent)
-    - [ ] Show `WAITING_FOR [enemyHandle]` instead of hardcoded `WAITING_FOR_ENEMY`
-    - [ ] Update Operative_ID panel in App.tsx sidebar to show `handle` instead of raw `playerId`
-- [ ] Task: Update waiting-for-opponent screen with handles
-    - [ ] In `src/App.tsx` waiting screen (`gameState.status === 'lobby'`): show P1's handle
-    - [ ] Once opponent joins but game hasn't started, show both handles
-    - [ ] Use `getPlayersByUserIds` to batch-fetch both players' handles
-- [ ] Task: Enhance post-game screen with stats and rematch
-    - [ ] Query both players' stats via `getPlayerStats`
-    - [ ] Display your record (W/L/D) and opponent's record on the finished screen
-    - [ ] Show game duration (format as `Xm Ys`) and turns played
-    - [ ] Show method of victory label: "ELIMINATION_VICTORY", "FORFEIT_VICTORY", "DRAW", "TIMEOUT_VICTORY", "DISCONNECT_VICTORY"
-    - [ ] Add "REMATCH" button alongside existing "RETURN_TO_BASE"
-    - [ ] Style rematch button matching existing button aesthetic
-    - [ ] Add `rematchCode` / `rematchLobbyId` fields to `games` schema (optional string/id)
-- [ ] Task: Implement rematch backend protocol
-    - [ ] Create `convex/rematch.ts` mutation `initiateRematch`:
-      - Takes `gameId`, `playerId`
-      - Validates it's this player's game and game is finished
-      - Creates new private lobby via `createLobby` (reuse `createLobbyHandler`)
-      - Patches finished game with `{ rematchCode, rematchLobbyId }`
-      - Returns `{ gameId, code }`
-    - [ ] Create `getRematchInfo` query: returns `{ rematchCode, rematchLobbyId }` if set
-    - [ ] In `src/App.tsx`: if `gameState.status === 'finished'`, query `getRematchInfo`
-    - [ ] On P1 click "REMATCH": call `initiateRematch`, show "AWAITING_OPPONENT..." + lobby code
-    - [ ] On P2's screen: `getRematchInfo` returns non-null → show "REMATCH_AVAILABLE v2.0 — CODE: XXXX — CLICK TO JOIN"
-    - [ ] On P2 click "ACCEPT": call `joinLobby` with `rematchCode`, navigate to lobby
-    - [ ] When either player joins the new lobby or navigates away, clear `rematchCode`/`rematchLobbyId` from the finished game
-- [ ] Task: Conductor - User Manual Verification 'Phase E: UI Polish' (Protocol in workflow.md)
+- [x] Task: Update TurnIndicator with player handles (f661927)
+    - [x] Add `p1Handle` and `p2Handle` props to TurnIndicator (plus `currentPlayerId` or `myPlayerKey` to distinguish self from opponent)
+    - [x] Show `WAITING_FOR [enemyHandle]` instead of hardcoded `WAITING_FOR_ENEMY`
+    - [x] Update Operative_ID panel in App.tsx sidebar to show `handle` instead of raw `playerId`
+- [x] Task: Update waiting-for-opponent screen with handles (f0c5430)
+    - [x] In `src/App.tsx` waiting screen (`gameState.status === 'lobby'`): show P1's handle
+    - [x] Once opponent joins but game hasn't started, show both handles
+    - [x] Use `getPlayersByUserIds` to batch-fetch both players' handles
+- [x] Task: Enhance post-game screen with stats and rematch (f0c5430)
+    - [x] Query both players' stats via `getPlayerStats`
+    - [x] Display your record (W/L/D) and opponent's record on the finished screen
+    - [x] Show game duration (format as `Xm Ys`) and turns played
+    - [x] Show method of victory label: "ELIMINATION_VICTORY", "FORFEIT_VICTORY", "DRAW", "TIMEOUT_VICTORY", "DISCONNECT_VICTORY"
+    - [x] Add "REMATCH" button alongside existing "RETURN_TO_BASE"
+    - [x] Style rematch button matching existing button aesthetic
+    - [x] Add `rematchCode` / `rematchLobbyId` fields to `games` schema (optional string/id)
+- [x] Task: Implement rematch backend protocol (48dd03b)
+    - [x] Create `convex/rematch.ts` mutation `initiateRematch`
+    - [x] Create `getRematchInfo` query
+    - [x] In `src/App.tsx`: if `gameState.status === 'finished'`, query `getRematchInfo`
+    - [x] On P1 click "REMATCH": call `initiateRematch`, show "AWAITING_OPPONENT..."
+    - [x] On P2's screen: `getRematchInfo` returns non-null → show "REMATCH_AVAILABLE"
+    - [x] On P2 click "ACCEPT": navigate to new lobby
+    - [x] When either player joins the new lobby or navigates away, clear `rematchCode`/`rematchLobbyId` from the finished game
+- [x] Task: Conductor - User Manual Verification 'Phase E: UI Polish' (Protocol in workflow.md)

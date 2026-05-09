@@ -2,7 +2,7 @@
 
 ## Phase A: Schema & Players Table (Backend)
 
-- [ ] Task: Update games schema and create new tables
+- [x] Task: Update games schema and create new tables (1e2460d)
     - [ ] Add `gameStartTime` (optional number) to `games` table in `convex/schema.ts`
     - [ ] Add `players` table to schema: `userId` (string, unique), `handle` (string, unique), `gamesPlayed` (number), `wins` (number), `losses` (number), `draws` (number)
     - [ ] Add `matches` table to schema: `gameId` (id of games), `p1Id` (string), `p2Id` (string), `p1Handle` (string), `p2Handle` (string), `winner` (optional string), `endReason` (string), `turns` (number), `duration` (number), `finishedAt` (number)

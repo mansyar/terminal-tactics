@@ -90,19 +90,19 @@
     - [x] Update `CommandType` union in `src/lib/commandParser.ts`: add `'handle'`, `'history'`
     - [x] Add parsing logic for `handle <name>` (single arg) and `history` (no args) to the `validTypes` array
     - [x] Write test in `src/lib/commandParser.test.ts` for both new commands
-- [ ] Task: Write tests for handle CLI command handler
-    - [ ] Test `handleCommand` calls `setHandle` mutation with correct args
-    - [ ] Test handle command captures and displays returned handle
-    - [ ] Test handle command displays error message on server rejection
+- [x] Task: Write tests for handle CLI command handler (eb55910)
+    - [x] Test `handleCommand` calls `setHandle` mutation with correct args
+    - [x] Test handle command captures and displays returned handle
+    - [x] Test handle command displays error message on server rejection
 - [ ] Task: Write tests for history CLI command handler
     - [ ] Test history command calls `getMatchHistory` query
     - [ ] Test history command formats output as ASCII table with correct columns
     - [ ] Test history command handles empty history gracefully (`NO_MATCHES_FOUND`)
     - [ ] Test history command truncates to 20 entries
-- [ ] Task: Implement handle command in useGameCommands
-    - [ ] Wire up `setHandle` mutation in `src/App.tsx` (add to useGameCommands mutations)
-    - [ ] Add `handle` case in `useGameCommands.handleCommand`: call `setHandle`, display result/error
-    - [ ] Result format: `HANDLE_SET: newname` or `ERROR: HANDLE_TAKEN`
+- [x] Task: Implement handle command in useGameCommands (eb55910)
+    - [x] Wire up `setHandle` mutation in `src/App.tsx` (add to useGameCommands mutations)
+    - [x] Add `handle` case in `useGameCommands.handleCommand`: call `setHandle`, display result/error
+    - [x] Result format: `HANDLE_SET: newname` or `ERROR: HANDLE_TAKEN`
 - [ ] Task: Implement history command in useGameCommands
     - [ ] Wire up `getMatchHistory` query in `src/App.tsx`
     - [ ] Add `history` case in `useGameCommands.handleCommand`: call query, format ASCII table output

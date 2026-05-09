@@ -16,6 +16,7 @@ import type * as lobby from "../lobby.js";
 import type * as movement from "../movement.js";
 import type * as players from "../players.js";
 import type * as presence from "../presence.js";
+import type * as rematch from "../rematch.js";
 import type * as squadBuilder from "../squadBuilder.js";
 import type * as sudo from "../sudo.js";
 import type * as timers from "../timers.js";
@@ -35,6 +36,7 @@ declare const fullApi: ApiFromModules<{
   movement: typeof movement;
   players: typeof players;
   presence: typeof presence;
+  rematch: typeof rematch;
   squadBuilder: typeof squadBuilder;
   sudo: typeof sudo;
   timers: typeof timers;

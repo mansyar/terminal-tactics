@@ -1,8 +1,0 @@
-{
-  "track_id": "player_profiles_20260509",
-  "type": "feature",
-  "status": "new",
-  "created_at": "2026-05-09T10:35:00Z",
-  "updated_at": "2026-05-09T10:35:00Z",
-  "description": "Phase 10: Player Profiles & Match History — persistent identity, win/loss tracking, match history, and rematch button"
-}

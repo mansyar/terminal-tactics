@@ -32,33 +32,33 @@
 
 ## Phase B: Stats Recording Hook (Backend)
 
-- [ ] Task: Write tests for game-finish stats recording
-    - [ ] Extend `convex/players.test.ts` with stats tests
-    - [ ] Test `recordGameEnd` handler: increments winner's wins, loser's losses
-    - [ ] Test `recordGameEnd` handler: records draw correctly (no winner, both get +1 draws)
-    - [ ] Test `recordGameEnd` handler: inserts match record with correct fields
-    - [ ] Test `recordGameEnd` handler: snapshots handles at game-end time
-    - [ ] Test `recordGameEnd` handler: stores correct `endReason` for each path
-    - [ ] Test `recordGameEnd` handler: handles player docs not existing yet (auto-create)
-    - [ ] Test `getMatchHistory` query: returns last 20 matches for a player, sorted by finishedAt desc
-    - [ ] Test `getMatchHistory` query: does not return matches involving other players only
-    - [ ] Test `getPlayerStats` query: returns correct W/L/D summary
-- [ ] Task: Implement stats recording mutation
-    - [ ] Add `recordGameEndHandler` to `convex/players.ts` (standalone, exported for testing)
-    - [ ] Handler signature: `(ctx, args: { gameId, p1Id, p2Id, winner (or null for draw), endReason, turns, duration })`
-    - [ ] Fetch or auto-create player docs for both players
-    - [ ] Update counters: winner gets +1 wins (or both get +1 draws), loser gets +1 losses, both get +1 gamesPlayed
-    - [ ] Insert match document with snapshot of current handles
-    - [ ] Create `recordGameEnd` mutation wrapper
-    - [ ] Create `getMatchHistory` query (last 20 by p1Id or p2Id, sorted by finishedAt desc)
-    - [ ] Create `getPlayerStats` query (returns `{ handle, wins, losses, draws, gamesPlayed }`)
-- [ ] Task: Integrate stats recording into all game-finish paths (with guard)
-    - [ ] **combat.ts (elimination):** After setting `status='finished'` and `winner`, call `recordGameEnd` with `endReason='elimination'`. Game already reached "playing" status — safe to record.
-    - [ ] **gameEnd.ts (forfeit):** After setting `status='finished'`, call `recordGameEnd` with `endReason='forfeit'`. Game already reached "playing" status — safe to record.
-    - [ ] **gameEnd.ts (draw):** After setting `status='finished'`, call `recordGameEnd` with `endReason='draw'`. Game already reached "playing" status — safe to record.
-    - [ ] **timers.ts (turn timeout):** After setting `status='finished'`, call `recordGameEnd` with `endReason='timeout'`. Game already reached "playing" status — safe to record.
-    - [ ] **timers.ts (disconnect grace):** After setting `status='finished'`, call `recordGameEnd` with `endReason='disconnect'`. Game already reached "playing" status — safe to record.
-    - [ ] **timers.ts (draft timeout):** Guard with a check — only call `recordGameEnd` if game has `p1Squad && p2Squad` (i.e., at least attempted to play). If both failed to submit, skip entirely. The match never reached "playing" status and should not count.
+- [x] Task: Write tests for game-finish stats recording (3462b6c)
+    - [x] Extend `convex/players.test.ts` with stats tests
+    - [x] Test `recordGameEnd` handler: increments winner's wins, loser's losses
+    - [x] Test `recordGameEnd` handler: records draw correctly (no winner, both get +1 draws)
+    - [x] Test `recordGameEnd` handler: inserts match record with correct fields
+    - [x] Test `recordGameEnd` handler: snapshots handles at game-end time
+    - [x] Test `recordGameEnd` handler: stores correct `endReason` for each path
+    - [x] Test `recordGameEnd` handler: handles player docs not existing yet (auto-create)
+    - [x] Test `getMatchHistory` query: returns last 20 matches for a player, sorted by finishedAt desc
+    - [x] Test `getMatchHistory` query: does not return matches involving other players only
+    - [x] Test `getPlayerStats` query: returns correct W/L/D summary
+- [x] Task: Implement stats recording mutation (3462b6c)
+    - [x] Add `recordGameEndHandler` to `convex/players.ts` (standalone, exported for testing)
+    - [x] Handler signature: `(ctx, args: { gameId, p1Id, p2Id, winner (or null for draw), endReason, turns, duration })`
+    - [x] Fetch or auto-create player docs for both players
+    - [x] Update counters: winner gets +1 wins (or both get +1 draws), loser gets +1 losses, both get +1 gamesPlayed
+    - [x] Insert match document with snapshot of current handles
+    - [x] Create `recordGameEnd` mutation wrapper
+    - [x] Create `getMatchHistory` query (last 20 by p1Id or p2Id, sorted by finishedAt desc)
+    - [x] Create `getPlayerStats` query (returns `{ handle, wins, losses, draws, gamesPlayed }`)
+- [x] Task: Integrate stats recording into all game-finish paths (with guard) (8f8cbdc)
+    - [x] **combat.ts (elimination):** After setting `status='finished'` and `winner`, call `recordGameEnd` with `endReason='elimination'`.
+    - [x] **gameEnd.ts (forfeit):** After setting `status='finished'`, call `recordGameEnd` with `endReason='forfeit'`.
+    - [x] **gameEnd.ts (draw):** After setting `status='finished'`, call `recordGameEnd` with `endReason='draw'`.
+    - [x] **timers.ts (turn timeout):** After setting `status='finished'`, call `recordGameEnd` with `endReason='timeout'`.
+    - [x] **timers.ts (disconnect grace):** After setting `status='finished'`, call `recordGameEnd` with `endReason='disconnect'`.
+    - [x] **timers.ts (draft timeout):** Guard with a check — only call `recordGameEnd` if game has at least one squad submitted. If both failed to submit, skip entirely.
 - [ ] Task: Conductor - User Manual Verification 'Phase B: Stats Recording Hook' (Protocol in workflow.md)
 
 ## Phase C: Lobby Handle UI (Frontend)

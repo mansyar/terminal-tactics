@@ -7,7 +7,7 @@
     - [ ] Add `R` (Sniper: cost 350, HP 40, AP 2, ATK 40, RNG 8, VIS 6) to `src/lib/unitTemplates.ts`
     - [ ] Add `C` (Commander: cost 400, HP 80, AP 2, ATK 20, RNG 2, VIS 4) to `src/lib/unitTemplates.ts`
     - [ ] Update `UnitType` type union in `combatSystem.ts` to include `'E' | 'R' | 'C'`
-    - [ ] Update `getScannedHostiles` to only exclude Scouts (E, R, C are not stealth units)
+    - [ ] NOTE: `getScannedHostiles` needs no change — its filter `u.type !== 'S'` already correctly includes E, R, C in scan results
 - [ ] Task: Write failing tests for UNIT_TEMPLATES update (Red Phase)
     - [ ] Test that all 3 new unit types exist in UNIT_TEMPLATES with correct stats
     - [ ] Test UnitType union accepts 'E', 'R', 'C'
@@ -20,13 +20,14 @@
     - [ ] Add `mapPreset` (v.optional(v.string())) to `games` table in `convex/schema.ts`
     - [ ] Add `engineerWallCount` (v.optional(v.number())) to `units` table — tracks remaining `build` uses
     - [ ] Add `sniperMovedThisTurn` (v.optional(v.boolean())) to `units` table
-    - [ ] Add `rallyBuff` (v.optional(v.boolean())) to `units` table — tracks +1 AP buff this turn
+    - [ ] NOTE: `rallyBuff` field is NOT needed — rally directly increments `ap` by 1; the existing turn-end AP reset (`ap = unit.maxAp`) auto-cleans the bonus
     - [ ] Run `bunx convex codegen` to regenerate types
     - [ ] Write tests for schema field access
 - [ ] Task: Verify coverage and commit
     - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
     - [ ] Commit with message: `feat(units): Add Engineer, Sniper, Commander unit templates and schema fields`
     - [ ] Attach git note with task summary
+- [ ] NOTE: The Squad Builder (`SquadBuilder.tsx`) iterates over `Object.entries(UNIT_TEMPLATES)` — new unit types automatically appear. No Squad Builder UI code changes needed.
 - [ ] Task: Conductor - User Manual Verification 'Phase A: Unit Templates & Schema' (Protocol in workflow.md)
 
 ## Phase B: Engineer Abilities (build & demolish)
@@ -51,7 +52,10 @@
     - [ ] Implement validation: unit type check (Engineer only), adjacency check, terrain check
     - [ ] Implement build: set target tile to 'wall' in mapData, decrement engineerWallCount
     - [ ] Implement demolish: set target tile to 'floor' in mapData
-    - [ ] Wire mutations into game command dispatch
+    - [ ] Update `convex/squadBuilder.ts` `startGame()`: add `engineerWallCount: type === 'E' ? 1 : undefined` to unit insert
+    - [ ] Add `buildWall` and `demolishWall` to `GameMutations` interface in `src/hooks/useGameCommands.ts`
+    - [ ] Add `build` and `demolish` cases to `handleCommand` in `useGameCommands.ts` (call mutations, handle error responses)
+    - [ ] Wire `api.engineer.buildWall` and `api.engineer.demolishWall` mutations in `src/App.tsx`
     - [ ] Run tests to confirm passing
 - [ ] Task: Verify coverage and commit
     - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
@@ -69,9 +73,11 @@
     - [ ] Test `sudo mv` also sets sniperMovedThisTurn flag
 - [ ] Task: Run tests to confirm failures (Red Phase verification)
 - [ ] Task: Implement Sniper movement tracking logic (Green Phase)
-    - [ ] Set `sniperMovedThisTurn = true` when a Sniper unit executes a `mv` or `sudo mv` command
-    - [ ] Add check in `atk` command handler: if unit type is 'R' and sniperMovedThisTurn is true, reject with `SNIPER_MOVED_THIS_TURN`
-    - [ ] Clear `sniperMovedThisTurn` flag at turn start for all Sniper units
+    - [ ] **SET flag** — In `convex/movement.ts` `moveUnit` mutation, add `sniperMovedThisTurn: true` to the unit patch when `unit.type === 'R'`
+    - [ ] **SET flag (sudo)** — In `convex/sudo.ts` `sudoMove`, add the same `sniperMovedThisTurn: true` for Sniper units
+    - [ ] **CHECK flag** — In `convex/combat.ts` `attackUnit` mutation, before damage calculation: if `attacker.type === 'R'` and `attacker.sniperMovedThisTurn`, reject with `SNIPER_MOVED_THIS_TURN`
+    - [ ] **CLEAR flag** — In `convex/game.ts` `endTurn` mutation, clear `sniperMovedThisTurn: undefined` for all units at turn start (alongside AP reset)
+    - [ ] **Client-side** — No extra wiring needed; existing `atk` error handling in `useGameCommands.ts` (try/catch) will display the server error
     - [ ] Run tests to confirm passing
 - [ ] Task: Verify coverage and commit
     - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
@@ -95,9 +101,11 @@
 - [ ] Task: Implement Commander rally logic (Green Phase)
     - [ ] Create `convex/commander.ts` with `rallyHandler` mutation
     - [ ] Implement validation: unit type check (Commander only), adjacency check, friendly check
-    - [ ] Implement rally: set `rallyBuff = true` on affected target units
-    - [ ] Implement turn-end cleanup: clear rallyBuff from all units at turn end
-    - [ ] Wire mutation into game command dispatch
+    - [ ] Implement rally: **directly increment `target.ap += 1`** — no special `rallyBuff` field needed
+    - [ ] Cleanup is automatic — `endTurn` resets all AP to `maxAp`, consuming any rally bonus
+    - [ ] Add `useRally` to `GameMutations` interface in `src/hooks/useGameCommands.ts`
+    - [ ] Add `rally` case to `handleCommand` in `useGameCommands.ts` (parse coord, find units, call mutation)
+    - [ ] Wire `api.commander.useRally` mutation in `src/App.tsx`
     - [ ] Run tests to confirm passing
 - [ ] Task: Verify coverage and commit
     - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
@@ -139,11 +147,12 @@
     - [ ] Test ASCII output is 12 rows of 12 characters
     - [ ] Test `map` CLI command in lobby context returns current preset preview
 - [ ] Task: Run tests to confirm failures (Red Phase verification)
-- [ ] Task: Implement ASCII map preview
+- [ ] Task: Implement ASCII map preview (client-side only — no server mutation needed)
     - [ ] Create `src/lib/mapPreviewer.ts` with `renderMapAscii` function
     - [ ] Implement tile-to-character mapping: floor → `.`, wall → `#`, highground → `^`
     - [ ] Add `map` CLI command to command parser
-    - [ ] Auto-display preview in lobby when host selects/changes preset
+    - [ ] Add `map` case to `handleCommand` in `useGameCommands.ts`: render ASCII grid from selected preset map data (read from PRESET_MAPS or gameState.mapData)
+    - [ ] Auto-display preview in lobby when host selects/changes a preset (inline in LobbyScreen or via a "Map Preview:" log entry)
     - [ ] Run tests to confirm passing
 - [ ] Task: Verify coverage and commit
     - [ ] Run `bun run type-check; bun run lint; bun test --coverage`

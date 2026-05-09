@@ -109,7 +109,6 @@ Extend the `UNIT_TEMPLATES` and `UnitType` union to include the 3 new types:
 - Add `mapPreset` field (optional string) to `games` table — stores chosen preset name (`"grid"`, `"maze"`, `"ridge"`, or undefined for random)
 - Add `engineerWallCount` (optional number) to `units` table — tracks remaining `build` uses per Engineer unit
 - Add `sniperMovedThisTurn` (optional boolean) to `units` table — tracks if Sniper has moved
-- Add `rallyBuff` (optional boolean) to `units` table — tracks +1 AP buff this turn
 
 ---
 

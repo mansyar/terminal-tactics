@@ -11,7 +11,7 @@ import {
 } from '../lib/audio'
 import { useGameDerivedState } from './useGameDerivedState'
 
-interface GameMutations {
+export interface GameMutations {
   logCommand: any
   setTyping: any
   endTurn: any
@@ -32,6 +32,7 @@ interface GameMutations {
   checkDisconnect: any
   checkDisconnectGracePeriod: any
   heartbeat: any
+  setHandle: any
 }
 
 interface UseGameCommandsParams {
@@ -437,6 +438,24 @@ export function useGameCommands({
           result = `ERROR: ${cleanErrorMessage(err.message)}`
           playError()
         }
+      } else if (cmd.type === 'handle') {
+        const [newHandle] = cmd.args
+        if (!newHandle) {
+          result = 'ERROR: MISSING_HANDLE. USAGE: handle [name]'
+          playError()
+        } else {
+          try {
+            const res = await mutations.setHandle({
+              userId: playerId,
+              handle: newHandle,
+            })
+            result = `HANDLE_SET: ${res.handle}`
+            playSuccess()
+          } catch (err: any) {
+            result = `ERROR: ${cleanErrorMessage(err.message)}`
+            playError()
+          }
+        }
       } else if (cmd.type === 'say') {
         const message = cmd.args.join(' ')
         if (message) {
@@ -479,6 +498,7 @@ export function useGameCommands({
       mutations.offerDraw,
       mutations.acceptDraw,
       mutations.sendMessage,
+      mutations.setHandle,
       showCoordinates,
     ],
   )

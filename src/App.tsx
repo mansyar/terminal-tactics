@@ -69,14 +69,19 @@ function App() {
   // Phase 10: Player identity
   const getOrCreatePlayer = useMutation(api.players.getOrCreatePlayer)
   const setHandle = useMutation(api.players.setHandle)
+  const getMatchHistory = useQuery(
+    api.players.getMatchHistory,
+    playerId ? { userId: playerId } : 'skip',
+  )
   const playerData = useQuery(
     api.players.getPlayerByUserId,
     playerId ? { userId: playerId } : 'skip',
   )
   const playerHandle = playerData?.handle ?? playerId
 
-  // Suppress TS warnings — used in Phases C-E (LobbyScreen, CLI commands, TurnIndicator)
+  // Suppress TS warnings — used in CLI commands and UI (Phase D/E)
   void setHandle
+  void getMatchHistory
   void playerHandle
 
   // Ensure player doc exists on mount
@@ -111,6 +116,7 @@ function App() {
       checkDisconnect,
       checkDisconnectGracePeriod,
       heartbeat,
+      setHandle,
     },
   })
 

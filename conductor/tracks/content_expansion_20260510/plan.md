@@ -28,9 +28,11 @@
     - [x] Commit with message: `feat(units): Add Engineer, Sniper, Commander unit templates and schema fields`
     - [x] Attach git note with task summary
 - [ ] NOTE: The Squad Builder (`SquadBuilder.tsx`) iterates over `Object.entries(UNIT_TEMPLATES)` — new unit types automatically appear. No Squad Builder UI code changes needed.
-- [ ] Task: Conductor - User Manual Verification 'Phase A: Unit Templates & Schema' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase A: Unit Templates & Schema' (Protocol in workflow.md)
 
 ## Phase B: Engineer Abilities (build & demolish)
+
+- [~] Task: Add `build` and `demolish` commands to command parser
 
 - [ ] Task: Add `build` and `demolish` commands to command parser
     - [ ] Update `CommandType` union in `commandParser.ts` with `'build' | 'demolish'`

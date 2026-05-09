@@ -32,42 +32,40 @@
 
 ## Phase B: Engineer Abilities (build & demolish)
 
-- [~] Task: Add `build` and `demolish` commands to command parser
-
-- [ ] Task: Add `build` and `demolish` commands to command parser
-    - [ ] Update `CommandType` union in `commandParser.ts` with `'build' | 'demolish'`
-    - [ ] Add parsing logic for both commands
-- [ ] Task: Write failing tests for build/demolish commands (Red Phase)
-    - [ ] Test `build` with valid adjacent floor coordinate → success
-    - [ ] Test `build` on non-adjacent tile → error
-    - [ ] Test `build` on existing wall → error
-    - [ ] Test `build` on occupied tile → error
-    - [ ] Test `demolish` on adjacent wall → success
-    - [ ] Test `demolish` on non-wall tile → error
-    - [ ] Test `demolish` on non-adjacent tile → error
-    - [ ] Test `build` fails when Engineer has already used its 1 build (engineerWallCount = 0)
-    - [ ] Test `build` succeeds if demolished first (reusable)
-    - [ ] Test non-Engineer units cannot use build/demolish
-- [ ] Task: Run tests to confirm failures (Red Phase verification)
-- [ ] Task: Implement Engineer build/demolish logic (Green Phase)
-    - [ ] Create `convex/engineer.ts` with `buildWallHandler` and `demolishWallHandler` mutations
-    - [ ] Implement validation: unit type check (Engineer only), adjacency check, terrain check
-    - [ ] Implement build: set target tile to 'wall' in mapData, decrement engineerWallCount
-    - [ ] Implement demolish: set target tile to 'floor' in mapData
-    - [ ] Update `convex/squadBuilder.ts` `startGame()`: add `engineerWallCount: type === 'E' ? 1 : undefined` to unit insert
-    - [ ] Add `buildWall` and `demolishWall` to `GameMutations` interface in `src/hooks/useGameCommands.ts`
-    - [ ] Add `build` and `demolish` cases to `handleCommand` in `useGameCommands.ts` (call mutations, handle error responses)
-    - [ ] Wire `api.engineer.buildWall` and `api.engineer.demolishWall` mutations in `src/App.tsx`
-    - [ ] Run tests to confirm passing
-- [ ] Task: Verify coverage and commit
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
-    - [ ] Commit with message: `feat(engineer): Implement build and demolish abilities`
-    - [ ] Attach git note with task summary
-- [ ] Task: Conductor - User Manual Verification 'Phase B: Engineer Abilities' (Protocol in workflow.md)
+- [x] Task: Add `build` and `demolish` commands to command parser
+    - [x] Update `CommandType` union in `commandParser.ts` with `'build' | 'demolish'`
+    - [x] Add parsing logic for both commands
+- [x] Task: Write failing tests for build/demolish commands (Red Phase)
+    - [x] Test `build` with valid adjacent floor coordinate → success
+    - [x] Test `build` on non-adjacent tile → error
+    - [x] Test `build` on existing wall → error
+    - [x] Test `build` on occupied tile → error
+    - [x] Test `demolish` on adjacent wall → success
+    - [x] Test `demolish` on non-wall tile → error
+    - [x] Test `demolish` on non-adjacent tile → error
+    - [x] Test `build` fails when Engineer has already used its 1 build (engineerWallCount = 0)
+    - [x] Test `build` succeeds if demolished first (reusable)
+    - [x] Test non-Engineer units cannot use build/demolish
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+- [x] Task: Implement Engineer build/demolish logic (Green Phase)
+    - [x] Create `convex/engineer.ts` with `buildWallHandler` and `demolishWallHandler` mutations
+    - [x] Implement validation: unit type check (Engineer only), adjacency check, terrain check
+    - [x] Implement build: set target tile to 'wall' in mapData, decrement engineerWallCount
+    - [x] Implement demolish: set target tile to 'floor' in mapData
+    - [x] Update `convex/squadBuilder.ts` `startGame()`: add `engineerWallCount: type === 'E' ? 1 : undefined` to unit insert
+    - [x] Add `buildWall` and `demolishWall` to `GameMutations` interface in `src/hooks/useGameCommands.ts`
+    - [x] Add `build` and `demolish` cases to `handleCommand` in `useGameCommands.ts` (call mutations, handle error responses)
+    - [x] Wire `api.engineer.buildWall` and `api.engineer.demolishWall` mutations in `src/App.tsx`
+    - [x] Run tests to confirm passing
+- [x] Task: Verify coverage and commit (9743980)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(engineer): Implement build and demolish abilities`
+    - [x] Attach git note with task summary
+- [x] Task: Conductor - User Manual Verification 'Phase B: Engineer Abilities' (Protocol in workflow.md)
 
 ## Phase C: Sniper Stationary Attack Rule
 
-- [ ] Task: Write failing tests for Sniper stationary rule (Red Phase)
+- [~] Task: Write failing tests for Sniper stationary rule (Red Phase)
     - [ ] Test Sniper attacks normally when not moved this turn
     - [ ] Test Sniper attack is rejected with `SNIPER_MOVED_THIS_TURN` when moved this turn
     - [ ] Test `sniperMovedThisTurn` flag clears at start of next turn

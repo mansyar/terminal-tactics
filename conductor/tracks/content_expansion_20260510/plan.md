@@ -111,53 +111,54 @@
     - [x] Run `bun run type-check; bun run lint; bun test --coverage`
     - [x] Commit with message: `feat(commander): Implement rally ability granting +1 AP`
     - [x] Attach git note with task summary
-- [~] Task: Conductor - User Manual Verification 'Phase D: Commander Rally' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase D: Commander Rally' (Protocol in workflow.md)
 
 ## Phase E: Map Preset Definitions & Selection
 
-- [ ] Task: Create preset map data file
-    - [ ] Create `src/lib/mapPresets.ts` with `PresetMap` interface
-    - [ ] Define "The Grid" — symmetrical 12×12 layout with open center, walls on edges, scattered high ground
-    - [ ] Define "The Maze" — tight corridors, frequent wall cover, multiple flanking routes
-    - [ ] Define "The Ridge" — elevated center ridge, high ground tiles across midline
-    - [ ] Export a `PRESET_MAPS` record keyed by preset name
-- [ ] Task: Write failing tests for preset maps (Red Phase)
-    - [ ] Test all 3 presets are valid 12×12 grids
-    - [ ] Test all tiles are valid TileType values (floor/wall/highground)
-    - [ ] Test spawn zones (rows 0,1 and 10,11) are clear for all presets
-    - [ ] Test each preset has unique layout (not identical)
-- [ ] Task: Run tests to confirm failures (Red Phase verification)
-- [ ] Task: Implement preset map selection in lobby
-    - [ ] Create `convex/mapSelection.ts` with `selectMapPreset` mutation
-    - [ ] Add map preset selector to Lobby UI (radio buttons or dropdown)
-    - [ ] Update `submitSquad` to use selected preset mapData instead of procedural generation
-    - [ ] Store selected preset name in `game.mapPreset`
-    - [ ] Run tests to confirm passing
-- [ ] Task: Verify coverage and commit
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
-    - [ ] Commit with message: `feat(maps): Add 3 preset maps and lobby selection UI`
-    - [ ] Attach git note with task summary
-- [ ] Task: Conductor - User Manual Verification 'Phase E: Map Presets & Selection' (Protocol in workflow.md)
+- [x] Task: Create preset map data file
+    - [x] Create `src/lib/mapPresets.ts` with `PresetMap` interface
+    - [x] Define "The Grid" — symmetrical 12×12 layout with open center, walls on edges, scattered high ground
+    - [x] Define "The Maze" — tight corridors, frequent wall cover, multiple flanking routes
+    - [x] Define "The Ridge" — elevated center ridge, high ground tiles across midline
+    - [x] Export a `PRESET_MAPS` record keyed by preset name
+- [x] Task: Write failing tests for preset maps (Red Phase)
+    - [x] Test all 3 presets are valid 12×12 grids
+    - [x] Test all tiles are valid TileType values (floor/wall/highground)
+    - [x] Test spawn zones (rows 0,1 and 10,11) are clear for all presets
+    - [x] Test each preset has unique layout (not identical)
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+- [x] Task: Implement preset map selection in lobby
+    - [x] Create `convex/mapSelection.ts` with `selectMapPreset` mutation
+    - [x] Add map preset selector to Lobby UI (radio buttons or dropdown)
+    - [x] Update `submitSquad` to use selected preset mapData instead of procedural generation
+    - [x] Store selected preset name in `game.mapPreset`
+    - [x] Run tests to confirm passing
+- [x] Task: Verify coverage and commit (2c6857f)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(maps): Add 3 preset maps and lobby selection UI`
+    - [x] Attach git note with task summary
+- [x] Task: Conductor - User Manual Verification 'Phase E: Map Presets & Selection' (Protocol in workflow.md)
 
 ## Phase F: Map Preview (ASCII Grid)
 
-- [ ] Task: Write failing tests for map preview (Red Phase)
-    - [ ] Test `renderMapAscii(presetMap)` returns correctly formatted string
-    - [ ] Test ASCII output uses `.` for floor, `#` for wall, `^` for high ground
-    - [ ] Test ASCII output is 12 rows of 12 characters
-    - [ ] Test `map` CLI command in lobby context returns current preset preview
-- [ ] Task: Run tests to confirm failures (Red Phase verification)
-- [ ] Task: Implement ASCII map preview (client-side only — no server mutation needed)
-    - [ ] Create `src/lib/mapPreviewer.ts` with `renderMapAscii` function
-    - [ ] Implement tile-to-character mapping: floor → `.`, wall → `#`, highground → `^`
-    - [ ] Add `map` CLI command to command parser
-    - [ ] Add `map` case to `handleCommand` in `useGameCommands.ts`: render ASCII grid from selected preset map data (read from PRESET_MAPS or gameState.mapData)
-    - [ ] Auto-display preview in lobby when host selects/changes a preset (inline in LobbyScreen or via a "Map Preview:" log entry)
-    - [ ] Run tests to confirm passing
-- [ ] Task: Verify coverage and commit
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
-    - [ ] Commit with message: `feat(maps): Add ASCII map preview in lobby`
-    - [ ] Attach git note with task summary
+- [x] Task: Write failing tests for map preview (Red Phase)
+    - [x] Test `renderMapAscii(presetMap)` returns correctly formatted string
+    - [x] Test ASCII output uses `.` for floor, `#` for wall, `^` for high ground
+    - [x] Test ASCII output is 12 rows of 12 characters
+    - [x] Test `map` CLI command in lobby context returns current preset preview
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+    - [x] Tests errored with 'Not implemented' (expected Red Phase failure)
+- [x] Task: Implement ASCII map preview (client-side only — no server mutation needed)
+    - [x] Create `src/lib/mapPreviewer.ts` with `renderMapAscii` function
+    - [x] Implement tile-to-character mapping: floor → `.`, wall → `#`, highground → `^`
+    - [x] Add `map` CLI command to command parser
+    - [x] Add `map` case to `handleCommand` in `useGameCommands.ts`: render ASCII grid from selected preset map data (read from PRESET_MAPS or gameState.mapData)
+    - [x] Auto-display preview in lobby when host selects/changes a preset (inline in LobbyScreen or via a "Map Preview:" log entry)
+    - [x] Run tests to confirm passing
+- [x] Task: Verify coverage and commit (1d657c9)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(maps): Add ASCII map preview in lobby`
+    - [x] Attach git note with task summary
 - [ ] Task: Conductor - User Manual Verification 'Phase F: Map Preview' (Protocol in workflow.md)
 
 ## Final Verification (Phase 11 Definition of Done)

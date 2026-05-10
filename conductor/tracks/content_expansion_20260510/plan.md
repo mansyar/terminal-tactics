@@ -87,31 +87,31 @@
 
 ## Phase D: Commander Rally Ability
 
-- [~] Task: Add `rally` command to command parser
-    - [ ] Update `CommandType` union in `commandParser.ts` with `'rally'`
-    - [ ] Add parsing logic for `rally [coord]`
-- [ ] Task: Write failing tests for rally command (Red Phase)
-    - [ ] Test `rally` on adjacent friendly unit → unit gains +1 AP
-    - [ ] Test `rally` self-target (Commander on own tile) → Commander gains +1 AP
-    - [ ] Test `rally` on non-adjacent unit → error
-    - [ ] Test `rally` on enemy unit → error
-    - [ ] Test non-Commander units cannot use rally
-    - [ ] Test rally AP buff is consumed/lost at turn end
-- [ ] Task: Run tests to confirm failures (Red Phase verification)
-- [ ] Task: Implement Commander rally logic (Green Phase)
-    - [ ] Create `convex/commander.ts` with `rallyHandler` mutation
-    - [ ] Implement validation: unit type check (Commander only), adjacency check, friendly check
-    - [ ] Implement rally: **directly increment `target.ap += 1`** — no special `rallyBuff` field needed
-    - [ ] Cleanup is automatic — `endTurn` resets all AP to `maxAp`, consuming any rally bonus
-    - [ ] Add `useRally` to `GameMutations` interface in `src/hooks/useGameCommands.ts`
-    - [ ] Add `rally` case to `handleCommand` in `useGameCommands.ts` (parse coord, find units, call mutation)
-    - [ ] Wire `api.commander.useRally` mutation in `src/App.tsx`
-    - [ ] Run tests to confirm passing
-- [ ] Task: Verify coverage and commit
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
-    - [ ] Commit with message: `feat(commander): Implement rally ability granting +1 AP`
-    - [ ] Attach git note with task summary
-- [ ] Task: Conductor - User Manual Verification 'Phase D: Commander Rally' (Protocol in workflow.md)
+- [x] Task: Add `rally` command to command parser
+    - [x] Update `CommandType` union in `commandParser.ts` with `'rally'`
+    - [x] Add parsing logic for `rally [coord]`
+- [x] Task: Write failing tests for rally command (Red Phase)
+    - [x] Test `rally` on adjacent friendly unit → unit gains +1 AP
+    - [x] Test `rally` self-target (Commander on own tile) → Commander gains +1 AP
+    - [x] Test `rally` on non-adjacent unit → error
+    - [x] Test `rally` on enemy unit → error
+    - [x] Test non-Commander units cannot use rally
+    - [x] Test rally AP buff is consumed/lost at turn end
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+- [x] Task: Implement Commander rally logic (Green Phase)
+    - [x] Create `convex/commander.ts` with `rallyHandler` mutation
+    - [x] Implement validation: unit type check (Commander only), adjacency check, friendly check
+    - [x] Implement rally: **directly increment `target.ap += 1`** — no special `rallyBuff` field needed
+    - [x] Cleanup is automatic — `endTurn` resets all AP to `maxAp`, consuming any rally bonus
+    - [x] Add `useRally` to `GameMutations` interface in `src/hooks/useGameCommands.ts`
+    - [x] Add `rally` case to `handleCommand` in `useGameCommands.ts` (parse coord, find units, call mutation)
+    - [x] Wire `api.commander.useRally` mutation in `src/App.tsx`
+    - [x] Run tests to confirm passing
+- [x] Task: Verify coverage and commit (d376858)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(commander): Implement rally ability granting +1 AP`
+    - [x] Attach git note with task summary
+- [~] Task: Conductor - User Manual Verification 'Phase D: Commander Rally' (Protocol in workflow.md)
 
 ## Phase E: Map Preset Definitions & Selection
 

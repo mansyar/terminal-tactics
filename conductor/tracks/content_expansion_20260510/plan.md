@@ -65,29 +65,29 @@
 
 ## Phase C: Sniper Stationary Attack Rule
 
-- [~] Task: Write failing tests for Sniper stationary rule (Red Phase)
-    - [ ] Test Sniper attacks normally when not moved this turn
-    - [ ] Test Sniper attack is rejected with `SNIPER_MOVED_THIS_TURN` when moved this turn
-    - [ ] Test `sniperMovedThisTurn` flag clears at start of next turn
-    - [ ] Test `atk` succeeds after mv on previous turn (flag resets between turns)
-    - [ ] Test `sudo mv` also sets sniperMovedThisTurn flag
-- [ ] Task: Run tests to confirm failures (Red Phase verification)
-- [ ] Task: Implement Sniper movement tracking logic (Green Phase)
-    - [ ] **SET flag** — In `convex/movement.ts` `moveUnit` mutation, add `sniperMovedThisTurn: true` to the unit patch when `unit.type === 'R'`
-    - [ ] **SET flag (sudo)** — In `convex/sudo.ts` `sudoMove`, add the same `sniperMovedThisTurn: true` for Sniper units
-    - [ ] **CHECK flag** — In `convex/combat.ts` `attackUnit` mutation, before damage calculation: if `attacker.type === 'R'` and `attacker.sniperMovedThisTurn`, reject with `SNIPER_MOVED_THIS_TURN`
-    - [ ] **CLEAR flag** — In `convex/game.ts` `endTurn` mutation, clear `sniperMovedThisTurn: undefined` for all units at turn start (alongside AP reset)
-    - [ ] **Client-side** — No extra wiring needed; existing `atk` error handling in `useGameCommands.ts` (try/catch) will display the server error
-    - [ ] Run tests to confirm passing
-- [ ] Task: Verify coverage and commit
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
-    - [ ] Commit with message: `feat(sniper): Implement stationary attack restriction`
-    - [ ] Attach git note with task summary
-- [ ] Task: Conductor - User Manual Verification 'Phase C: Sniper Stationary Rule' (Protocol in workflow.md)
+- [x] Task: Write failing tests for Sniper stationary rule (Red Phase)
+    - [x] Test Sniper attacks normally when not moved this turn
+    - [x] Test Sniper attack is rejected with `SNIPER_MOVED_THIS_TURN` when moved this turn
+    - [x] Test `sniperMovedThisTurn` flag clears at start of next turn
+    - [x] Test `atk` succeeds after mv on previous turn (flag resets between turns)
+    - [x] Test `sudo mv` also sets sniperMovedThisTurn flag
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+- [x] Task: Implement Sniper movement tracking logic (Green Phase)
+    - [x] **SET flag** — In `convex/movement.ts` `moveUnit` mutation, add `sniperMovedThisTurn: true` to the unit patch when `unit.type === 'R'`
+    - [x] **SET flag (sudo)** — In `convex/sudo.ts` `sudoMove`, add the same `sniperMovedThisTurn: true` for Sniper units
+    - [x] **CHECK flag** — In `convex/combat.ts` `attackUnit` mutation, before damage calculation: if `attacker.type === 'R'` and `attacker.sniperMovedThisTurn`, reject with `SNIPER_MOVED_THIS_TURN`
+    - [x] **CLEAR flag** — In `convex/game.ts` `endTurn` mutation, clear `sniperMovedThisTurn: undefined` for all units at turn start (alongside AP reset)
+    - [x] **Client-side** — No extra wiring needed; existing `atk` error handling in `useGameCommands.ts` (try/catch) will display the server error
+    - [x] Run tests to confirm passing
+- [x] Task: Verify coverage and commit (891b14e)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(sniper): Implement stationary attack restriction`
+    - [x] Attach git note with task summary
+- [x] Task: Conductor - User Manual Verification 'Phase C: Sniper Stationary Rule' (Protocol in workflow.md)
 
 ## Phase D: Commander Rally Ability
 
-- [ ] Task: Add `rally` command to command parser
+- [~] Task: Add `rally` command to command parser
     - [ ] Update `CommandType` union in `commandParser.ts` with `'rally'`
     - [ ] Add parsing logic for `rally [coord]`
 - [ ] Task: Write failing tests for rally command (Red Phase)

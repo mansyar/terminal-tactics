@@ -10,9 +10,12 @@
 
 import type * as chat from "../chat.js";
 import type * as combat from "../combat.js";
+import type * as commander from "../commander.js";
+import type * as engineer from "../engineer.js";
 import type * as game from "../game.js";
 import type * as gameEnd from "../gameEnd.js";
 import type * as lobby from "../lobby.js";
+import type * as mapSelection from "../mapSelection.js";
 import type * as movement from "../movement.js";
 import type * as players from "../players.js";
 import type * as presence from "../presence.js";
@@ -30,9 +33,12 @@ import type {
 declare const fullApi: ApiFromModules<{
   chat: typeof chat;
   combat: typeof combat;
+  commander: typeof commander;
+  engineer: typeof engineer;
   game: typeof game;
   gameEnd: typeof gameEnd;
   lobby: typeof lobby;
+  mapSelection: typeof mapSelection;
   movement: typeof movement;
   players: typeof players;
   presence: typeof presence;

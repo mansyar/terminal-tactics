@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { parseCommand } from '../lib/commandParser'
 import { cleanErrorMessage, parseCoord } from '../lib/utils'
+import { renderMapAscii } from '../lib/mapPreviewer'
+import { PRESET_MAPS } from '../lib/mapPresets'
 import {
   playAttack,
   playError,
@@ -167,7 +169,7 @@ export function useGameCommands({
 
       if (cmd.type === 'help') {
         result =
-          'AVAILABLE_COMMANDS: mv, atk, scan, inspect, ovw, end, help, clear'
+          'AVAILABLE_COMMANDS: mv, atk, scan, inspect, ovw, map, end, help, clear'
         playSuccess()
       } else if (cmd.type === 'mv') {
         const [fromCoord, toCoord] = cmd.args
@@ -435,6 +437,27 @@ export function useGameCommands({
               playError()
             }
           }
+        }
+      } else if (cmd.type === 'map') {
+        const presetName = gameState.mapPreset
+        if (presetName && presetName in PRESET_MAPS) {
+          const mapData = PRESET_MAPS[presetName]
+          result = `MAP_PREVIEW: "${mapData.name}"\n${renderMapAscii(mapData)}`
+          logVisibility = 'private'
+          playSuccess()
+        } else if (gameState.mapData?.tiles?.length) {
+          // Render current game map as ASCII
+          const mapData = {
+            name: 'CURRENT_MAP',
+            description: '',
+            tiles: gameState.mapData.tiles,
+          }
+          result = `MAP_PREVIEW: "CURRENT_MAP"\n${renderMapAscii(mapData)}`
+          logVisibility = 'private'
+          playSuccess()
+        } else {
+          result = 'ERROR: NO_MAP_AVAILABLE'
+          playError()
         }
       } else if (cmd.type === 'inspect') {
         const [coord] = cmd.args

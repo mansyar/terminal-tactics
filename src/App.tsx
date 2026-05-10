@@ -16,6 +16,8 @@ import { DisconnectBanner } from './components/DisconnectBanner'
 import { useGameCommands } from './hooks/useGameCommands'
 import { useHeartbeat } from './hooks/useHeartbeat'
 import { TabCoordinator } from './lib/tabCoordinator'
+import { renderMapAscii } from './lib/mapPreviewer'
+import { PRESET_MAPS } from './lib/mapPresets'
 import type { CLIInputHandle } from './components/Terminal/CLIInput'
 
 function App() {
@@ -70,6 +72,7 @@ function App() {
   const buildWall = useMutation(api.engineer.buildWall)
   const demolishWall = useMutation(api.engineer.demolishWall)
   const useRally = useMutation(api.commander.useRally)
+  const selectMapPreset = useMutation(api.mapSelection.selectMapPreset)
 
   // Phase 10: Player identity
   const getOrCreatePlayer = useMutation(api.players.getOrCreatePlayer)
@@ -255,6 +258,55 @@ function App() {
                 </span>
               </div>
             )}
+
+            {/* Map Preset Selection — Host Only */}
+            {gameState.p1 === playerId && (
+              <div className="border border-matrix-primary/20 p-4 space-y-3">
+                <div className="text-[10px] text-matrix-primary/50 font-mono uppercase tracking-wider">
+                  MAP_SELECTION
+                </div>
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {[
+                    { key: null, label: 'RANDOM' },
+                    { key: 'grid', label: 'THE_GRID' },
+                    { key: 'maze', label: 'THE_MAZE' },
+                    { key: 'ridge', label: 'THE_RIDGE' },
+                  ].map((opt) => (
+                    <button
+                      key={opt.key ?? 'random'}
+                      onClick={() =>
+                        selectMapPreset({
+                          gameId: gameState._id,
+                          playerId,
+                          presetName: opt.key ?? undefined,
+                        })
+                      }
+                      className={`px-3 py-1.5 border font-mono text-[11px] uppercase transition-all ${
+                        (opt.key === null && !gameState.mapPreset) ||
+                        gameState.mapPreset === opt.key
+                          ? 'border-matrix-primary text-matrix-primary bg-matrix-primary/10'
+                          : 'border-matrix-primary/30 text-matrix-primary/60 hover:border-matrix-primary/70 hover:text-matrix-primary/80'
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Auto-display ASCII Preview */}
+                {gameState.mapPreset && gameState.mapPreset in PRESET_MAPS && (
+                  <div className="mt-3 space-y-1">
+                    <div className="text-[10px] text-matrix-primary/40 font-mono uppercase">
+                      MAP_PREVIEW: {PRESET_MAPS[gameState.mapPreset].name}
+                    </div>
+                    <pre className="inline-block text-matrix-primary/70 font-mono text-[10px] leading-[1.1] tracking-[0.1em] bg-black/50 p-2 border border-matrix-primary/10">
+                      {renderMapAscii(PRESET_MAPS[gameState.mapPreset])}
+                    </pre>
+                  </div>
+                )}
+              </div>
+            )}
+
             <button
               onClick={() => setActiveGameId(null)}
               tabIndex={0}

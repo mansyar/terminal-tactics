@@ -7,6 +7,7 @@ export type CommandType =
   | 'ovw'
   | 'build'
   | 'demolish'
+  | 'rally'
   | 'help'
   | 'clear'
   | 'end'
@@ -64,6 +65,7 @@ export function parseCommand(input: string): ParsedCommand {
     'ovw',
     'build',
     'demolish',
+    'rally',
     'help',
     'clear',
     'end',

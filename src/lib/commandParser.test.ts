@@ -130,4 +130,13 @@ describe('commandParser', () => {
       raw: 'demolish D5',
     })
   })
+
+  it('parses "rally" command with coordinate argument', () => {
+    const result = parseCommand('rally C4')
+    expect(result).toEqual({
+      type: 'rally',
+      args: ['C4'],
+      raw: 'rally C4',
+    })
+  })
 })

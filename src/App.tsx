@@ -69,6 +69,7 @@ function App() {
   // Phase 11: Engineer abilities
   const buildWall = useMutation(api.engineer.buildWall)
   const demolishWall = useMutation(api.engineer.demolishWall)
+  const useRally = useMutation(api.commander.useRally)
 
   // Phase 10: Player identity
   const getOrCreatePlayer = useMutation(api.players.getOrCreatePlayer)
@@ -161,6 +162,7 @@ function App() {
       setHandle,
       buildWall,
       demolishWall,
+      useRally,
     },
   })
 

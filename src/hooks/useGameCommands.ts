@@ -44,6 +44,7 @@ export interface GameMutations {
   setHandle: any
   buildWall: any
   demolishWall: any
+  useRally: any
 }
 
 interface UseGameCommandsParams {
@@ -398,6 +399,43 @@ export function useGameCommands({
             }
           }
         }
+      } else if (cmd.type === 'rally') {
+        const [coord] = cmd.args
+        const target = parseCoord(coord)
+
+        if (!target) {
+          result = 'ERROR: INVALID_ARGUMENTS. USAGE: rally [coord]'
+        } else {
+          // Find the Commander unit
+          const commander = gameState.units.find(
+            (u: any) =>
+              u.ownerId ===
+                (gameState.currentPlayer === 'p1'
+                  ? gameState.p1
+                  : gameState.p2) &&
+              u.type === 'C' &&
+              u.ap >= 1,
+          )
+
+          if (!commander) {
+            result = 'ERROR: NO_COMMANDER_WITH_AP'
+          } else {
+            try {
+              await mutations.useRally({
+                gameId: gameState._id,
+                playerId,
+                commanderId: commander._id,
+                targetX: target.x,
+                targetY: target.y,
+              })
+              result = `RALLY_SUCCESS: Commander rallied allies at ${target.label}.`
+              playSuccess()
+            } catch (err: any) {
+              result = `ERROR: ${cleanErrorMessage(err.message)}`
+              playError()
+            }
+          }
+        }
       } else if (cmd.type === 'inspect') {
         const [coord] = cmd.args
         const target = parseCoord(coord)
@@ -526,6 +564,7 @@ export function useGameCommands({
       mutations.setHandle,
       mutations.buildWall,
       mutations.demolishWall,
+      mutations.useRally,
       showCoordinates,
     ],
   )

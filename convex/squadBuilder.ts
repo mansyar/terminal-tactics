@@ -1,6 +1,7 @@
 import { v } from 'convex/values'
 import { generateMap } from '../src/lib/mapGenerator'
 import { UNIT_TEMPLATES } from '../src/lib/unitTemplates'
+import { PRESET_MAPS } from '../src/lib/mapPresets'
 import { mutation } from './_generated/server'
 
 export const submitDraft = mutation({
@@ -52,8 +53,12 @@ async function startGame(ctx: any, gameId: any) {
   const game = await ctx.db.get(gameId)
   if (!game) return
 
-  // Generate Map
-  const mapData = generateMap(12, 12)
+  // Generate Map — use preset if selected, otherwise procedural
+  const mapPreset = game.mapPreset
+  const mapData =
+    mapPreset && mapPreset in PRESET_MAPS
+      ? { width: 12, height: 12, tiles: PRESET_MAPS[mapPreset].tiles }
+      : generateMap(12, 12)
 
   // Spawn Units
   // P1 spawn: bottom rows (y=10, 11)

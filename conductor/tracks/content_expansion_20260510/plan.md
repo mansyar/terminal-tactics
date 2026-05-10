@@ -159,14 +159,14 @@
     - [x] Run `bun run type-check; bun run lint; bun test --coverage`
     - [x] Commit with message: `feat(maps): Add ASCII map preview in lobby`
     - [x] Attach git note with task summary
-- [ ] Task: Conductor - User Manual Verification 'Phase F: Map Preview' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase F: Map Preview' (Protocol in workflow.md)
 
 ## Final Verification (Phase 11 Definition of Done)
 
-- [ ] Task: Run full test suite across all phases
-    - [ ] Run `bun run type-check; bun run lint; bun run build; bun test`
-    - [ ] Verify 0 errors, all tests passing
-- [ ] Task: Update docs/ROADMAP.md to mark Phase 11 as complete
-- [ ] Task: Final checkpoint commit
+- [x] Task: Run full test suite across all phases
+    - [x] Run `bun run type-check; bun run lint; bun run build; bun test`
+    - [x] Verify 0 errors, all tests passing (386 pass, 1 pre-existing unrelated failure)
+- [x] Task: Update docs/ROADMAP.md to mark Phase 11 as complete
+- [~] Task: Final checkpoint commit
     - [ ] Commit with message: `chore(phase11): Content Expansion complete`
     - [ ] Attach git note with full verification report

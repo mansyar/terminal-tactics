@@ -394,20 +394,20 @@
 
 ---
 
-## 🚩 Phase 11: Content Expansion ⏳
+## 🚩 Phase 11: Content Expansion ✅ [checkpoint: 1d657c9]
 
-**Goal:** Extend gameplay depth with new unit classes and curated map selection.
+**Goal:** Extend gameplay depth with new unit classes and curated map selection. All 3 new unit classes, preset maps with lobby selection, and ASCII map preview are now implemented. [9d62beb] [9743980] [891b14e] [d376858] [2c6857f] [1d657c9]
 
 ### 11.1 New Unit Classes
 
-- [ ] **Engineer (`[E]`):**
+- [x] **Engineer (`[E]`):**
   - Cost: 200, HP: 60, AP: 3, ATK: 10, RNG: 1, VIS: 3
-  - Ability: `build [coord]` — Create a wall tile (1 per game)
+  - Ability: `build [coord]` — Create a wall tile (1 per unit, reusable via demolish)
   - Ability: `demolish [coord]` — Destroy adjacent wall
-- [ ] **Sniper (`[N]`):**
+- [x] **Sniper (`[R]`):**
   - Cost: 350, HP: 40, AP: 2, ATK: 40, RNG: 8, VIS: 6
   - Ability: Must remain stationary to attack (no move + attack same turn)
-- [ ] **Commander (`[C]`):**
+- [x] **Commander (`[C]`):**
   - Cost: 400, HP: 80, AP: 2, ATK: 20, RNG: 2, VIS: 4
   - Ability: `rally [coord]` — Grant +1 AP to adjacent friendly units
 
@@ -415,19 +415,19 @@
 
 *Note: Random procedural map generation (cellular automata) was implemented in Phase 4 and remains the default. Presets are an alternative selection for the lobby host.*
 
-- [ ] **Preset Maps:** 3 curated 12×12 maps with balanced layouts and distinct playstyles:
+- [x] **Preset Maps:** 3 curated 12×12 maps with balanced layouts and distinct playstyles:
   - *The Grid* — Symmetrical, open sightlines (showcase: core tactics)
   - *The Maze* — Tight corridors, heavy cover (showcase: Engineer wall plays)
   - *The Ridge* — High ground focus (showcase: Archer/Sniper elevation)
-- [ ] **Map Selection:** Allow lobby host to choose between **Random** (procedural) or a preset before game starts.
-- [ ] **Map Preview:** Show preset map layout in lobby before starting (rendered as ASCII/mini-grid).
+- [x] **Map Selection:** Allow lobby host to choose between **Random** (procedural) or a preset before game starts.
+- [x] **Map Preview:** Show preset map layout in lobby before starting (rendered as ASCII/mini-grid, also via `map` CLI command).
 
 ### Definition of Done
 
-- [ ] All 3 new unit classes playable with correct abilities.
-- [ ] At least 3 preset maps available and selectable in lobby.
-- [ ] Map preview renders in lobby UI.
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test`
+- [x] All 3 new unit classes playable with correct abilities.
+- [x] At least 3 preset maps available and selectable in lobby.
+- [x] Map preview renders in lobby UI and via `map` CLI command.
+- [x] Execute: `bun run type-check; bun run lint; bun run build; bun test` ✅
 
 ---
 
@@ -545,7 +545,7 @@
 | Phase 8: Session Stability    | ✅ Complete | 100%       |
 | Phase 9: Accessibility & Perf | ✅ Complete | 100%       |
 | Phase 10: Player Profiles     | ✅ Complete | 100%       |
-| Phase 11: Content Expansion   | ⏳ Planned  | 0%         |
+| Phase 11: Content Expansion   | ✅ Complete | 100%       |
 | Phase 12: AI & Achievements   | ⏳ Planned  | 0%         |
 | Phase 13: Deployment          | ⏳ Planned  | 0%         |
 
@@ -560,7 +560,7 @@
 | ✅ Done   | Phase 9  | Accessibility and performance complete — ARIA, keyboard nav, contrast, reduced motion, responsive tablet layout |
 | ✅ Done   | Phase 10 | Player profiles and match history complete — identity, stats, history CLI, rematch |
 | 🟡 Medium | Phase 13 | **Launch on itch.io — portfolio-ready URL**                   |
-| 🟢 Low    | Phase 11 | Content expansion extends game lifespan                       |
+| ✅ Done   | Phase 11 | Content expansion complete — 3 new units, 3 preset maps, ASCII preview |
 | 🟢 Low    | Phase 12 | AI opponent for single-player + achievements for retention    |
 
 ---

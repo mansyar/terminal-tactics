@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { parseCommand } from '../lib/commandParser'
 import { cleanErrorMessage, parseCoord } from '../lib/utils'
-import { renderMapAscii } from '../lib/mapPreviewer'
-import { PRESET_MAPS } from '../lib/mapPresets'
 import {
   playAttack,
   playError,
@@ -21,6 +19,12 @@ import {
   handleSudoMoveCommand,
   handleSudoScanCommand,
 } from './commands/sudoCommands'
+import {
+  handleBuildCommand,
+  handleDemolishCommand,
+  handleMapCommand,
+  handleRallyCommand,
+} from './commands/phase11Commands'
 
 export interface GameMutations {
   logCommand: any
@@ -329,134 +333,27 @@ export function useGameCommands({
           }
         }
       } else if (cmd.type === 'build') {
-        const [coord] = cmd.args
-        const target = parseCoord(coord)
-
-        if (!target) {
-          result = 'ERROR: INVALID_ARGUMENTS. USAGE: build [coord]'
-        } else {
-          // Find the first friendly Engineer unit with AP (prefer selected unit)
-          const engineer = gameState.units.find(
-            (u: any) =>
-              u.ownerId ===
-                (gameState.currentPlayer === 'p1'
-                  ? gameState.p1
-                  : gameState.p2) &&
-              u.type === 'E' &&
-              u.ap >= 1,
-          )
-
-          if (!engineer) {
-            result = 'ERROR: NO_ENGINEER_WITH_AP'
-          } else {
-            try {
-              await mutations.buildWall({
-                gameId: gameState._id,
-                playerId,
-                unitId: engineer._id,
-                targetX: target.x,
-                targetY: target.y,
-              })
-              result = `BUILD_SUCCESS: Engineer [${engineer.type}] built wall at ${target.label}.`
-              playSuccess()
-            } catch (err: any) {
-              result = `ERROR: ${cleanErrorMessage(err.message)}`
-              playError()
-            }
-          }
-        }
+        result = await handleBuildCommand(
+          { playerId, gameState, mutations },
+          cmd.args,
+        )
       } else if (cmd.type === 'demolish') {
-        const [coord] = cmd.args
-        const target = parseCoord(coord)
-
-        if (!target) {
-          result = 'ERROR: INVALID_ARGUMENTS. USAGE: demolish [coord]'
-        } else {
-          const engineer = gameState.units.find(
-            (u: any) =>
-              u.ownerId ===
-                (gameState.currentPlayer === 'p1'
-                  ? gameState.p1
-                  : gameState.p2) &&
-              u.type === 'E' &&
-              u.ap >= 1,
-          )
-
-          if (!engineer) {
-            result = 'ERROR: NO_ENGINEER_WITH_AP'
-          } else {
-            try {
-              await mutations.demolishWall({
-                gameId: gameState._id,
-                playerId,
-                unitId: engineer._id,
-                targetX: target.x,
-                targetY: target.y,
-              })
-              result = `DEMOLISH_SUCCESS: Engineer [${engineer.type}] demolished wall at ${target.label}.`
-              playSuccess()
-            } catch (err: any) {
-              result = `ERROR: ${cleanErrorMessage(err.message)}`
-              playError()
-            }
-          }
-        }
+        result = await handleDemolishCommand(
+          { playerId, gameState, mutations },
+          cmd.args,
+        )
       } else if (cmd.type === 'rally') {
-        const [coord] = cmd.args
-        const target = parseCoord(coord)
-
-        if (!target) {
-          result = 'ERROR: INVALID_ARGUMENTS. USAGE: rally [coord]'
-        } else {
-          // Find the Commander unit
-          const commander = gameState.units.find(
-            (u: any) =>
-              u.ownerId ===
-                (gameState.currentPlayer === 'p1'
-                  ? gameState.p1
-                  : gameState.p2) &&
-              u.type === 'C' &&
-              u.ap >= 1,
-          )
-
-          if (!commander) {
-            result = 'ERROR: NO_COMMANDER_WITH_AP'
-          } else {
-            try {
-              await mutations.useRally({
-                gameId: gameState._id,
-                playerId,
-                commanderId: commander._id,
-                targetX: target.x,
-                targetY: target.y,
-              })
-              result = `RALLY_SUCCESS: Commander rallied allies at ${target.label}.`
-              playSuccess()
-            } catch (err: any) {
-              result = `ERROR: ${cleanErrorMessage(err.message)}`
-              playError()
-            }
-          }
-        }
+        result = await handleRallyCommand(
+          { playerId, gameState, mutations },
+          cmd.args,
+        )
       } else if (cmd.type === 'map') {
-        const presetName = gameState.mapPreset
-        if (presetName && presetName in PRESET_MAPS) {
-          const mapData = PRESET_MAPS[presetName]
-          result = `MAP_PREVIEW: "${mapData.name}"\n${renderMapAscii(mapData)}`
-          logVisibility = 'private'
-          playSuccess()
-        } else if (gameState.mapData?.tiles?.length) {
-          // Render current game map as ASCII
-          const mapData = {
-            name: 'CURRENT_MAP',
-            description: '',
-            tiles: gameState.mapData.tiles,
-          }
-          result = `MAP_PREVIEW: "CURRENT_MAP"\n${renderMapAscii(mapData)}`
-          logVisibility = 'private'
+        const mapResult = handleMapCommand(gameState)
+        result = mapResult.result
+        logVisibility = mapResult.logVisibility
+        if (mapResult.logVisibility === 'private') {
           playSuccess()
         } else {
-          result = 'ERROR: NO_MAP_AVAILABLE'
           playError()
         }
       } else if (cmd.type === 'inspect') {

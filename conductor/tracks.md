@@ -9,6 +9,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [x] **Track: Content Expansion (Phase 11)**
-*Link: [./tracks/content_expansion_20260510/](./tracks/content_expansion_20260510/)*
+- [x] **Track: Content Expansion (Phase 11)** *(Archived 2026-05-12)*
+*Link: [./archive/content_expansion_20260510/](./archive/content_expansion_20260510/)*
 

@@ -1,0 +1,176 @@
+# Implementation Plan: Content Expansion (Phase 11)
+
+## Phase A: Unit Templates & Schema Infrastructure
+
+- [x] Task: Update UNIT_TEMPLATES with 3 new unit classes
+    - [x] Add `E` (Engineer: cost 200, HP 60, AP 3, ATK 10, RNG 1, VIS 3) to `src/lib/unitTemplates.ts`
+    - [x] Add `R` (Sniper: cost 350, HP 40, AP 2, ATK 40, RNG 8, VIS 6) to `src/lib/unitTemplates.ts`
+    - [x] Add `C` (Commander: cost 400, HP 80, AP 2, ATK 20, RNG 2, VIS 4) to `src/lib/unitTemplates.ts`
+    - [x] Update `UnitType` type union in `combatSystem.ts` to include `'E' | 'R' | 'C'`
+    - [x] NOTE: `getScannedHostiles` needs no change — its filter `u.type !== 'S'` already correctly includes E, R, C in scan results
+- [x] Task: Write failing tests for UNIT_TEMPLATES update (Red Phase)
+    - [x] Test that all 3 new unit types exist in UNIT_TEMPLATES with correct stats
+    - [x] Test UnitType union accepts 'E', 'R', 'C'
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+- [x] Task: Implement UNIT_TEMPLATES changes (Green Phase)
+    - [x] Add new templates to `unitTemplates.ts`
+    - [x] Update `UnitType` type in `combatSystem.ts`
+    - [x] Run tests to confirm passing
+- [x] Task: Update Convex schema for new fields
+    - [x] Add `mapPreset` (v.optional(v.string())) to `games` table in `convex/schema.ts`
+    - [x] Add `engineerWallCount` (v.optional(v.number())) to `units` table — tracks remaining `build` uses
+    - [x] Add `sniperMovedThisTurn` (v.optional(v.boolean())) to `units` table
+    - [x] NOTE: `rallyBuff` field is NOT needed — rally directly increments `ap` by 1; the existing turn-end AP reset (`ap = unit.maxAp`) auto-cleans the bonus
+    - [x] Run `bunx convex codegen` to regenerate types
+    - [x] Write tests for schema field access
+- [x] Task: Verify coverage and commit (9d62beb)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(units): Add Engineer, Sniper, Commander unit templates and schema fields`
+    - [x] Attach git note with task summary
+- [ ] NOTE: The Squad Builder (`SquadBuilder.tsx`) iterates over `Object.entries(UNIT_TEMPLATES)` — new unit types automatically appear. No Squad Builder UI code changes needed.
+- [x] Task: Conductor - User Manual Verification 'Phase A: Unit Templates & Schema' (Protocol in workflow.md)
+
+## Phase B: Engineer Abilities (build & demolish)
+
+- [x] Task: Add `build` and `demolish` commands to command parser
+    - [x] Update `CommandType` union in `commandParser.ts` with `'build' | 'demolish'`
+    - [x] Add parsing logic for both commands
+- [x] Task: Write failing tests for build/demolish commands (Red Phase)
+    - [x] Test `build` with valid adjacent floor coordinate → success
+    - [x] Test `build` on non-adjacent tile → error
+    - [x] Test `build` on existing wall → error
+    - [x] Test `build` on occupied tile → error
+    - [x] Test `demolish` on adjacent wall → success
+    - [x] Test `demolish` on non-wall tile → error
+    - [x] Test `demolish` on non-adjacent tile → error
+    - [x] Test `build` fails when Engineer has already used its 1 build (engineerWallCount = 0)
+    - [x] Test `build` succeeds if demolished first (reusable)
+    - [x] Test non-Engineer units cannot use build/demolish
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+- [x] Task: Implement Engineer build/demolish logic (Green Phase)
+    - [x] Create `convex/engineer.ts` with `buildWallHandler` and `demolishWallHandler` mutations
+    - [x] Implement validation: unit type check (Engineer only), adjacency check, terrain check
+    - [x] Implement build: set target tile to 'wall' in mapData, decrement engineerWallCount
+    - [x] Implement demolish: set target tile to 'floor' in mapData
+    - [x] Update `convex/squadBuilder.ts` `startGame()`: add `engineerWallCount: type === 'E' ? 1 : undefined` to unit insert
+    - [x] Add `buildWall` and `demolishWall` to `GameMutations` interface in `src/hooks/useGameCommands.ts`
+    - [x] Add `build` and `demolish` cases to `handleCommand` in `useGameCommands.ts` (call mutations, handle error responses)
+    - [x] Wire `api.engineer.buildWall` and `api.engineer.demolishWall` mutations in `src/App.tsx`
+    - [x] Run tests to confirm passing
+- [x] Task: Verify coverage and commit (9743980)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(engineer): Implement build and demolish abilities`
+    - [x] Attach git note with task summary
+- [x] Task: Conductor - User Manual Verification 'Phase B: Engineer Abilities' (Protocol in workflow.md)
+
+## Phase C: Sniper Stationary Attack Rule
+
+- [x] Task: Write failing tests for Sniper stationary rule (Red Phase)
+    - [x] Test Sniper attacks normally when not moved this turn
+    - [x] Test Sniper attack is rejected with `SNIPER_MOVED_THIS_TURN` when moved this turn
+    - [x] Test `sniperMovedThisTurn` flag clears at start of next turn
+    - [x] Test `atk` succeeds after mv on previous turn (flag resets between turns)
+    - [x] Test `sudo mv` also sets sniperMovedThisTurn flag
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+- [x] Task: Implement Sniper movement tracking logic (Green Phase)
+    - [x] **SET flag** — In `convex/movement.ts` `moveUnit` mutation, add `sniperMovedThisTurn: true` to the unit patch when `unit.type === 'R'`
+    - [x] **SET flag (sudo)** — In `convex/sudo.ts` `sudoMove`, add the same `sniperMovedThisTurn: true` for Sniper units
+    - [x] **CHECK flag** — In `convex/combat.ts` `attackUnit` mutation, before damage calculation: if `attacker.type === 'R'` and `attacker.sniperMovedThisTurn`, reject with `SNIPER_MOVED_THIS_TURN`
+    - [x] **CLEAR flag** — In `convex/game.ts` `endTurn` mutation, clear `sniperMovedThisTurn: undefined` for all units at turn start (alongside AP reset)
+    - [x] **Client-side** — No extra wiring needed; existing `atk` error handling in `useGameCommands.ts` (try/catch) will display the server error
+    - [x] Run tests to confirm passing
+- [x] Task: Verify coverage and commit (891b14e)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(sniper): Implement stationary attack restriction`
+    - [x] Attach git note with task summary
+- [x] Task: Conductor - User Manual Verification 'Phase C: Sniper Stationary Rule' (Protocol in workflow.md)
+
+## Phase D: Commander Rally Ability
+
+- [x] Task: Add `rally` command to command parser
+    - [x] Update `CommandType` union in `commandParser.ts` with `'rally'`
+    - [x] Add parsing logic for `rally [coord]`
+- [x] Task: Write failing tests for rally command (Red Phase)
+    - [x] Test `rally` on adjacent friendly unit → unit gains +1 AP
+    - [x] Test `rally` self-target (Commander on own tile) → Commander gains +1 AP
+    - [x] Test `rally` on non-adjacent unit → error
+    - [x] Test `rally` on enemy unit → error
+    - [x] Test non-Commander units cannot use rally
+    - [x] Test rally AP buff is consumed/lost at turn end
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+- [x] Task: Implement Commander rally logic (Green Phase)
+    - [x] Create `convex/commander.ts` with `rallyHandler` mutation
+    - [x] Implement validation: unit type check (Commander only), adjacency check, friendly check
+    - [x] Implement rally: **directly increment `target.ap += 1`** — no special `rallyBuff` field needed
+    - [x] Cleanup is automatic — `endTurn` resets all AP to `maxAp`, consuming any rally bonus
+    - [x] Add `useRally` to `GameMutations` interface in `src/hooks/useGameCommands.ts`
+    - [x] Add `rally` case to `handleCommand` in `useGameCommands.ts` (parse coord, find units, call mutation)
+    - [x] Wire `api.commander.useRally` mutation in `src/App.tsx`
+    - [x] Run tests to confirm passing
+- [x] Task: Verify coverage and commit (d376858)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(commander): Implement rally ability granting +1 AP`
+    - [x] Attach git note with task summary
+- [x] Task: Conductor - User Manual Verification 'Phase D: Commander Rally' (Protocol in workflow.md)
+
+## Phase E: Map Preset Definitions & Selection
+
+- [x] Task: Create preset map data file
+    - [x] Create `src/lib/mapPresets.ts` with `PresetMap` interface
+    - [x] Define "The Grid" — symmetrical 12×12 layout with open center, walls on edges, scattered high ground
+    - [x] Define "The Maze" — tight corridors, frequent wall cover, multiple flanking routes
+    - [x] Define "The Ridge" — elevated center ridge, high ground tiles across midline
+    - [x] Export a `PRESET_MAPS` record keyed by preset name
+- [x] Task: Write failing tests for preset maps (Red Phase)
+    - [x] Test all 3 presets are valid 12×12 grids
+    - [x] Test all tiles are valid TileType values (floor/wall/highground)
+    - [x] Test spawn zones (rows 0,1 and 10,11) are clear for all presets
+    - [x] Test each preset has unique layout (not identical)
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+- [x] Task: Implement preset map selection in lobby
+    - [x] Create `convex/mapSelection.ts` with `selectMapPreset` mutation
+    - [x] Add map preset selector to Lobby UI (radio buttons or dropdown)
+    - [x] Update `submitSquad` to use selected preset mapData instead of procedural generation
+    - [x] Store selected preset name in `game.mapPreset`
+    - [x] Run tests to confirm passing
+- [x] Task: Verify coverage and commit (2c6857f)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(maps): Add 3 preset maps and lobby selection UI`
+    - [x] Attach git note with task summary
+- [x] Task: Conductor - User Manual Verification 'Phase E: Map Presets & Selection' (Protocol in workflow.md)
+
+## Phase F: Map Preview (ASCII Grid)
+
+- [x] Task: Write failing tests for map preview (Red Phase)
+    - [x] Test `renderMapAscii(presetMap)` returns correctly formatted string
+    - [x] Test ASCII output uses `.` for floor, `#` for wall, `^` for high ground
+    - [x] Test ASCII output is 12 rows of 12 characters
+    - [x] Test `map` CLI command in lobby context returns current preset preview
+- [x] Task: Run tests to confirm failures (Red Phase verification)
+    - [x] Tests errored with 'Not implemented' (expected Red Phase failure)
+- [x] Task: Implement ASCII map preview (client-side only — no server mutation needed)
+    - [x] Create `src/lib/mapPreviewer.ts` with `renderMapAscii` function
+    - [x] Implement tile-to-character mapping: floor → `.`, wall → `#`, highground → `^`
+    - [x] Add `map` CLI command to command parser
+    - [x] Add `map` case to `handleCommand` in `useGameCommands.ts`: render ASCII grid from selected preset map data (read from PRESET_MAPS or gameState.mapData)
+    - [x] Auto-display preview in lobby when host selects/changes a preset (inline in LobbyScreen or via a "Map Preview:" log entry)
+    - [x] Run tests to confirm passing
+- [x] Task: Verify coverage and commit (1d657c9)
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Commit with message: `feat(maps): Add ASCII map preview in lobby`
+    - [x] Attach git note with task summary
+- [x] Task: Conductor - User Manual Verification 'Phase F: Map Preview' (Protocol in workflow.md)
+
+## Final Verification (Phase 11 Definition of Done)
+
+- [x] Task: Run full test suite across all phases
+    - [x] Run `bun run type-check; bun run lint; bun run build; bun test`
+    - [x] Verify 0 errors, all tests passing (386 pass, 1 pre-existing unrelated failure)
+- [x] Task: Update docs/ROADMAP.md to mark Phase 11 as complete
+- [x] Task: Final checkpoint commit (fdcc45e)
+    - [x] Commit with message: `chore(phase11): Content Expansion complete`
+    - [x] Attach git note with full verification report
+
+## Phase: Review Fixes
+
+- [x] Task: Apply review suggestions (8029f1e) — extract build/demolish/rally/map handlers into phase11Commands.ts module

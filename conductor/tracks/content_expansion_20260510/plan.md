@@ -170,3 +170,7 @@
 - [x] Task: Final checkpoint commit (fdcc45e)
     - [x] Commit with message: `chore(phase11): Content Expansion complete`
     - [x] Attach git note with full verification report
+
+## Phase: Review Fixes
+
+- [x] Task: Apply review suggestions (8029f1e) — extract build/demolish/rally/map handlers into phase11Commands.ts module

@@ -35,7 +35,6 @@
 - [x] Implement: Easy strategy — random valid actions with self-preservation clause (avoid tiles adjacent to visible hostiles)
 - [x] Implement: Medium strategy — score-based heuristics (kill low HP > heal > attack > advance > use high ground > random)
 - [x] Implement: Unit action ordering — process units in priority order (Medic heals first, then attackers, then movers)
-- [ ] Implement: Convex wrapper at `convex/ai.ts` that imports pure engine from `src/lib/aiEngine.ts`
     - [x] Run tests to confirm passing
     - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
@@ -52,6 +51,7 @@
 
 ### Task A.5: AI Turn Mutation
 - [ ] Write tests: `aiTurn` mutation end-to-end — AI actions execute, turn ends, opponent turn begins
+- [ ] Implement: Convex wrapper at `convex/ai.ts` that imports pure engine from `src/lib/aiEngine.ts`
     - [ ] Run tests to confirm failures (Red Phase verification)
 - [ ] Implement: Extract `endTurnHandler` from `convex/game.ts` — shared handler that both `endTurn` mutation and AI mutation call
 - [ ] Implement: `convex/ai.ts` mutation — orchestrates: fetch state → evaluate actions → execute actions via `db.patch` → call `endTurnHandler`

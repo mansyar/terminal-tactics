@@ -38,16 +38,16 @@
     - [x] Run tests to confirm passing
     - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
-### Task A.4: AI Decision Engine — Hard (One-Step Lookahead)
-- [ ] Write tests: State simulation produces correct scores, Hard outperforms Medium in controlled scenarios
-    - [ ] Run tests to confirm failures (Red Phase verification)
-- [ ] Implement: State simulator — clone game/unit state in-memory and apply actions using existing pure combat/move functions
-- [ ] Implement: Action scoring — for each candidate action, apply to local state copy, evaluate resulting state via Medium heuristics
-- [ ] Implement: Weighting — +10% score if action eliminates a unit, +5% if claims high ground, +3% if reduces ally exposure
-- [ ] Implement: Search cap — if candidate actions exceed 200, sample top-N by Medium score, evaluate only those
-- [ ] Implement: Fallback — if total evaluation time would be excessive, fall back to Medium strategy
-    - [ ] Run tests to confirm passing
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
+### Task A.4: AI Decision Engine — Hard (One-Step Lookahead) [3f4076c]
+- [x] Write tests: State simulation produces correct scores, Hard outperforms Medium in controlled scenarios
+    - [x] Run tests to confirm failures (Red Phase verification)
+- [x] Implement: State simulator — clone game/unit state in-memory and apply actions using existing pure combat/move functions
+- [x] Implement: Action scoring — for each candidate action, apply to local state copy, evaluate resulting state via Medium heuristics
+- [x] Implement: Weighting — +10% score if action eliminates a unit, +5% if claims high ground, +3% if reduces ally exposure
+- [x] Implement: Search cap — if candidate actions exceed 200, sample top-N by Medium score, evaluate only those
+- [x] Implement: Fallback — if total evaluation time would be excessive, fall back to Medium strategy
+    - [x] Run tests to confirm passing
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
 ### Task A.5: AI Turn Mutation
 - [ ] Write tests: `aiTurn` mutation end-to-end — AI actions execute, turn ends, opponent turn begins

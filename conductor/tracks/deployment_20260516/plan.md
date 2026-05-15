@@ -12,16 +12,16 @@
 - [x] Update: `conductor/tech-stack.md` with new `build:prod` and `zip` scripts `[d967cbf]`
 
 ### Task A2: Configure environment variables for dev/prod
-- [ ] Write test: verify environment detection works (DEV vs PROD mode)
-- [ ] Implement: Create `.env.production` file (committed to git) with placeholder Convex production URL
-- [ ] Implement: Update Convex client initialization to switch URLs based on `import.meta.env.MODE`
-- [ ] Verify: No `.env.local` secrets leak into production bundle (Vite's `envPrefix` already handles this)
+- [x] Write test: verify environment detection works (DEV vs PROD mode)
+- [x] Implement: Create `.env.production` file (committed to git) with placeholder Convex production URL
+- [x] Implement: Update Convex client initialization to switch URLs based on `import.meta.env.MODE` (already uses `import.meta.env.VITE_CONVEX_URL`) `[15fe14d]`
+- [x] Verify: No `.env.local` secrets leak into production bundle (Vite's `envPrefix` already handles this)
 
 ### Task A3: Bundle size analysis and cleanup
-- [ ] Remove unused `web-vitals` dependency from `package.json` and `bun.lock`
-- [ ] Implement: Add bundle-size check script or manual verification step
-- [ ] Verify: Bundle size is under 5MB target
-- [ ] Verify: All existing 464+ tests pass (`bun test`)
+- [x] Remove unused `web-vitals` dependency from `package.json` and `bun.lock`
+- [x] Implement: Add bundle-size check script or manual verification step (existing `scripts/bundle-size.test.ts` covers this)
+- [x] Verify: Bundle size is under 5MB target (~857KB)
+- [x] Verify: All existing 472 tests pass (`bun test`)
 
 ### Phase A Completion
 - [ ] Task: Conductor - User Manual Verification 'Phase A: Production Build & Environment Configuration' (Protocol in workflow.md)

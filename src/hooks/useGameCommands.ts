@@ -29,6 +29,7 @@ import {
 import {
   handleAcceptDrawCommand,
   handleForfeitCommand,
+  handleInspectCommand,
   handleOfferDrawCommand,
   handleSayCommand,
 } from './commands/utilityCommands'
@@ -364,26 +365,9 @@ export function useGameCommands({
           playError()
         }
       } else if (cmd.type === 'inspect') {
-        const [coord] = cmd.args
-        const target = parseCoord(coord)
-        if (!target) {
-          result = 'ERROR: MISSING_COORD. USAGE: inspect [coord]'
-          playError()
-        } else {
-          const unit = gameState.units.find(
-            (u: any) => u.x === target.x && u.y === target.y,
-          )
-          playSuccess()
-          if (!unit) {
-            result = `NOTICE: NO_UNIT_DETECTED_AT ${target.label}`
-          } else {
-            result = `UNIT_ID: [${unit.type}] | OWNER: ${unit.ownerId.toUpperCase()} | HP: ${unit.hp}/${unit.maxHp} | AP: ${unit.ap}/${unit.maxAp} | ATK: ${unit.atk} | RNG: ${unit.rng} | POS: ${target.label}`
-            logVisibility = 'private'
-            if (unit.isOverwatching)
-              result += ` | OVERWATCHING: ${unit.overwatchDirection}`
-            if (unit.isStealthed) result += ` | STEALTHED`
-          }
-        }
+        const inspectResult = handleInspectCommand(gameState, cmd.args)
+        result = inspectResult.result
+        logVisibility = inspectResult.logVisibility
       } else if (cmd.type === 'end') {
         const isTurn =
           (gameState.currentPlayer === 'p1' && gameState.p1 === playerId) ||

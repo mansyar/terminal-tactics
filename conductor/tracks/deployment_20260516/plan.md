@@ -29,23 +29,23 @@
 ## Phase B: Analytics Tracking (Convex Event Logging)
 
 ### Task B1: Create analytics schema and backend
-- [ ] Write test: verify analytics_events schema accepts correct event types (`PAGE_LOAD`, `GAME_START`, `GAME_COMPLETE`)
-- [ ] Implement: Add `analytics_events` table to `convex/schema.ts` with fields: `eventType` (string), `timestamp` (number), `metadata` (optional any)
-- [ ] Write test: verify `logAnalyticsEvent` mutation stores events correctly
-- [ ] Implement: Create `convex/analytics.ts` with `logAnalyticsEvent` mutation
-- [ ] Write test: verify `getAnalyticsSummary` query returns aggregated event counts
-- [ ] Implement: Create `convex/analytics.ts` with `getAnalyticsSummary` query
-- [ ] Run tests: verify all analytics backend tests pass
-- [ ] Update: `conductor/tech-stack.md` with analytics tracking infrastructure
+- [x] Write test: verify analytics_events schema accepts correct event types (`PAGE_LOAD`, `GAME_START`, `GAME_COMPLETE`)
+- [x] Implement: Add `analytics_events` table to `convex/schema.ts` with fields: `eventType` (string), `timestamp` (number), `metadata` (optional any)
+- [x] Write test: verify `logAnalyticsEvent` mutation stores events correctly
+- [x] Implement: Create `convex/analytics.ts` with `logAnalyticsEvent` mutation
+- [x] Write test: verify `getAnalyticsSummary` query returns aggregated event counts
+- [x] Implement: Create `convex/analytics.ts` with `getAnalyticsSummary` query
+- [x] Run tests: verify all analytics backend tests pass
+- [x] Update: `conductor/tech-stack.md` with analytics tracking infrastructure
 
 ### Task B2: Integrate analytics into the frontend
-- [ ] Write test: verify analytics events fire on app mount (PAGE_LOAD event)
-- [ ] Implement: Fire `PAGE_LOAD` event in App.tsx on component mount via logAnalyticsEvent mutation
-- [ ] Write test: verify analytics event fires when game transitions to "playing" (GAME_START event)
-- [ ] Implement: Fire `GAME_START` event in App.tsx when gameState.status transitions to "playing"
-- [ ] Write test: verify analytics event fires when game reaches "finished" (GAME_COMPLETE event)
-- [ ] Implement: Fire `GAME_COMPLETE` event in App.tsx when gameState.status transitions to "finished"
-- [ ] Run tests: verify all analytics integration tests pass
+- [x] Write test: verify analytics events fire on app mount (PAGE_LOAD event)
+- [x] Implement: Fire `PAGE_LOAD` event in App.tsx on component mount via logAnalyticsEvent mutation
+- [x] Write test: verify analytics event fires when game transitions to "playing" (GAME_START event)
+- [x] Implement: Fire `GAME_START` event in App.tsx when gameState.status transitions to "playing"
+- [x] Write test: verify analytics event fires when game reaches "finished" (GAME_COMPLETE event)
+- [x] Implement: Fire `GAME_COMPLETE` event in App.tsx when gameState.status transitions to "finished"
+- [x] Run tests: verify all analytics integration tests pass `[4de526e]`
 
 ### Phase B Completion
 - [ ] Task: Conductor - User Manual Verification 'Phase B: Analytics Tracking' (Protocol in workflow.md)

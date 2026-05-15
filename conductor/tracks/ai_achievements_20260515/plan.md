@@ -27,17 +27,17 @@
     - [x] Run tests to confirm passing
     - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
-### Task A.3: AI Decision Engine — Easy & Medium
-- [ ] Write tests: Valid action enumeration, scoring functions, Easy picks random valid, Medium uses heuristics, `isBot` detection
-    - [ ] Run tests to confirm failures (Red Phase verification)
-- [ ] Implement: Pure module at `src/lib/aiEngine.ts` (no Convex deps, mirrors pattern of `combatSystem.ts`)
+### Task A.3: AI Decision Engine — Easy & Medium [6c3e42d]
+- [x] Write tests: Valid action enumeration, scoring functions, Easy picks random valid, Medium uses heuristics, `isBot` detection
+    - [x] Run tests to confirm failures (Red Phase verification)
+- [x] Implement: Pure module at `src/lib/aiEngine.ts` (no Convex deps, mirrors pattern of `combatSystem.ts`)
     - `evaluateMove()`, `evaluateAttack()`, `evaluateHeal()`, `evaluateScan()`, `evaluateOverwatch()`
-- [ ] Implement: Easy strategy — random valid actions with self-preservation clause (avoid tiles adjacent to visible hostiles)
-- [ ] Implement: Medium strategy — score-based heuristics (kill low HP > heal > attack > advance > use high ground > random)
-- [ ] Implement: Unit action ordering — process units in priority order (Medic heals first, then attackers, then movers)
+- [x] Implement: Easy strategy — random valid actions with self-preservation clause (avoid tiles adjacent to visible hostiles)
+- [x] Implement: Medium strategy — score-based heuristics (kill low HP > heal > attack > advance > use high ground > random)
+- [x] Implement: Unit action ordering — process units in priority order (Medic heals first, then attackers, then movers)
 - [ ] Implement: Convex wrapper at `convex/ai.ts` that imports pure engine from `src/lib/aiEngine.ts`
-    - [ ] Run tests to confirm passing
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
+    - [x] Run tests to confirm passing
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
 ### Task A.4: AI Decision Engine — Hard (One-Step Lookahead)
 - [ ] Write tests: State simulation produces correct scores, Hard outperforms Medium in controlled scenarios

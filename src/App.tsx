@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+
 import { useMutation, useQuery } from 'convex/react'
 import { api } from '../convex/_generated/api'
 import './styles.css'
@@ -69,6 +70,49 @@ function App() {
     api.timers.checkDisconnectGracePeriod,
   )
   const heartbeat = useMutation(api.presence.heartbeat)
+
+  // Phase 13: Analytics
+  const logAnalyticsEvent = useMutation(api.analytics.logAnalyticsEvent)
+
+  // Fire PAGE_LOAD analytics event on mount
+  useEffect(() => {
+    logAnalyticsEvent({
+      eventType: 'PAGE_LOAD',
+      timestamp: Date.now(),
+    }).catch(() => {
+      // Silently handle — analytics is non-critical
+    })
+  }, [logAnalyticsEvent])
+
+  // Fire GAME_START/GAME_COMPLETE events based on game status transitions
+  const prevStatusRef = useRef<string | undefined>(undefined)
+  useEffect(() => {
+    const currentStatus = gameState?.status
+    if (!currentStatus) return
+
+    if (currentStatus === 'playing' && prevStatusRef.current !== 'playing') {
+      logAnalyticsEvent({
+        eventType: 'GAME_START',
+        timestamp: Date.now(),
+        metadata: { gameId: gameState._id },
+      }).catch(() => {})
+    } else if (
+      currentStatus === 'finished' &&
+      prevStatusRef.current !== 'finished'
+    ) {
+      logAnalyticsEvent({
+        eventType: 'GAME_COMPLETE',
+        timestamp: Date.now(),
+        metadata: {
+          gameId: gameState._id,
+          winner: gameState.winner,
+          turns: gameState.turnNum,
+        },
+      }).catch(() => {})
+    }
+
+    prevStatusRef.current = currentStatus
+  }, [gameState?.status, logAnalyticsEvent, gameState])
 
   // Phase 12: AI Opponent
   const aiTurn = useMutation(api.ai.aiTurn)
@@ -389,10 +433,7 @@ function App() {
                     ACHIEVEMENTS_UNLOCKED
                   </div>
                   {(playerStats as any).achievements.map((id: string) => {
-                    const def =
-                      ACHIEVEMENT_DEFINITIONS[
-                        id
-                      ]
+                    const def = ACHIEVEMENT_DEFINITIONS[id]
                     return (
                       <div
                         key={id}

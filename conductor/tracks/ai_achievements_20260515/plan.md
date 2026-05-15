@@ -2,20 +2,19 @@
 
 ## Phase A: AI Opponent
 
-### Task A.1: Bot Identification & Game Initiation
-- [ ] Write tests: Bot ID constants, `isBot()` helper, lobby button renders, AI game creation creates game with bot as p2
-    - [ ] Run tests to confirm failures (Red Phase verification)
-- [ ] Implement: Define bot ID constants (`__ai_easy__`, `__ai_medium__`, `__ai_hard__`)
-- [ ] Implement: Add `isBot(id)` helper — returns true if ID starts with `__ai_`
-- [ ] Implement: Add "AI OPPONENT" button with difficulty selector to `LobbyScreen.tsx`
-- [ ] Implement: Create game with bot as p2, bypass SquadBuilder for AI, auto-submit AI squad via `submitDraft`
-- [ ] Implement: Update `checkDisconnectHandler` in `convex/presence.ts` to skip bot IDs
-- [ ] Implement: Update `checkDisconnectGracePeriod` in `convex/timers.ts` to skip bot IDs
-- [ ] Implement: Guard `checkTurnTimeout` against AI turns (redundant but defensive)
-- [ ] Implement: Display bot handle as `AI_EASY` / `AI_MEDIUM` / `AI_HARD`
-    - [ ] Run tests to confirm passing
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
-- [ ] Task: Conductor - Phase Completion Verification 'AI Opponent' (Protocol in workflow.md)
+### Task A.1: Bot Identification & Game Initiation [e726136]
+- [x] Write tests: Bot ID constants, `isBot()` helper, lobby button renders, AI game creation creates game with bot as p2
+    - [x] Run tests to confirm failures (Red Phase verification)
+- [x] Implement: Define bot ID constants (`__ai_easy__`, `__ai_medium__`, `__ai_hard__`)
+- [x] Implement: Add `isBot(id)` helper — returns true if ID starts with `__ai_`
+- [x] Implement: Add "AI OPPONENT" button with difficulty selector to `LobbyScreen.tsx`
+- [x] Implement: Create game with bot as p2, bypass SquadBuilder for AI, auto-submit AI squad via `submitDraft`
+- [x] Implement: Update `checkDisconnectHandler` in `convex/presence.ts` to skip bot IDs
+- [x] Implement: Update `checkDisconnectGracePeriod` in `convex/timers.ts` to skip bot IDs
+- [x] Implement: Guard `checkTurnTimeout` against AI turns (redundant but defensive)
+- [x] Implement: Display bot handle as `AI_EASY` / `AI_MEDIUM` / `AI_HARD`
+    - [x] Run tests to confirm passing
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
 ### Task A.2: AI Squad Builder
 - [ ] Write tests: AI squad generation at each difficulty fits within 1000cr budget, respects max 5 units

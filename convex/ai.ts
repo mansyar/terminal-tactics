@@ -6,6 +6,29 @@ import { endTurnHandler } from './game'
 import type { AIAction, AIUnitState } from '../src/lib/aiEngine'
 import type { Direction, UnitType } from '../src/lib/combatSystem'
 
+function mapUnitToAIState(u: any): AIUnitState {
+  return {
+    _id: u._id,
+    ownerId: u.ownerId,
+    type: u.type as UnitType,
+    hp: u.hp,
+    maxHp: u.maxHp,
+    atk: u.atk ?? 0,
+    rng: u.rng ?? 1,
+    vis: u.vis ?? 3,
+    ap: u.ap,
+    maxAp: u.maxAp,
+    x: u.x,
+    y: u.y,
+    direction: u.direction as Direction,
+    isOverwatching: u.isOverwatching ?? false,
+    overwatchDirection: u.overwatchDirection as Direction | undefined,
+    isStealthed: u.isStealthed ?? false,
+    engineerWallCount: u.engineerWallCount ?? 0,
+    sniperMovedThisTurn: u.sniperMovedThisTurn ?? false,
+  }
+}
+
 export const aiTurn = mutation({
   args: {
     gameId: v.id('games'),
@@ -28,50 +51,11 @@ export const aiTurn = mutation({
       .withIndex('by_gameId', (q: any) => q.eq('gameId', args.gameId))
       .collect()
 
-    // Map to AI engine types
-    const aiUnits: Array<AIUnitState> = allUnitDocs
-      .filter((u: any) => u.ownerId === aiRole)
-      .map((u: any) => ({
-        _id: u._id,
-        ownerId: u.ownerId,
-        type: u.type as UnitType,
-        hp: u.hp,
-        maxHp: u.maxHp,
-        atk: u.atk ?? 0,
-        rng: u.rng ?? 1,
-        vis: u.vis ?? 3,
-        ap: u.ap,
-        maxAp: u.maxAp,
-        x: u.x,
-        y: u.y,
-        direction: u.direction as Direction,
-        isOverwatching: u.isOverwatching ?? false,
-        overwatchDirection: u.overwatchDirection as Direction | undefined,
-        isStealthed: u.isStealthed ?? false,
-        engineerWallCount: u.engineerWallCount ?? 0,
-        sniperMovedThisTurn: u.sniperMovedThisTurn ?? false,
-      }))
-
-    const allUnits: Array<any> = allUnitDocs.map((u: any) => ({
-      _id: u._id,
-      ownerId: u.ownerId,
-      type: u.type as UnitType,
-      hp: u.hp,
-      maxHp: u.maxHp,
-      atk: u.atk ?? 0,
-      rng: u.rng ?? 1,
-      vis: u.vis ?? 3,
-      ap: u.ap,
-      maxAp: u.maxAp,
-      x: u.x,
-      y: u.y,
-      direction: u.direction as Direction,
-      isOverwatching: u.isOverwatching ?? false,
-      overwatchDirection: u.overwatchDirection as Direction | undefined,
-      isStealthed: u.isStealthed ?? false,
-      engineerWallCount: u.engineerWallCount ?? 0,
-      sniperMovedThisTurn: u.sniperMovedThisTurn ?? false,
-    }))
+    // Map to AI engine types (single pass, then filter)
+    const allUnits: Array<AIUnitState> = allUnitDocs.map((u: any) =>
+      mapUnitToAIState(u),
+    )
+    const aiUnits = allUnits.filter((u) => u.ownerId === aiRole)
 
     // Get AI actions from the engine
     const actionPlan = getAIActions(
@@ -111,7 +95,7 @@ export const aiTurn = mutation({
     // Wrapped in try-catch so turn always advances even if an action fails
     try {
       for (const action of actionPlan.actions) {
-        await executeAIAction(ctx, args.gameId, action, aiRole)
+        await executeAIAction(ctx, args.gameId, action, aiRole, game.mapData)
       }
     } catch (err) {
       // Log action failure but continue to end the turn
@@ -135,6 +119,7 @@ async function executeAIAction(
   _gameId: any,
   action: AIAction,
   aiRole: string,
+  mapData?: any,
 ) {
   switch (action.type) {
     case 'move':
@@ -167,7 +152,7 @@ async function executeAIAction(
         const target = await ctx.db.get(action.targetUnitId)
         if (unit && target && target.ownerId !== aiRole) {
           // Calculate damage using shared combat logic
-          const isOnHigh = false // Simplified — elevation check for AI
+          const isOnHigh = mapData?.tiles?.[unit.y]?.[unit.x] === 'highground'
           const { damage } = calculateDamage(
             {
               type: unit.type,

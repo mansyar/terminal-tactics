@@ -114,7 +114,7 @@ function enumerateMoveActions(
 
       const tx = unit.x + dx
       const ty = unit.y + dy
-      if (tx < 0 || tx >= 12 || ty < 0 || ty >= 12) continue
+      if (tx < 0 || tx >= map.width || ty < 0 || ty >= map.height) continue
 
       // Check if move is valid
       const validation = isValidMove(

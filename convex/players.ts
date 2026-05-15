@@ -163,7 +163,7 @@ export const getPlayerStatsHandler = async (
     losses: player.losses,
     draws: player.draws,
     gamesPlayed: player.gamesPlayed,
-    achievements: (player).achievements ?? [],
+    achievements: player.achievements ?? [],
   }
 }
 

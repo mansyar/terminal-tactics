@@ -7,12 +7,6 @@ export const BOT_IDS = {
 
 export type BotDifficulty = 'easy' | 'medium' | 'hard'
 
-export const BOT_DIFFICULTY_MAP: Record<BotDifficulty, string> = {
-  easy: BOT_IDS.EASY,
-  medium: BOT_IDS.MEDIUM,
-  hard: BOT_IDS.HARD,
-}
-
 export const BOT_HANDLE_MAP: Record<string, string> = {
   [BOT_IDS.EASY]: 'AI_EASY',
   [BOT_IDS.MEDIUM]: 'AI_MEDIUM',

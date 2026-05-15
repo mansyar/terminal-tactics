@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { isBot } from '../lib/botDetection'
+import { getBotDifficulty, isBot } from '../lib/botDetection'
 import { parseCommand } from '../lib/commandParser'
 import { cleanErrorMessage, parseCoord } from '../lib/utils'
 import {
@@ -408,12 +408,7 @@ export function useGameCommands({
             await new Promise((resolve) => setTimeout(resolve, 1500))
 
             try {
-              const difficulty =
-                opponentId === '__ai_easy__'
-                  ? 'easy'
-                  : opponentId === '__ai_hard__'
-                    ? 'hard'
-                    : 'medium'
+              const difficulty = getBotDifficulty(opponentId) ?? 'medium'
               await mutations.aiTurn({ gameId: gameState._id, difficulty })
             } catch (err) {
               console.error('[AI] Turn mutation failed:', err)

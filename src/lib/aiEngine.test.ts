@@ -380,3 +380,111 @@ describe('AI Engine — Edge Cases', () => {
     expect(plan.actions.length).toBeGreaterThanOrEqual(1)
   })
 })
+
+describe('AI Engine — Hard Difficulty (One-Step Lookahead)', () => {
+  it('returns a valid action plan for Hard difficulty', () => {
+    const aiUnit = makeUnit({ _id: 'unit-1', type: 'K', x: 5, y: 5, ap: 2 })
+    const enemy = makeUnit({
+      _id: 'unit-2',
+      type: 'K',
+      ownerId: 'p1',
+      x: 5,
+      y: 8,
+      ap: 0,
+    })
+    const allUnits = [aiUnit, enemy]
+    const gameState = makeGameState()
+    const plan = getAIActions([aiUnit], allUnits, gameState, 'hard')
+
+    expect(plan.actions.length).toBeGreaterThanOrEqual(1)
+    expect(plan.unitOrder.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('Hard difficulty prefers attacking over waiting when enemy in range', () => {
+    // Knight range=1, enemy at distance 3 (too far to attack but reachable)
+    const aiUnit = makeUnit({
+      _id: 'unit-1',
+      type: 'K',
+      x: 5,
+      y: 5,
+      ap: 3,
+      atk: 30,
+    })
+    const closeEnemy = makeUnit({
+      _id: 'unit-2',
+      type: 'K',
+      ownerId: 'p1',
+      x: 6,
+      y: 6,
+      hp: 20,
+      maxHp: 100,
+      ap: 0,
+    })
+    const allUnits = [aiUnit, closeEnemy]
+    const gameState = makeGameState()
+    const plan = getAIActions([aiUnit], allUnits, gameState, 'hard')
+
+    // Should take an offensive action (move closer or attack)
+    const hasAction = plan.actions.some(
+      (a) => a.type === 'move' || a.type === 'attack',
+    )
+    expect(hasAction).toBe(true)
+  })
+
+  it('Hard difficulty produces valid action types', () => {
+    const validTypes = ['move', 'attack', 'heal', 'scan', 'overwatch', 'wait']
+    const aiUnit = makeUnit({ _id: 'unit-1', type: 'K', x: 5, y: 5, ap: 2 })
+    const enemy = makeUnit({
+      _id: 'unit-2',
+      type: 'K',
+      ownerId: 'p1',
+      x: 8,
+      y: 8,
+      ap: 0,
+    })
+    const allUnits = [aiUnit, enemy]
+    const gameState = makeGameState()
+    const plan = getAIActions([aiUnit], allUnits, gameState, 'hard')
+
+    for (const action of plan.actions) {
+      expect(validTypes).toContain(action.type)
+    }
+  })
+
+  it('processes multiple AI units on Hard difficulty', () => {
+    const unit1 = makeUnit({ _id: 'unit-1', type: 'K', x: 1, y: 1, ap: 2 })
+    const unit2 = makeUnit({ _id: 'unit-2', type: 'A', x: 2, y: 2, ap: 2 })
+    const enemy = makeUnit({
+      _id: 'unit-3',
+      type: 'K',
+      ownerId: 'p1',
+      x: 5,
+      y: 5,
+      ap: 0,
+    })
+    const allUnits = [unit1, unit2, enemy]
+    const gameState = makeGameState()
+    const plan = getAIActions([unit1, unit2], allUnits, gameState, 'hard')
+
+    expect(plan.unitOrder.length).toBe(2)
+    expect(plan.actions.length).toBe(2)
+  })
+
+  it('handles no enemies gracefully on Hard difficulty', () => {
+    const aiUnit = makeUnit({ _id: 'unit-1', type: 'K', x: 5, y: 5, ap: 2 })
+    const allUnits = [aiUnit]
+    const gameState = makeGameState()
+    const plan = getAIActions([aiUnit], allUnits, gameState, 'hard')
+
+    expect(plan.actions.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('falls back gracefully when units have 0 AP', () => {
+    const aiUnit = makeUnit({ _id: 'unit-1', type: 'K', x: 5, y: 5, ap: 0 })
+    const allUnits = [aiUnit]
+    const gameState = makeGameState()
+    const plan = getAIActions([aiUnit], allUnits, gameState, 'hard')
+
+    expect(plan.actions.length).toBe(0)
+  })
+})

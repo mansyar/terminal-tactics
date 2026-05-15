@@ -64,16 +64,16 @@
 
 ## Phase B: Achievements System
 
-### Task B.1: Achievement Schema & Definitions
-- [ ] Write tests: Schema migration maintains backward compatibility, achievement IDs defined correctly
-    - [ ] Run tests to confirm failures (Red Phase verification)
-- [ ] Implement: Add `achievements: v.array(v.string())` field to `players` Convex schema
-- [ ] Implement: Add `sudoUsedThisGame: v.optional(v.boolean())` and `unitsLostP1: v.optional(v.number())`, `unitsLostP2: v.optional(v.number())` to `games` Convex schema
-- [ ] Implement: Define all 6 achievement IDs and unlock condition functions as pure functions in `src/lib/achievements.ts`
-- [ ] Implement: Wire `sudoUsedThisGame` — update to true in `convex/sudo.ts` on any sudo command execution
-- [ ] Implement: Wire `unitsLostP1`/`unitsLostP2` — increment in `convex/combat.ts` and `convex/movement.ts` when unit is destroyed
-    - [ ] Run tests to confirm passing
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
+### Task B.1: Achievement Schema & Definitions [2e6ef3e]
+- [x] Write tests: Schema migration maintains backward compatibility, achievement IDs defined correctly
+    - [x] Run tests to confirm failures (Red Phase verification)
+- [x] Implement: Add `achievements: v.array(v.string())` field to `players` Convex schema
+- [x] Implement: Add `sudoUsedThisGame: v.optional(v.boolean())` and `unitsLostP1: v.optional(v.number())`, `unitsLostP2: v.optional(v.number())` to `games` Convex schema
+- [x] Implement: Define all 6 achievement IDs and unlock condition functions as pure functions in `src/lib/achievements.ts`
+- [x] Implement: Wire `sudoUsedThisGame` — update to true in `convex/sudo.ts` on any sudo command execution
+- [x] Implement: Wire `unitsLostP1`/`unitsLostP2` — increment in `convex/combat.ts` and `convex/movement.ts` when unit is destroyed
+    - [x] Run tests to confirm passing
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
 ### Task B.2: Achievement Checking on Game End
 - [ ] Write tests: Each achievement unlocks on correct condition, does not re-unlock, `first_blood` checks gamesPlayed transition

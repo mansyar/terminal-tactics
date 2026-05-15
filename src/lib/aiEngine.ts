@@ -252,13 +252,15 @@ function enumerateAttackActions(
       score = Math.random()
     } else {
       // Medium: prioritize killing low HP targets
+      // Base score ensures attacking is always preferred over doing nothing
+      score += 20 // Base attack value
       if (damage >= target.hp) {
         score += 100 // Killing blow
       } else if (target.hp < 30) {
         score += 50 // Low HP target
       }
-      score += damage // Base damage score
-      score -= target.hp * 0.5 // Less priority on full HP targets
+      score += damage // Higher damage is better
+      // Don't penalize for full HP — healthy enemies are still threats
     }
 
     actions.push({

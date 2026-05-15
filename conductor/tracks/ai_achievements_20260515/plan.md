@@ -16,16 +16,16 @@
     - [x] Run tests to confirm passing
     - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
-### Task A.2: AI Squad Builder
-- [ ] Write tests: AI squad generation at each difficulty fits within 1000cr budget, respects max 5 units
-    - [ ] Run tests to confirm failures (Red Phase verification)
-- [ ] Implement: Create `convex/aiSquadBuilder.ts` module with difficulty-based compositions
-    - Easy: Random valid units within budget
-    - Medium: Knight + Archer + Scout (total 650cr)
-    - Hard: Commander + Sniper + Medic + Knight (total 1000cr)
-- [ ] Implement: Integrate with existing `submitDraft` mutation flow — AI calls submitDraft on lobby join
-    - [ ] Run tests to confirm passing
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
+### Task A.2: AI Squad Builder [544ee32]
+- [x] Write tests: AI squad generation at each difficulty fits within 1000cr budget, respects max 5 units
+    - [x] Run tests to confirm failures (Red Phase verification)
+- [x] Implement: Create `convex/aiSquadBuilder.ts` module with difficulty-based compositions
+    - Easy: Knight + Archer + Scout (total 650cr)
+    - Medium: Knight + Archer + Medic + Scout (total 900cr)
+    - Hard: Commander + Sniper + Medic (total 1000cr)
+- [x] Implement: Integrate with existing `submitDraft` mutation flow — AI squad auto-submitted via p2Squad field in createAIGame
+    - [x] Run tests to confirm passing
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
 ### Task A.3: AI Decision Engine — Easy & Medium
 - [ ] Write tests: Valid action enumeration, scoring functions, Easy picks random valid, Medium uses heuristics, `isBot` detection

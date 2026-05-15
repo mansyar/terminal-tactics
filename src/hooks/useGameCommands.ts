@@ -88,15 +88,12 @@ export function useGameCommands({
 
   void selectedUnit
   void hoveredUnit
-
   const handleUnitClick = useCallback((unitId: string) => {
     setSelectedUnit((prev) => (prev === unitId ? null : unitId))
   }, [])
-
   const handleUnitHover = useCallback((unitId: string) => {
     setHoveredUnit(unitId)
   }, [])
-
   const handleUnitLeave = useCallback(() => {
     setHoveredUnit(null)
   }, [])

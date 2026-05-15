@@ -12,5 +12,10 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] **Track: Content Expansion (Phase 11)** *(Archived 2026-05-12)*
 *Link: [./archive/content_expansion_20260510/](./archive/content_expansion_20260510/)*
 
+---
+
+- [ ] **Track: Deployment (Phase 13)**
+*Link: [./tracks/deployment_20260516/](./tracks/deployment_20260516/)*
+
 
 

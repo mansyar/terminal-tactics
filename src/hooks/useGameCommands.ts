@@ -415,8 +415,17 @@ export function useGameCommands({
                     ? 'hard'
                     : 'medium'
               await mutations.aiTurn({ gameId: gameState._id, difficulty })
-            } catch {
-              // AI turn failed silently — game state will handle via existing flows
+            } catch (err) {
+              console.error('[AI] Turn mutation failed:', err)
+              // Fallback: manually advance turn via endTurn for the AI
+              try {
+                await mutations.endTurn({
+                  gameId: gameState._id,
+                  playerId: opponentId,
+                })
+              } catch {
+                // If endTurn also fails, the timer mechanism will handle it
+              }
             } finally {
               aiThinkingRef.current = false
               setAiThinking(false)

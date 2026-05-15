@@ -65,8 +65,32 @@ export const checkTurnTimeout = mutation({
     // Timer pause: If the current player is disconnected, don't advance the turn
     const currentPlayerId = game.currentPlayer === 'p1' ? game.p1 : game.p2
 
-    // Skip timer for AI turns (AI responds immediately)
-    if (currentPlayerId && isBot(currentPlayerId)) return
+    // AI turns: short timeout (30s) as safety net for failed AI mutation
+    if (currentPlayerId && isBot(currentPlayerId)) {
+      // Only force-advance if elapsed exceeds 30 seconds
+      if (elapsed > 30000) {
+        const nextPlayer = game.currentPlayer === 'p1' ? 'p2' : 'p1'
+        const patch: any = {
+          currentPlayer: nextPlayer,
+          turnNum: game.turnNum + 1,
+          lastActionTime: now,
+          turnStartTime: now,
+          kernelPanicActive: undefined,
+        }
+        await ctx.db.patch(args.gameId, patch)
+
+        const nextUnits = await ctx.db
+          .query('units')
+          .withIndex('by_gameId', (q: any) => q.eq('gameId', args.gameId))
+          .filter((q: any) => q.eq(q.field('ownerId'), nextPlayer))
+          .collect()
+
+        for (const unit of nextUnits) {
+          await ctx.db.patch(unit._id, { ap: unit.maxAp })
+        }
+      }
+      return
+    }
 
     const isCurrentPlayerDisconnected =
       game.currentPlayer === 'p1'

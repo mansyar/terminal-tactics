@@ -88,11 +88,6 @@ export const aiTurn = mutation({
       args.difficulty,
     )
 
-    // Execute each AI action via db.patch
-    for (const action of actionPlan.actions) {
-      await executeAIAction(ctx, args.gameId, action, aiRole)
-    }
-
     // Log AI actions to the console history
     const aiHandle =
       args.difficulty === 'easy'
@@ -112,7 +107,25 @@ export const aiTurn = mutation({
       })
     }
 
-    // End the AI turn using the shared handler
+    // Execute each AI action via db.patch
+    // Wrapped in try-catch so turn always advances even if an action fails
+    try {
+      for (const action of actionPlan.actions) {
+        await executeAIAction(ctx, args.gameId, action, aiRole)
+      }
+    } catch (err) {
+      // Log action failure but continue to end the turn
+      await ctx.db.insert('logs', {
+        gameId: args.gameId,
+        playerId: aiRole === 'p1' ? (game.p1 ?? '') : (game.p2 ?? ''),
+        commandString: `[AI] Action execution error`,
+        result: `[AI] Error: ${String(err)}`,
+        timestamp: Date.now(),
+        visibility: 'public',
+      })
+    }
+
+    // End the AI turn using the shared handler — always called regardless of action failures
     await endTurnHandler(ctx, game, args.gameId)
   },
 })

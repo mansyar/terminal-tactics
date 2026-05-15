@@ -49,16 +49,15 @@
     - [x] Run tests to confirm passing
     - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
-### Task A.5: AI Turn Mutation
-- [ ] Write tests: `aiTurn` mutation end-to-end — AI actions execute, turn ends, opponent turn begins
-- [ ] Implement: Convex wrapper at `convex/ai.ts` that imports pure engine from `src/lib/aiEngine.ts`
-    - [ ] Run tests to confirm failures (Red Phase verification)
-- [ ] Implement: Extract `endTurnHandler` from `convex/game.ts` — shared handler that both `endTurn` mutation and AI mutation call
-- [ ] Implement: `convex/ai.ts` mutation — orchestrates: fetch state → evaluate actions → execute actions via `db.patch` → call `endTurnHandler`
+### Task A.5: AI Turn Mutation [03d408d]
+- [x] Write tests: `aiTurn` mutation end-to-end — AI actions execute, turn ends, opponent turn begins
+    - [x] Run tests to confirm failures (Red Phase verification)
+- [x] Implement: Extract `endTurnHandler` from `convex/game.ts` — shared handler that both `endTurn` mutation and AI mutation call
+- [x] Implement: `convex/ai.ts` mutation — orchestrates: fetch state → evaluate actions → execute actions via `db.patch` → call `endTurnHandler`
 - [ ] Implement: Client-side "thinking" delay (1.5s) and `AI_THINKING...` indicator in TurnIndicator area
-- [ ] Implement: AI actions logged with `[AI]` prefix in ConsoleHistory for human readability
-    - [ ] Run tests to confirm passing
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
+- [x] Implement: AI actions logged with `[AI]` prefix in ConsoleHistory for human readability
+    - [x] Run tests to confirm passing
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 - [ ] Task: Conductor - Phase Completion Verification 'AI Opponent' (Protocol in workflow.md)
 
 ---

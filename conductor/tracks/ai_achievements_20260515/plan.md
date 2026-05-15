@@ -58,7 +58,7 @@
 - [x] Implement: AI actions logged with `[AI]` prefix in ConsoleHistory for human readability
     - [x] Run tests to confirm passing
     - [x] Run `bun run type-check; bun run lint; bun test --coverage`
-- [ ] Task: Conductor - Phase Completion Verification 'AI Opponent' (Protocol in workflow.md)
+- [x] Task: Conductor - Phase Completion Verification 'AI Opponent' (Protocol in workflow.md) [checkpoint: c15b6e9]
 
 ---
 

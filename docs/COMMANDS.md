@@ -21,9 +21,10 @@
 | `forfeit`  | `forfeit`           |      0 | ✅ Implemented |
 | `say`      | `say [message]`     |      0 | ✅ Implemented |
 | `sudo`     | `sudo [cmd]`        |  1 RAP | ✅ Implemented |
-| `build`    | `build [coord]`     |      1 | ⏳ Phase 11    |
-| `demolish` | `demolish [coord]`  |      1 | ⏳ Phase 11    |
-| `rally`    | `rally [coord]`     |      1 | ⏳ Phase 11    |
+| `build`    | `build [coord]`     |      1 | ✅ Implemented |
+| `demolish` | `demolish [coord]`  |      1 | ✅ Implemented |
+| `rally`    | `rally [coord]`     |      1 | ✅ Implemented |
+| `map`      | `map`               |      0 | ✅ Implemented |
 
 ---
 
@@ -230,6 +231,7 @@ UNIT_ID: [K] | OWNER: P1 | HP: 85/100 | AP: 1/2 | POS: C4 | DIR: N
 | `clear`   | 0       | Clear the console history (client-side only) |
 | `forfeit` | 0       | Surrender the game immediately ✅            |
 | `say`     | 0       | Send a message to opponent ✅                |
+| `map`     | 0       | Display current map as ASCII grid ✅         |
 
 ---
 
@@ -257,9 +259,49 @@ UNIT_ID: [K] | OWNER: P1 | HP: 85/100 | AP: 1/2 | POS: C4 | DIR: N
 
 ---
 
-## Phase 11: Expansion Unit Commands ⏳
+### `map` — Map Preview
 
-The following commands will be available with the expansion units (Phase 11).
+**Syntax:** `map`  
+**Example:** `map`  
+**AP Cost:** 0 (Free action)
+
+**Mechanics:**
+
+- Displays the current game map as an ASCII grid.
+- When a preset map is selected, shows the preset name and its grid.
+- When using procedural generation, shows the current map layout.
+- Output is private (only visible to the issuing player).
+
+**Output Format:**
+```
+MAP_PREVIEW: "The Grid"
+#############
+#..........#
+#..........#
+#.##....##.#
+#..........#
+#....##....#
+#....##....#
+#..........#
+#.##....##.#
+#..........#
+#..........#
+#############
+```
+
+**Character Legend:**
+
+| Character | Terrain   |
+| --------- | --------- |
+| `.`       | Floor     |
+| `#`       | Wall      |
+| `^`       | High Ground |
+
+---
+
+## Phase 11: Expansion Unit Commands ✅
+
+The following commands are available with the expansion units.
 
 ### `build` — Build Wall _(Engineer Only)_
 
@@ -271,9 +313,9 @@ The following commands will be available with the expansion units (Phase 11).
 **Mechanics:**
 
 - Engineer constructs a wall (`#`) at the target coordinate.
-- Limited to **1 wall per game** per Engineer.
+- Limited to **1 wall per Engineer**, reusable via `demolish` (demolish restores the build charge).
 - Cannot build on occupied tiles or existing walls.
-- Wall persists for entire game.
+- Wall persists until demolished or game ends.
 
 **Validation Rules:**
 
@@ -325,9 +367,9 @@ The following commands will be available with the expansion units (Phase 11).
 
 - Commander rallies the unit at target position.
 - Target gains **+1 AP** (added to current AP, not max).
-- Target must be an adjacent friendly unit.
-- Cannot self-rally.
-- Effect lasts for current turn only.
+- Target must be a friendly unit within 1 tile (adjacent or self).
+- Self-targeting (Commander on own tile) grants the Commander +1 AP.
+- Effect lasts for current turn only — bonus AP is lost at turn end.
 
 **Validation Rules:**
 
@@ -335,8 +377,8 @@ The following commands will be available with the expansion units (Phase 11).
 | --------- | -------------------- | --------------------------- |
 | Unit type | `NOT_A_COMMANDER`    | Only `[C]` can rally        |
 | Adjacency | `NOT_ADJACENT`       | Target must be adjacent     |
-| Ally      | `CANNOT_RALLY_ENEMY` | Target must be your unit    |
-| Self      | `CANNOT_SELF_RALLY`  | Commander cannot rally self |
+| Ally      | `NOT_YOUR_UNIT`      | Target must be your unit    |
+| Self      | —                    | Self-targeting allowed     |
 | AP        | `INSUFFICIENT_AP`    | Requires 1 AP               |
 
 **Success Response:** `RALLY_SUCCESS: [K] at C4 gained +1 AP (now 3 AP).`

@@ -1,4 +1,4 @@
-# 📑 PROJECT: TERMINAL TACTICS (GDD v1.7.0)
+# 📑 PROJECT: TERMINAL TACTICS (GDD v1.8.0)
 
 ## 1. VISION STATEMENT
 
@@ -28,18 +28,17 @@
 | Turn Structure | Strict alternating (P1 → P2 → P1...)          |
 | Squad Budget   | 1000 Credits                                  |
 | Squad Size     | 2–5 units                                     |
-| Game Modes     | Elimination ✅, King of the Hill _(Phase 11)_ |
+| Game Modes     | Elimination ✅ |
 
 ### B. Map System
 
-- **Grid Sizes:** 8×8 (Quick), 12×12 (Standard) ✅, 16×16 (Large) _(Phase 11)_
-- **Generation:** Procedural via Cellular Automata, or Preset Maps _(Phase 11)_
+- **Grid Sizes:** 8×8 (Quick), 12×12 (Standard) ✅, 16×16 (Large) _(Planned)_
+- **Generation:** Procedural via Cellular Automata, or Preset Maps ✅
 - **Coordinates:** Chess notation (A-L columns, 1-12 rows)
 - **Terrain:**
   - Floor (`.`) — traversable
   - Wall (`#`) — blocks movement and LoS
   - High Ground (`^`) — grants combat bonuses
-  - Control Point (`◉`) — objective tile _(Phase 11, King of the Hill)_
 
 ### C. Combat ✅
 
@@ -77,12 +76,12 @@ Combat is **deterministic** — no RNG. Damage depends on position, elevation, a
 | `[S]`  | Scout  |  150 |  50 |   4 |  15 |   2 |   4 | Stealth + Scan Immunity |
 | `[M]`  | Medic  |  250 |  70 |   3 |   0 |   2 |   3 | Heal (15 HP)            |
 
-### Expansion Units _(Phase 11)_
+### Expansion Units ✅
 
 | Symbol | Class     | Cost |  HP |  AP | ATK | RNG | VIS | Ability                    |
 | ------ | --------- | ---: | --: | --: | --: | --: | --: | -------------------------- |
 | `[E]`  | Engineer  |  200 |  60 |   3 |  10 |   1 |   3 | Build/Demolish walls       |
-| `[N]`  | Sniper    |  350 |  40 |   2 |  40 |   8 |   6 | Stationary attack only     |
+| `[R]`  | Sniper    |  350 |  40 |   2 |  40 |   8 |   6 | Stationary attack only     |
 | `[C]`  | Commander |  400 |  80 |   2 |  20 |   2 |   4 | Rally (+1 AP to adjacents) |
 
 📖 **Ability details:** [COMBAT.md](./COMBAT.md#knight-shield)
@@ -107,9 +106,10 @@ The game is controlled via Command Line Interface (CLI).
 | Forfeit   | `forfeit`      |      — | ✅       |
 | Chat      | `say [msg]`    |      0 | ✅       |
 | Ultimate  | `sudo mv...`   |  1 RAP | ✅       |
-| Build     | `build [c]`    |      1 | Phase 11 |
-| Demolish  | `demolish [c]` |      1 | Phase 11 |
-| Rally     | `rally [c]`    |      1 | Phase 11 |
+| Build     | `build [c]`    |      1 | ✅       |
+| Demolish  | `demolish [c]` |      1 | ✅       |
+| Rally     | `rally [c]`    |      1 | ✅       |
+| Map       | `map`          |      0 | ✅       |
 
 📖 **Full specifications:** [COMMANDS.md](./COMMANDS.md)
 
@@ -141,12 +141,7 @@ The game is controlled via Command Line Interface (CLI).
 - Warning at 15 seconds
 - Auto-end on timeout
 
-### Alternative Win Conditions _(Phase 11)_
-
-| Mode             | Condition                            |
-| ---------------- | ------------------------------------ |
-| Elimination      | Destroy all enemy units (default) ✅ |
-| King of the Hill | Control center point for 5 turns     |
+### Win Conditions
 
 ---
 
@@ -156,33 +151,34 @@ The game is controlled via Command Line Interface (CLI).
 
 - **Private Lobby:** 4-digit code (e.g., `X7Z2`)
 - **Quick Play:** Auto-join or create public lobby
-- **Ranked Queue:** ELO-based matchmaking _(Phase 10)_
 
 ### Persistence ✅
 
 - `userId` — Anonymous UUID in LocalStorage
 - `terminal_tactics_game_id` — Active session (rejoin on refresh)
-- `handle` — Custom player name _(Phase 10)_
+- `handle` — Custom player name ✅
 
 ### Real-time Features ✅
 
 - Typing indicator ("Player is typing...")
 - Instant state sync via Convex subscriptions
 - Disconnect detection & grace period _(Phase 8)_
+- Rematch protocol _(Phase 10)_
 
-### Competitive Infrastructure _(Phase 10)_
+### Player Profiles _(Phase 10)_ ✅
 
-- **ELO Rating:** K=32 formula, starting at 1200
-- **Rank Tiers:** Bronze, Silver, Gold, Platinum, Diamond
-- **Leaderboard:** Top 100 global rankings
-- **Match History:** Last 50 games with stats
+- **Handle System:** Custom alphanumeric names (2-20 chars), editable via lobby UI or `/handle` CLI
+- **Stats Tracking:** Win/Loss/Draw counters recorded after every game (all 5 end paths)
+- **Match History:** Last 20 games displayed as ASCII table via `history` CLI command
+- **Rematch:** One-click rematch button creates new private lobby with same opponent
 
-### Advanced Features _(Phase 12)_
+### Advanced Features _(Planned)_
 
 - **Spectator Mode:** Watch live games with shareable link
 - **Game Replay:** Step-through replay of completed matches
 - **AI Opponent:** Practice against rule-based AI (Easy/Medium/Hard)
 - **Achievements:** Unlockable badges for milestones
+- **Ranked Queue:** ELO-based matchmaking with tiers and leaderboard
 
 ---
 
@@ -233,7 +229,11 @@ The game is controlled via Command Line Interface (CLI).
     draftDeadline,
     turnDeadline,
     kernelPanicActive,
-    rap)
+    rap,
+    mapPreset,          // Phase 11: "grid" | "maze" | "ridge" | undefined
+    gameStartTime,
+    rematchCode,
+    rematchLobbyId)
 }
 
 // units (indexed by gameId)
@@ -252,7 +252,9 @@ The game is controlled via Command Line Interface (CLI).
     y,
     direction,
     isStealthed,
-    overwatchDir)
+    overwatchDir,
+    engineerWallCount,  // Phase 11: remaining build uses for Engineer
+    sniperMovedThisTurn) // Phase 11: Sniper stationary check flag
 }
 
 // logs (indexed by gameId)
@@ -264,17 +266,22 @@ The game is controlled via Command Line Interface (CLI).
 {
   ;(gameId, playerId, handle, message, timestamp)
 }
-```
 
-### Planned Schema Additions
-
-```typescript
 // players _(Phase 10)_
 {
   ;(userId, handle, gamesPlayed, wins, losses, draws)
 }
 
-// achievements _(Phase 12)_
+// matches _(Phase 10)_
+{
+  ;(gameId, p1Id, p2Id, p1Handle, p2Handle, winner, endReason, turns, duration, finishedAt)
+}
+```
+
+### Planned Schema Additions
+
+```typescript
+// achievements _(Planned)_
 {
   ;(userId, unlockedBadges)
 }
@@ -303,3 +310,4 @@ The game is controlled via Command Line Interface (CLI).
 | v1.5.0  | 2026-01-14 | Added LoS algorithm, damage formulas, vision system, drafting rules    |
 | v1.6.0  | 2026-01-14 | Refactored: Extracted detailed specs to COMMANDS.md and COMBAT.md      |
 | v1.7.0  | 2026-01-15 | Added planned features: new units, game modes, competitive, AI/replays |
+| v1.8.0  | 2026-05-15 | Phase 10: Player profiles, match history, rematch. Phase 11: Engineer/Sniper/Commander units, preset maps, ASCII preview, map CLI command |

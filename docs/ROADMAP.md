@@ -1,8 +1,8 @@
 # 🗺️ TERMINAL TACTICS — ROADMAP
 
 **Project Status:** 🔄 In Progress  
-**GDD Version:** v1.7.0  
-**Last Updated:** 2026-05-10
+**GDD Version:** v1.8.0  
+**Last Updated:** 2026-05-15
 
 ---
 

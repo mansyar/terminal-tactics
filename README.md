@@ -1,12 +1,19 @@
-# 📟 Terminal Tactics
+# TERMINAL_TACTICS
 
-> "The Matrix is everywhere. It is all around us."
+> `SYSTEM: ACTIVE // The Matrix is everywhere.`
 
-**Terminal Tactics** is a minimalist, high-fidelity tactical strategy game played entirely through a Command Line Interface (CLI). Built with **Vite**, **React**, **Convex**, and **Tailwind CSS**, it combines the depth of deterministic tactical combat with the aesthetic of a retro-futuristic terminal.
+**TERMINAL TACTICS** is a minimalist, high-fidelity tactical strategy game played entirely through a Command Line Interface (CLI). Built with **Vite**, **React**, **Convex**, and **Tailwind CSS**, it combines the depth of deterministic tactical combat with the aesthetic of a retro-futuristic terminal.
 
-![License](https://img.shields.io/badge/license-MIT-green)
-![Status](https://img.shields.io/badge/status-in_development-yellow)
-![Style](https://img.shields.io/badge/style-cyberpunk-00ff00)
+[![PLAY_NOW](https://img.shields.io/badge/▶_PLAY_NOW-00ff00?style=for-the-badge&labelColor=0A0A0A&color=00ff00)](https://your-username.itch.io/terminal-tactics)
+
+![License](https://img.shields.io/badge/license-MIT-00ff00?labelColor=0A0A0A)
+![Status](https://img.shields.io/badge/status-LIVE-00ff00?labelColor=0A0A0A)
+![Style](https://img.shields.io/badge/style-CYBERPUNK-00ff00?labelColor=0A0A0A)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&labelColor=0A0A0A)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&labelColor=0A0A0A)
+![Convex](https://img.shields.io/badge/Convex-dcff50?logo=convex&labelColor=0A0A0A&color=dcff50)
+![Tailwind](https://img.shields.io/badge/Tailwind_v4-06B6D4?logo=tailwindcss&labelColor=0A0A0A)
+![Bun](https://img.shields.io/badge/Bun-1.3-f9f9f9?logo=bun&labelColor=0A0A0A)
 
 ## ⚡ Tech Stack
 
@@ -19,7 +26,7 @@
 - **Testing**: [Bun Test](https://bun.sh/docs/cli/test) + [Testing Library](https://testing-library.com/)
 - **Font**: [JetBrains Mono](https://www.jetbrains.com/lp/mono/)
 
-## 🚀 Getting Started
+## 🚀 GETTING_STARTED
 
 ### Prerequisites
 
@@ -58,7 +65,7 @@
 5.  **Open the game:**
     Navigate to `http://localhost:3000` to enter the simulation.
 
-## 🎮 Gameplay & Commands
+## 🎮 GAMEPLAY_&_COMMANDS
 
 The game is controlled entirely via text commands in a terminal interface. Every action is typed — no drag-and-drop, no click-to-move.
 
@@ -91,12 +98,34 @@ The game is controlled entirely via text commands in a terminal interface. Every
 
 📖 **Full specifications:** [docs/COMMANDS.md](./docs/COMMANDS.md)
 
-## 📂 Project Structure
+## 📸 SCREENSHOTS
+
+> *TERMINAL CAPTURES PENDING — DEPLOY AGENT, EXTRACT VISUALS.*
+
+```
++--------------------------------------------------+
+|  > TERMINAL_TACTICS v1.0                         |
+|  > PLAYER: OPERATOR_007                          |
+|  > STATUS: MISSION_READY                         |
+|                                                  |
+|  [GRID DISPLAY — 12x12 MATRIX]                   |
+|  [UNIT ICONS — K A S M E R C]                    |
+|  [CRT SCANLINE OVERLAY]                          |
+|                                                  |
+|  > mv K2 K5                                      |
+|  >> UNIT_K MOVED. 1 AP REMAINING.               |
++--------------------------------------------------+
+```
+
+*Replace the above with actual game screenshots: CLI interface, grid combat, lobby/matchmaking.*
+
+## 📂 PROJECT_STRUCTURE
 
 ```
 terminal-tactics/
 ├── convex/                  # Backend functions & schema
-│   ├── schema.ts            # Database schema (5 tables)
+│   ├── schema.ts            # Database schema (6 tables)
+│   ├── analytics.ts         # Event logging (PAGE_LOAD, GAME_START, GAME_COMPLETE)
 │   ├── game.ts              # Turn management, kernel panic
 │   ├── combat.ts            # Attack, heal, scan, overwatch
 │   ├── movement.ts          # Unit movement logic
@@ -127,9 +156,9 @@ terminal-tactics/
 └── ...
 ```
 
-## 🧪 Testing
+## 🧪 TESTING
 
-We use **Bun Test** for unit and integration testing (464+ tests).
+We use **Bun Test** for unit and integration testing (480+ tests).
 
 ```bash
 bun test                  # Run all tests
@@ -144,7 +173,7 @@ bun run lint
 bun run build             # Production build + TypeScript check
 ```
 
-## 🗺️ Progress
+## 🗺️ PROGRESS
 
 | Phase                          | Status      |
 | ------------------------------ | ----------- |
@@ -160,11 +189,11 @@ bun run build             # Production build + TypeScript check
 | Phase 10: Player Profiles      | ✅ Complete |
 | Phase 11: Content Expansion    | ✅ Complete |
 | Phase 12: AI & Achievements    | ✅ Complete |
-| Phase 13: Deployment           | ⏳ Planned  |
+| Phase 13: Deployment           | 🟢 Live |
 
 See [docs/ROADMAP.md](./docs/ROADMAP.md) for detailed progress.
 
-## 🎯 Key Features
+## 🎯 KEY_FEATURES
 
 - **Command-Driven Gameplay** — Every action is typed as a terminal command. No mouse required.
 - **Deterministic Combat** — No RNG. Damage from positioning (front/flank/rear), elevation, and abilities.
@@ -177,6 +206,6 @@ See [docs/ROADMAP.md](./docs/ROADMAP.md) for detailed progress.
 - **Sudo Ultimate Abilities** — Root Access Points power game-changing commands.
 - **Kernel Panic Events** — Random environmental hazards after turn 3.
 
-## 📄 License
+## 📄 LICENSE
 
 MIT

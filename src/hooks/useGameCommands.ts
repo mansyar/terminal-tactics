@@ -25,6 +25,12 @@ import {
   handleMapCommand,
   handleRallyCommand,
 } from './commands/phase11Commands'
+import {
+  handleAcceptDrawCommand,
+  handleForfeitCommand,
+  handleOfferDrawCommand,
+  handleSayCommand,
+} from './commands/utilityCommands'
 
 export interface GameMutations {
   logCommand: any
@@ -407,22 +413,19 @@ export function useGameCommands({
           cmd.args,
         )
       } else if (cmd.type === 'forfeit') {
-        await mutations.forfeit({ gameId: gameState._id, playerId })
-        result = 'FORFEIT_ACCEPTED. INITIATING_SHUTDOWN.'
-        playSuccess()
+        result = await handleForfeitCommand({ playerId, gameState, mutations })
       } else if (cmd.type === 'offer draw') {
-        await mutations.offerDraw({ gameId: gameState._id, playerId })
-        result = 'DRAW_OFFER_TRANSMITTED'
-        playSuccess()
+        result = await handleOfferDrawCommand({
+          playerId,
+          gameState,
+          mutations,
+        })
       } else if (cmd.type === 'accept draw') {
-        try {
-          await mutations.acceptDraw({ gameId: gameState._id, playerId })
-          result = 'DRAW_ACCEPTED. CONNECTION_TERMINATED.'
-          playSuccess()
-        } catch (err: any) {
-          result = `ERROR: ${cleanErrorMessage(err.message)}`
-          playError()
-        }
+        result = await handleAcceptDrawCommand({
+          playerId,
+          gameState,
+          mutations,
+        })
       } else if (cmd.type === 'handle') {
         const profileResult = await handleHandleCommand(
           { playerId, gameState, matchHistory, mutations },
@@ -440,16 +443,10 @@ export function useGameCommands({
         result = profileResult.result
         logVisibility = profileResult.visibility
       } else if (cmd.type === 'say') {
-        const message = cmd.args.join(' ')
-        if (message) {
-          await mutations.sendMessage({
-            gameId: gameState._id,
-            playerId,
-            message,
-          })
-          result = 'MSG_SENT'
-          playSuccess()
-        }
+        result = await handleSayCommand(
+          { playerId, gameState, mutations },
+          cmd.args,
+        )
       } else {
         result = `ERROR: UNKNOWN_COMMAND "${cmd.raw}"`
         playError()

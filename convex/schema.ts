@@ -35,6 +35,9 @@ export default defineSchema({
     rematchCode: v.optional(v.string()), // 4-char lobby code for rematch
     rematchLobbyId: v.optional(v.id('games')), // ID of the rematch lobby game
     mapPreset: v.optional(v.string()), // "grid" | "maze" | "ridge" | undefined for random/procedural
+    sudoUsedThisGame: v.optional(v.boolean()), // Track if sudo was used in this game (for achievements)
+    unitsLostP1: v.optional(v.number()), // Units lost by P1 in this game
+    unitsLostP2: v.optional(v.number()), // Units lost by P2 in this game
   })
     .index('by_status', ['status'])
     .index('by_code', ['code']),
@@ -67,6 +70,7 @@ export default defineSchema({
     wins: v.number(),
     losses: v.number(),
     draws: v.number(),
+    achievements: v.optional(v.array(v.string())), // Unlocked achievement IDs
   })
     .index('by_userId', ['userId'])
     .index('by_handle', ['handle']),

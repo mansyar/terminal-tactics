@@ -1,4 +1,6 @@
 import { v } from 'convex/values'
+import { evaluateNewAchievements } from '../src/lib/achievements'
+import { isBot } from '../src/lib/botDetection'
 import { mutation, query } from './_generated/server'
 
 // ===========================================================================
@@ -269,6 +271,40 @@ export const recordGameEndHandler = async (
 
   await ctx.db.patch(p1._id, p1Patch)
   await ctx.db.patch(p2._id, p2Patch)
+
+  // Evaluate achievements for the winning player (human only, bots don't earn achievements)
+  if (winner) {
+    const game = await ctx.db.get(gameId)
+    const winningPlayerId = winner === 'p1' ? p1Id : p2Id
+    const winningRole = winner as 'p1' | 'p2'
+
+    if (game && !isBot(winningPlayerId)) {
+      const playerDoc = winner === 'p1' ? p1 : p2
+      const existingAchievements: Array<string> =
+        (playerDoc).achievements ?? []
+
+      // Pre-game gamesPlayed is current gamesPlayed (before this game's increment)
+      const preGameGamesPlayed = playerDoc.gamesPlayed
+
+      const newAchievements = evaluateNewAchievements({
+        playerWon: true,
+        playerRole: winningRole,
+        unitsLostP1: (game).unitsLostP1 ?? 0,
+        unitsLostP2: (game).unitsLostP2 ?? 0,
+        turnNum: (game).turnNum ?? 1,
+        sudoUsedThisGame: (game).sudoUsedThisGame ?? false,
+        preGameGamesPlayed,
+        existingAchievements,
+      })
+
+      if (newAchievements.length > 0) {
+        const allAchievements = [...existingAchievements, ...newAchievements]
+        await ctx.db.patch(playerDoc._id, {
+          achievements: allAchievements,
+        })
+      }
+    }
+  }
 
   // Insert match record with snapshot of handles
   await ctx.db.insert('matches', {

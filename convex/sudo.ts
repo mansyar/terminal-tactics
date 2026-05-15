@@ -35,6 +35,7 @@ export const sudoMove = mutation({
 
     await ctx.db.patch(game._id, {
       [rapField]: rap - 1,
+      sudoUsedThisGame: true,
     })
 
     return { success: true }
@@ -71,6 +72,7 @@ export const sudoScan = mutation({
     await ctx.db.patch(game._id, {
       [revealedField]: allTiles,
       [rapField]: rap - 1,
+      sudoUsedThisGame: true,
     })
 
     return { success: true }
@@ -134,6 +136,7 @@ export const sudoAttack = mutation({
 
     await ctx.db.patch(game._id, {
       [rapField]: rap - 1,
+      sudoUsedThisGame: true,
     })
 
     return { success: true, damage, destroyed: newHp === 0 }

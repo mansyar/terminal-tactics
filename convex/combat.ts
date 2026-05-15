@@ -97,6 +97,13 @@ export const attackUnit = mutation({
     if (newHp === 0) {
       await ctx.db.delete(target._id)
 
+      // Track units lost for achievements
+      const lostField = target.ownerId === 'p1' ? 'unitsLostP1' : 'unitsLostP2'
+      const currentLost = game[lostField] || 0
+      await ctx.db.patch(args.gameId, {
+        [lostField]: currentLost + 1,
+      })
+
       // Award 1 RAP to attacker (capped at 3)
       const rapField = attacker.ownerId === 'p1' ? 'p1Rap' : 'p2Rap'
       const currentRap = game[rapField] || 0

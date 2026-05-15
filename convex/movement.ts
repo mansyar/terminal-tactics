@@ -147,6 +147,14 @@ export const moveUnit = mutation({
 
     if (newHp === 0) {
       await ctx.db.delete(unit._id)
+
+      // Track units lost for achievements
+      const lostField = unit.ownerId === 'p1' ? 'unitsLostP1' : 'unitsLostP2'
+      const currentLost = game[lostField] || 0
+      await ctx.db.patch(game._id, {
+        [lostField]: currentLost + 1,
+      })
+
       // Check win condition
       const remainingAllyUnits = allUnits.filter(
         (u) => u.ownerId === game.currentPlayer && u._id !== unit._id,

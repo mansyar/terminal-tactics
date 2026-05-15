@@ -55,4 +55,22 @@ describe('Production Build Configuration (Phase A)', () => {
       expect(gitignore).toContain('dist.zip')
     })
   })
+
+  describe('Environment variables (Task A2)', () => {
+    it('has a .env.production file with VITE_CONVEX_URL placeholder', () => {
+      const envProd = readFileSync(
+        resolve(projectRoot, '.env.production'),
+        'utf-8',
+      )
+      expect(envProd).toContain('VITE_CONVEX_URL')
+    })
+
+    it('uses import.meta.env.VITE_CONVEX_URL in Convex client initialization', () => {
+      const mainTsx = readFileSync(
+        resolve(projectRoot, 'src/main.tsx'),
+        'utf-8',
+      )
+      expect(mainTsx).toContain('import.meta.env.VITE_CONVEX_URL')
+    })
+  })
 })

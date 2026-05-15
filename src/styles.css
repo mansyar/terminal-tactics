@@ -193,44 +193,18 @@ body::after {
 }
 
 /* Stealth Shimmer - glitchy horizontal offset for stealthed scouts */
+/* Stealth shimmer: uses opacity/visibility instead of transform
+   to avoid conflicting with Framer Motion's transform positioning. */
 @keyframes stealth-shimmer {
-  0% {
-    transform: translate(0, 0);
-  }
-  10% {
-    transform: translate(-2px, 1px);
-  }
-  20% {
-    transform: translate(2px, -1px);
-  }
-  30% {
-    transform: translate(-1px, 0);
-  }
-  40% {
-    transform: translate(1px, 1px);
-  }
-  50% {
-    transform: translate(0, -1px);
-  }
-  60% {
-    transform: translate(-2px, 0);
-  }
-  70% {
-    transform: translate(1px, 1px);
-  }
-  80% {
-    transform: translate(2px, -1px);
-  }
-  90% {
-    transform: translate(-1px, 1px);
-  }
-  100% {
-    transform: translate(0, 0);
-  }
+  0%   { opacity: 0.6; }
+  25%  { opacity: 0.8; }
+  50%  { opacity: 0.5; }
+  75%  { opacity: 0.9; }
+  100% { opacity: 0.6; }
 }
 
 .stealth-shimmer {
-  animation: stealth-shimmer 3s steps(3) infinite;
+  animation: stealth-shimmer 3s ease-in-out infinite;
   filter: drop-shadow(0 0 2px rgba(0, 255, 255, 0.5));
 }
 

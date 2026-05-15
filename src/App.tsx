@@ -18,6 +18,7 @@ import { useHeartbeat } from './hooks/useHeartbeat'
 import { TabCoordinator } from './lib/tabCoordinator'
 import { renderMapAscii } from './lib/mapPreviewer'
 import { PRESET_MAPS } from './lib/mapPresets'
+import { getBotHandle, isBot } from './lib/botDetection'
 import type { CLIInputHandle } from './components/Terminal/CLIInput'
 
 function App() {
@@ -102,8 +103,11 @@ function App() {
       : 'skip',
   )
   const enemyHandle = opponentId
-    ? (playersData?.[opponentId]?.handle ?? opponentId)
+    ? (getBotHandle(opponentId) ??
+      playersData?.[opponentId]?.handle ??
+      opponentId)
     : undefined
+  const isOpponentAI = opponentId ? isBot(opponentId) : false
 
   const playerStats = useQuery(
     api.players.getPlayerStats,
@@ -539,6 +543,7 @@ function App() {
                   enemyTyping={otherPlayerTyping}
                   enemyDisconnected={opponentStatus === 'disconnected'}
                   enemyHandle={enemyHandle}
+                  isAI={isOpponentAI}
                 />
 
                 <div className="flex gap-2">

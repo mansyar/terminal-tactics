@@ -1,5 +1,6 @@
 import { v } from 'convex/values'
 import { mutation } from './_generated/server'
+import { getAISquad } from './aiSquadBuilder'
 
 // Helper to generate a 4-character alphanumeric code
 function generateCode() {
@@ -133,6 +134,48 @@ export const joinQuickPlay = mutation({
       p1LastHeartbeat: now,
       p1Status: 'connected',
     })
+  },
+})
+
+export const createAIGame = mutation({
+  args: {
+    playerId: v.string(),
+    difficulty: v.union(
+      v.literal('easy'),
+      v.literal('medium'),
+      v.literal('hard'),
+    ),
+  },
+  handler: async (ctx, args) => {
+    const botId =
+      args.difficulty === 'easy'
+        ? '__ai_easy__'
+        : args.difficulty === 'medium'
+          ? '__ai_medium__'
+          : '__ai_hard__'
+
+    const aiSquad = getAISquad(args.difficulty)
+
+    const now = Date.now()
+    const gameId = await ctx.db.insert('games', {
+      turnNum: 1,
+      currentPlayer: 'p1',
+      status: 'drafting', // Skip lobby phase — bot is already here
+      environmentFlags: [],
+      mapData: {},
+      isPublic: false,
+      p1: args.playerId,
+      p2: botId,
+      p2Squad: aiSquad, // Auto-submit AI squad immediately
+      lastActionTime: now,
+      draftStartTime: now,
+      p1LastHeartbeat: now,
+      p1Status: 'connected',
+      p2LastHeartbeat: now,
+      p2Status: 'connected',
+    })
+
+    return { gameId }
   },
 })
 

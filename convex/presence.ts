@@ -1,4 +1,5 @@
 import { v } from 'convex/values'
+import { isBot } from '../src/lib/botDetection'
 import { mutation, query } from './_generated/server'
 
 // ===========================================================================
@@ -11,6 +12,9 @@ export const heartbeatHandler = async (
   ctx: any,
   args: { gameId: string; playerId: string },
 ) => {
+  // Skip heartbeat for AI players
+  if (isBot(args.playerId)) return
+
   const game = await ctx.db.get(args.gameId)
   if (!game) throw new Error('GAME_NOT_FOUND')
   if (game.status !== 'playing') return // No heartbeat tracking during lobby/drafting
@@ -73,9 +77,10 @@ export const checkDisconnectHandler = async (
   const patch: Record<string, any> = {}
   let needsPatch = false
 
-  // Check P1
+  // Check P1 (skip AI players)
   if (
     game.p1 &&
+    !isBot(game.p1) &&
     game.p1LastHeartbeat !== undefined &&
     game.p1Status !== 'disconnected'
   ) {
@@ -89,9 +94,10 @@ export const checkDisconnectHandler = async (
     }
   }
 
-  // Check P2
+  // Check P2 (skip AI players)
   if (
     game.p2 &&
+    !isBot(game.p2) &&
     game.p2LastHeartbeat !== undefined &&
     game.p2Status !== 'disconnected'
   ) {

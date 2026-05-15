@@ -1,4 +1,5 @@
 import { v } from 'convex/values'
+import { isBot } from '../src/lib/botDetection'
 import { mutation, query } from './_generated/server'
 import { recordGameEndHandler } from './players'
 
@@ -62,6 +63,11 @@ export const checkTurnTimeout = mutation({
     const elapsed = now - game.turnStartTime
 
     // Timer pause: If the current player is disconnected, don't advance the turn
+    const currentPlayerId = game.currentPlayer === 'p1' ? game.p1 : game.p2
+
+    // Skip timer for AI turns (AI responds immediately)
+    if (currentPlayerId && isBot(currentPlayerId)) return
+
     const isCurrentPlayerDisconnected =
       game.currentPlayer === 'p1'
         ? game.p1Status === 'disconnected'
@@ -113,6 +119,10 @@ export const checkDisconnectGracePeriod = mutation({
     if (game.disconnectStartTime === undefined) return
     if (game.p1Status !== 'disconnected' && game.p2Status !== 'disconnected')
       return
+
+    // Skip grace period if disconnected player is an AI (AI never really disconnects)
+    if (game.p1 && isBot(game.p1) && game.p1Status === 'disconnected') return
+    if (game.p2 && isBot(game.p2) && game.p2Status === 'disconnected') return
 
     const elapsed = now - game.disconnectStartTime
     if (elapsed < GRACE_PERIOD_MS) return

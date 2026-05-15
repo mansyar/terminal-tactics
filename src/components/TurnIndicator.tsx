@@ -6,6 +6,8 @@ interface TurnIndicatorProps {
   enemyTyping?: boolean
   enemyDisconnected?: boolean
   enemyHandle?: string
+  isAI?: boolean
+  aiThinking?: boolean
 }
 
 export const TurnIndicator: React.FC<TurnIndicatorProps> = ({
@@ -14,6 +16,8 @@ export const TurnIndicator: React.FC<TurnIndicatorProps> = ({
   enemyTyping,
   enemyDisconnected,
   enemyHandle,
+  isAI,
+  aiThinking,
 }) => {
   return (
     <div
@@ -24,18 +28,27 @@ export const TurnIndicator: React.FC<TurnIndicatorProps> = ({
         Session_Status
       </div>
       <div className="text-matrix-primary font-bold">
-        {isMyTurn
-          ? 'MY_TURN'
-          : enemyHandle
-            ? `WAITING_FOR ${enemyHandle.toUpperCase()}`
-            : 'WAITING_FOR_ENEMY'}
+        {aiThinking ? (
+          <span className="animate-pulse">AI_THINKING...</span>
+        ) : isMyTurn ? (
+          'MY_TURN'
+        ) : enemyHandle ? (
+          `WAITING_FOR ${enemyHandle.toUpperCase()}`
+        ) : (
+          'WAITING_FOR_ENEMY'
+        )}
       </div>
-      {enemyDisconnected && (
+      {isAI && aiThinking && (
+        <div className="text-[9px] text-matrix-primary/40 animate-pulse mt-1">
+          &gt; AI_processing_actions...
+        </div>
+      )}
+      {enemyDisconnected && !aiThinking && (
         <div className="text-[9px] text-red-400/80 animate-pulse mt-1">
           &gt; ENEMY_DISCONNECTED
         </div>
       )}
-      {enemyTyping && !enemyDisconnected && (
+      {enemyTyping && !enemyDisconnected && !aiThinking && (
         <div className="text-[9px] text-matrix-primary/40 animate-pulse mt-1">
           &gt; Enemy_is_typing...
         </div>

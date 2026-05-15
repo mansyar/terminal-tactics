@@ -46,8 +46,8 @@ describe('LobbyScreen - Handle Widget', () => {
   it('pre-fills handle input with current handle on edit', () => {
     render(<LobbyScreen {...defaultProps} handle="neon_ninja" />)
     fireEvent.click(screen.getByTestId('handle-edit-btn'))
-    const input = screen.getByTestId('handle-input') as HTMLInputElement
-    expect(input.value).toBe('neon_ninja')
+    const input = screen.getByTestId('handle-input')
+    expect((input as HTMLInputElement).value).toBe('neon_ninja')
     cleanup()
   })
 

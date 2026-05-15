@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
+import { BOT_DIFFICULTIES } from '../lib/botDetection'
 
 interface LobbyScreenProps {
   playerId: string
@@ -15,6 +16,8 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({
 }) => {
   const [code, setCode] = useState('')
   const [isCreating, setIsCreating] = useState(false)
+  const [isAIStarting, setIsAIStarting] = useState(false)
+  const [showAIDifficulty, setShowAIDifficulty] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isEditingHandle, setIsEditingHandle] = useState(false)
   const [editHandleValue, setEditHandleValue] = useState(handle)
@@ -24,6 +27,7 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({
   const createLobby = useMutation(api.lobby.createLobby)
   const joinLobby = useMutation(api.lobby.joinLobby)
   const joinQuickPlay = useMutation(api.lobby.joinQuickPlay)
+  const createAIGame = useMutation(api.lobby.createAIGame)
   const setHandleMutation = useMutation(api.players.setHandle)
 
   const handleCreate = async (isPublic: boolean) => {
@@ -59,6 +63,24 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({
       onGameJoined(gameId)
     } catch (e: any) {
       setError(e.message)
+    }
+  }
+
+  const handleAIClick = () => {
+    setError(null)
+    setShowAIDifficulty(true)
+  }
+
+  const handleAIStart = async (difficulty: 'easy' | 'medium' | 'hard') => {
+    setIsAIStarting(true)
+    setShowAIDifficulty(false)
+    setError(null)
+    try {
+      const result = await createAIGame({ playerId, difficulty })
+      onGameJoined(result.gameId)
+    } catch (e: any) {
+      setError(e.message)
+      setIsAIStarting(false)
     }
   }
 
@@ -186,6 +208,53 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({
             <div className="absolute inset-0 bg-matrix-primary opacity-0 group-hover:opacity-5 transition-opacity"></div>
           </button>
         </div>
+      </div>
+
+      {/* AI Opponent Section */}
+      <div className="w-full max-w-2xl border border-matrix-primary/30 p-6 space-y-4">
+        <div className="space-y-3">
+          <h2 className="text-matrix-primary font-mono text-lg font-bold border-b border-matrix-primary/20 pb-2">
+            AI_OPPONENT
+          </h2>
+          <p className="text-xs text-matrix-primary/60 font-mono leading-relaxed italic">
+            Train against a tactical AI opponent. Available at three difficulty
+            levels.
+          </p>
+        </div>
+
+        {showAIDifficulty ? (
+          <div className="space-y-3">
+            <div className="text-[10px] text-matrix-primary/50 font-mono uppercase tracking-wider">
+              SELECT_DIFFICULTY
+            </div>
+            <div className="flex gap-3">
+              {BOT_DIFFICULTIES.map((d) => (
+                <button
+                  key={d.key}
+                  onClick={() => handleAIStart(d.key)}
+                  disabled={isAIStarting}
+                  className="flex-1 py-4 border border-matrix-primary text-matrix-primary hover:bg-matrix-primary hover:text-black transition-all font-mono uppercase font-bold text-sm tracking-tighter disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-matrix-primary"
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => setShowAIDifficulty(false)}
+              className="text-[10px] text-matrix-primary/50 hover:text-matrix-primary font-mono uppercase transition-colors"
+            >
+              [CANCEL]
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={handleAIClick}
+            disabled={isAIStarting}
+            className="w-full py-4 border border-matrix-primary/50 text-matrix-primary/80 hover:border-matrix-primary hover:text-matrix-primary transition-all font-mono uppercase text-sm disabled:opacity-30"
+          >
+            {isAIStarting ? 'INITIALIZING...' : 'START_AI_MATCH'}
+          </button>
+        )}
       </div>
 
       {/* Handle Display / Edit */}

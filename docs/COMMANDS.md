@@ -7,24 +7,29 @@
 
 ## Quick Reference
 
-| Command    | Syntax              |     AP | Status         |
-| ---------- | ------------------- | -----: | -------------- |
-| `mv`       | `mv [from] [to]`    | 1/tile | ✅ Implemented |
-| `atk`      | `atk [from] [to]`   |      1 | ✅ Implemented |
-| `heal`     | `heal [from] [to]`  |      1 | ✅ Implemented |
-| `scan`     | `scan [coord]`      |      1 | ✅ Implemented |
-| `ovw`      | `ovw [coord] [dir]` |      1 | ✅ Implemented |
-| `inspect`  | `inspect [coord]`   |      0 | ✅ Implemented |
-| `end`      | `end`               |      — | ✅ Implemented |
-| `help`     | `help`              |      0 | ✅ Implemented |
-| `clear`    | `clear`             |      0 | ✅ Implemented |
-| `forfeit`  | `forfeit`           |      0 | ✅ Implemented |
-| `say`      | `say [message]`     |      0 | ✅ Implemented |
-| `sudo`     | `sudo [cmd]`        |  1 RAP | ✅ Implemented |
-| `build`    | `build [coord]`     |      1 | ✅ Implemented |
-| `demolish` | `demolish [coord]`  |      1 | ✅ Implemented |
-| `rally`    | `rally [coord]`     |      1 | ✅ Implemented |
-| `map`      | `map`               |      0 | ✅ Implemented |
+| Command        | Syntax              |     AP | Status         |
+| -------------- | ------------------- | -----: | -------------- |
+| `mv`           | `mv [from] [to]`    | 1/tile | ✅ Implemented |
+| `atk`          | `atk [from] [to]`   |      1 | ✅ Implemented |
+| `heal`         | `heal [from] [to]`  |      1 | ✅ Implemented |
+| `scan`         | `scan [coord]`      |      1 | ✅ Implemented |
+| `ovw`          | `ovw [coord] [dir]` |      1 | ✅ Implemented |
+| `inspect`      | `inspect [coord]`   |      0 | ✅ Implemented |
+| `end`          | `end`               |      — | ✅ Implemented |
+| `build`        | `build [coord]`     |      1 | ✅ Implemented |
+| `demolish`     | `demolish [coord]`  |      1 | ✅ Implemented |
+| `rally`        | `rally [coord]`     |      1 | ✅ Implemented |
+| `map`          | `map`               |      0 | ✅ Implemented |
+| `sudo`         | `sudo [cmd]`        |  1 RAP | ✅ Implemented |
+| `forfeit`      | `forfeit`           |      0 | ✅ Implemented |
+| `offer draw`   | `offer draw`        |      0 | ✅ Implemented |
+| `accept draw`  | `accept draw`       |      0 | ✅ Implemented |
+| `say`          | `say [message]`     |      0 | ✅ Implemented |
+| `handle`       | `handle [name]`     |      0 | ✅ Implemented |
+| `history`      | `history`           |      0 | ✅ Implemented |
+| `toggle labels`| `toggle labels`     |      0 | ✅ Implemented |
+| `help`         | `help`              |      0 | ✅ Implemented |
+| `clear`        | `clear`             |      0 | ✅ Implemented |
 
 ---
 
@@ -225,13 +230,120 @@ UNIT_ID: [K] | OWNER: P1 | HP: 85/100 | AP: 1/2 | POS: C4 | DIR: N
 
 ### Utility Commands
 
-| Command   | AP Cost | Description                                  |
-| --------- | ------- | -------------------------------------------- |
-| `help`    | 0       | Display list of available commands           |
-| `clear`   | 0       | Clear the console history (client-side only) |
-| `forfeit` | 0       | Surrender the game immediately ✅            |
-| `say`     | 0       | Send a message to opponent ✅                |
-| `map`     | 0       | Display current map as ASCII grid ✅         |
+| Command         | AP Cost | Description                                  |
+| --------------- | ------- | -------------------------------------------- |
+| `help`          | 0       | Display list of available commands           |
+| `clear`         | 0       | Clear the console history (client-side only) |
+| `forfeit`       | 0       | Surrender the game immediately ✅            |
+| `say`           | 0       | Send a message to opponent ✅                |
+| `map`           | 0       | Display current map as ASCII grid ✅         |
+| `handle`        | 0       | Set or change your player handle ✅          |
+| `history`       | 0       | View last 20 matches as ASCII table ✅       |
+| `offer draw`    | 0       | Propose a draw to opponent ✅                |
+| `accept draw`   | 0       | Accept opponent's draw offer ✅              |
+| `toggle labels` | 0       | Toggle coordinate labels on/off ✅           |
+
+---
+
+### `handle` — Set Player Handle
+
+**Syntax:** `handle [name]`  
+**Example:** `handle Neo`  
+**AP Cost:** 0 (Free action)
+
+**Mechanics:**
+
+- Sets or changes your display name (handle).
+- Handle persists across games and sessions.
+- Shown in lobby, in-game sidebar, and post-game screen.
+
+**Validation Rules:**
+
+| Check        | Error Code          | Description                          |
+| ------------ | ------------------- | ------------------------------------ |
+| Length       | `HANDLE_TOO_SHORT`  | Must be at least 2 characters        |
+| Length       | `HANDLE_TOO_LONG`   | Must be at most 20 characters        |
+| Characters   | `INVALID_HANDLE`    | Alphanumeric and underscores only    |
+| Uniqueness   | `HANDLE_TAKEN`      | Handle must be unique across players |
+
+**Success Response:** `HANDLE_UPDATED: Now known as Neo`
+
+---
+
+### `history` — Match History
+
+**Syntax:** `history`  
+**Example:** `history`  
+**AP Cost:** 0 (Free action)
+
+**Mechanics:**
+
+- Displays your last 20 completed matches as an ASCII table.
+- Each row shows: match number, opponent, result (WIN/LOSS/DRAW), turns played, and duration.
+- Output is private (only visible to the issuing player).
+
+**Output Format:**
+```
+MATCH HISTORY - Last 20 Games:
+#  OPPONENT   RESULT  TURNS  DURATION
+1  user_abc   WIN      12     5m 23s
+2  AI_MEDIUM  LOSS     8      3m 12s
+...
+```
+
+---
+
+### `offer draw` — Propose Draw
+
+**Syntax:** `offer draw`  
+**Example:** `offer draw`  
+**AP Cost:** 0 (Free action)
+
+**Mechanics:**
+
+- Proposes a draw to your opponent.
+- If opponent accepts via `accept draw`, the game ends as a draw.
+- Cannot offer draw if a draw has already been offered (yours or opponent's).
+
+**Success Response:** `DRAW_OFFERED: Waiting for opponent response...`
+
+---
+
+### `accept draw` — Accept Draw
+
+**Syntax:** `accept draw`  
+**Example:** `accept draw`  
+**AP Cost:** 0 (Free action)
+
+**Mechanics:**
+
+- Accepts the opponent's pending draw offer.
+- Game ends immediately with draw result (no winner).
+- Both players' stats record +1 draw.
+
+**Validation Rules:**
+
+| Check       | Error Code           | Description                        |
+| ----------- | -------------------- | ---------------------------------- |
+| Pending     | `NO_DRAW_OFFER`      | Opponent must have offered a draw  |
+
+**Success Response:** `DRAW_ACCEPTED: Game ended in a draw.`
+
+---
+
+### `toggle labels` — Coordinate Labels
+
+**Syntax:** `toggle labels`  
+**Example:** `toggle labels`  
+**AP Cost:** 0 (Free action)
+
+**Mechanics:**
+
+- Toggles the display of coordinate labels (A-L, 1-12) on the grid.
+- State persists for the current session only.
+- Default state: ON.
+
+**Success Response:** `COORDINATE_LABELS: OFF` / `COORDINATE_LABELS: ON`
 
 ---
 

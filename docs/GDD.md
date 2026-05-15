@@ -1,4 +1,4 @@
-# 📑 PROJECT: TERMINAL TACTICS (GDD v1.8.0)
+# 📑 PROJECT: TERMINAL TACTICS (GDD v1.9.0)
 
 ## 1. VISION STATEMENT
 
@@ -172,12 +172,24 @@ The game is controlled via Command Line Interface (CLI).
 - **Match History:** Last 20 games displayed as ASCII table via `history` CLI command
 - **Rematch:** One-click rematch button creates new private lobby with same opponent
 
+### AI Opponent _(Phase 12)_ ✅
+
+- **AI Game Initiation:** Start single-player games from lobby at 3 difficulty levels
+- **AI Squad Builder:** Auto-generates valid squads within budget per difficulty
+- **Decision Engine:** 3-tier engine (Easy: random, Medium: heuristic, Hard: one-step lookahead)
+- **AI Turn Execution:** Server-side mutation with "thinking" delay, calls shared `endTurnHandler`
+
+### Achievements _(Phase 12)_ ✅
+
+- **6 Achievements:** First Blood, Tactician, Comeback Kid, Sudo Master, Patience, Speed Demon
+- **Schema Tracking:** `achievements` field on `players` table; `sudoUsedThisGame`, `unitsLostP1/P2` on `games`
+- **Post-Game Display:** Unlocked achievements shown on win screen with glow effect
+- **Lobby Profile:** Collapsible achievements section with locked/unlocked badges
+
 ### Advanced Features _(Planned)_
 
 - **Spectator Mode:** Watch live games with shareable link
 - **Game Replay:** Step-through replay of completed matches
-- **AI Opponent:** Practice against rule-based AI (Easy/Medium/Hard)
-- **Achievements:** Unlockable badges for milestones
 - **Ranked Queue:** ELO-based matchmaking with tiers and leaderboard
 
 ---
@@ -209,81 +221,118 @@ The game is controlled via Command Line Interface (CLI).
 
 ## 10. DATABASE SCHEMA
 
-### Current Schema ✅
+All tables are defined in `convex/schema.ts`. Five tables total.
+
+### `games` (indexed by `status`, `code`)
 
 ```typescript
-// games
 {
-  ;(turnNum,
-    currentPlayer,
-    status,
-    mapData,
-    code,
-    p1,
-    p2,
-    p1Squad,
-    p2Squad,
-    p1Typing,
-    p2Typing,
-    winner,
-    draftDeadline,
-    turnDeadline,
-    kernelPanicActive,
-    rap,
-    mapPreset,          // Phase 11: "grid" | "maze" | "ridge" | undefined
-    gameStartTime,
-    rematchCode,
-    rematchLobbyId)
-}
-
-// units (indexed by gameId)
-{
-  ;(gameId,
-    ownerId,
-    type,
-    hp,
-    maxHp,
-    ap,
-    maxAp,
-    atk,
-    rng,
-    vis,
-    x,
-    y,
-    direction,
-    isStealthed,
-    overwatchDir,
-    engineerWallCount,  // Phase 11: remaining build uses for Engineer
-    sniperMovedThisTurn) // Phase 11: Sniper stationary check flag
-}
-
-// logs (indexed by gameId)
-{
-  ;(gameId, timestamp, commandString, result, playerId, visibility)
-}
-
-// chat (indexed by gameId)
-{
-  ;(gameId, playerId, handle, message, timestamp)
-}
-
-// players _(Phase 10)_
-{
-  ;(userId, handle, gamesPlayed, wins, losses, draws)
-}
-
-// matches _(Phase 10)_
-{
-  ;(gameId, p1Id, p2Id, p1Handle, p2Handle, winner, endReason, turns, duration, finishedAt)
+  turnNum: number,           // Current turn number
+  currentPlayer: string,     // "p1" or "p2"
+  status: string,            // "lobby" | "drafting" | "playing" | "finished"
+  environmentFlags: string[], // Environmental effects
+  mapData: any,              // Procedural or preset map data
+  isPublic: boolean,         // Public queue or private lobby
+  code: string?,             // 4-character lobby code (private lobbies)
+  p1: string?,               // Player 1 userId
+  p2: string?,               // Player 2 userId
+  p1Squad: string[]?,        // P1 squad unit types ["K", "A", "S", ...]
+  p2Squad: string[]?,        // P2 squad unit types
+  p1Typing: boolean?,        // P1 is typing indicator
+  p2Typing: boolean?,        // P2 is typing indicator
+  p1RevealedTiles: string[]?,// "x,y" tiles revealed to P1
+  p2RevealedTiles: string[]?,// "x,y" tiles revealed to P2
+  lastActionTime: number?,   // Timestamp of last action
+  winner: string?,           // "p1" or "p2" (undefined for draw)
+  draftStartTime: number?,   // Timestamp drafting began
+  turnStartTime: number?,    // Timestamp current turn began
+  p1Rap: number?,            // P1 Root Access Points (max 3)
+  p2Rap: number?,            // P2 Root Access Points (max 3)
+  kernelPanicActive: string?,// "SEGFAULT" | "OVERCLOCK" | "REBOOT"
+  drawOffer: string?,        // "p1" | "p2" — who offered a draw
+  p1LastHeartbeat: number?,  // P1 last heartbeat timestamp
+  p2LastHeartbeat: number?,  // P2 last heartbeat timestamp
+  p1Status: string?,         // "connected" | "disconnected" | "reconnecting"
+  p2Status: string?,         // "connected" | "disconnected" | "reconnecting"
+  disconnectStartTime: number?, // When disconnect was first detected
+  gameStartTime: number?,    // When game transitioned drafting → playing
+  rematchCode: string?,      // 4-char lobby code for rematch
+  rematchLobbyId: id?,       // ID of the rematch lobby game
+  mapPreset: string?,        // "grid" | "maze" | "ridge" | undefined
+  sudoUsedThisGame: boolean?,// Track if sudo was used (for achievements)
+  unitsLostP1: number?,      // Units P1 lost this game
+  unitsLostP2: number?,      // Units P2 lost this game
 }
 ```
 
-### Planned Schema Additions
+### `units` (indexed by `gameId`)
 
 ```typescript
-// achievements _(Planned)_
 {
-  ;(userId, unlockedBadges)
+  gameId: id,                // Parent game
+  ownerId: string,           // "p1" or "p2"
+  type: string,              // "K" | "A" | "S" | "M" | "E" | "R" | "C"
+  hp: number,                // Current HP
+  maxHp: number,             // Maximum HP
+  atk: number?,              // Attack stat
+  rng: number?,              // Range stat
+  vis: number?,              // Vision stat
+  ap: number,                // Current Action Points
+  maxAp: number,             // Maximum Action Points
+  x: number,                 // Grid X position (0-11)
+  y: number,                 // Grid Y position (0-11)
+  direction: string,         // "N" | "E" | "S" | "W"
+  isOverwatching: boolean?,  // Currently in overwatch mode
+  overwatchDirection: string?, // Overwatch facing direction
+  isStealthed: boolean?,     // Scout stealth state
+  engineerWallCount: number?,// Remaining build uses (Engineer)
+  sniperMovedThisTurn: boolean?, // Sniper movement flag
+}
+```
+
+### `logs` (indexed by `gameId`)
+
+```typescript
+{
+  gameId: id,                // Parent game
+  timestamp: number,         // When the command was issued
+  commandString: string,     // Raw command text
+  result: string,            // Command result message
+  playerId: string,          // Who issued the command
+  visibility: "public" | "private"?, // Log visibility filter
+}
+```
+
+Note: Chat messages via the `say` command are stored in the `logs` table with `commandString: "SAY: <message>"` — there is no separate `chat` table.
+
+### `players` (indexed by `userId`, `handle`) — _Phase 10_
+
+```typescript
+{
+  userId: string,            // Anonymous user_xxxx ID from localStorage
+  handle: string,            // Display name (unique, 2-20 chars)
+  gamesPlayed: number,       // Total completed games
+  wins: number,              // Total wins
+  losses: number,            // Total losses
+  draws: number,             // Total draws
+  achievements: string[]?,   // Unlocked achievement IDs (Phase 12)
+}
+```
+
+### `matches` (indexed by `p1Id`, `p2Id`) — _Phase 10_
+
+```typescript
+{
+  gameId: id,                // Reference to the finished game
+  p1Id: string,              // P1 userId
+  p2Id: string,              // P2 userId
+  p1Handle: string,          // P1 handle at game end (snapshot)
+  p2Handle: string,          // P2 handle at game end (snapshot)
+  winner: string?,           // "p1" | "p2" | undefined for draw
+  endReason: string,         // "elimination" | "forfeit" | "disconnect" | "timeout" | "draw"
+  turns: number,             // Total turns played
+  duration: number,          // Duration in milliseconds
+  finishedAt: number,        // Game end timestamp
 }
 ```
 
@@ -311,3 +360,4 @@ The game is controlled via Command Line Interface (CLI).
 | v1.6.0  | 2026-01-14 | Refactored: Extracted detailed specs to COMMANDS.md and COMBAT.md      |
 | v1.7.0  | 2026-01-15 | Added planned features: new units, game modes, competitive, AI/replays |
 | v1.8.0  | 2026-05-15 | Phase 10: Player profiles, match history, rematch. Phase 11: Engineer/Sniper/Commander units, preset maps, ASCII preview, map CLI command |
+| v1.9.0  | 2026-05-16 | Phase 12: AI opponent (3 difficulties), achievements (6 badges). Schema docs synced with implementation. |

@@ -192,12 +192,15 @@ Scout (ATK 15) flanks Knight (shield doesn't apply to flanks)
 
 ### Vision Radius by Unit Class
 
-| Unit         | VIS (Vision Range) | Notes                                 |
-| ------------ | ------------------ | ------------------------------------- |
-| Knight `[K]` | 3 tiles            | Short range, frontline fighter        |
-| Archer `[A]` | 5 tiles            | Long sightlines, matches attack range |
-| Scout `[S]`  | 4 tiles            | Moderate vision, but harder to detect |
-| Medic `[M]`  | 3 tiles            | Support unit, relies on team vision   |
+| Unit             | VIS (Vision Range) | Notes                                 |
+| ---------------- | ------------------ | ------------------------------------- |
+| Knight `[K]`     | 3 tiles            | Short range, frontline fighter        |
+| Archer `[A]`     | 5 tiles            | Long sightlines, matches attack range |
+| Scout `[S]`      | 4 tiles            | Moderate vision, but harder to detect |
+| Medic `[M]`      | 3 tiles            | Support unit, relies on team vision   |
+| Engineer `[E]`   | 3 tiles            | Close-range builder                   |
+| Sniper `[R]`     | 6 tiles            | Longest sightlines, glass cannon      |
+| Commander `[C]`  | 4 tiles            | Field leader, balanced vision         |
 
 **Vision is circular** — measured as Chebyshev distance (king's move in chess).
 
@@ -239,7 +242,7 @@ The Scout `[S]` has special stealth capabilities:
 
 ### Sniper Precision
 
-The Sniper `[N]` has unique attack restrictions:
+The Sniper `[R]` has unique attack restrictions:
 
 - **Stationary Attack:** Cannot move and attack in the same turn.
   - If unit moved this turn → `CANNOT_ATTACK_AFTER_MOVE`
@@ -266,15 +269,15 @@ The Commander `[C]` supports the team:
 
 - **Rally (`rally [coord]`):**
   - Target adjacent friendly unit gains +1 AP
-  - Cannot self-rally
+  - Self-targeting allowed (Commander on own tile)
   - Bonus AP expires at end of current turn
   - Can rally same unit multiple times (if has AP)
 
 ---
 
-## King of the Hill Mechanics _(Phase 11)_
+## King of the Hill Mechanics _(Planned / Future)_
 
-Alternative win condition for the King of the Hill game mode.
+Alternative win condition for a future game mode. ⏳ Not yet implemented.
 
 ### Control Point
 

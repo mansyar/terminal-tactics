@@ -14,6 +14,6 @@ This file tracks all major tracks for the project. Each track has its own detail
 
 ---
 
-- [ ] **Track: Phase 12: AI & Achievements**
+- [~] **Track: Phase 12: AI & Achievements**
 *Link: [./tracks/ai_achievements_20260515/](./tracks/ai_achievements_20260515/)*
 

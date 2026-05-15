@@ -54,7 +54,7 @@
     - [x] Run tests to confirm failures (Red Phase verification)
 - [x] Implement: Extract `endTurnHandler` from `convex/game.ts` — shared handler that both `endTurn` mutation and AI mutation call
 - [x] Implement: `convex/ai.ts` mutation — orchestrates: fetch state → evaluate actions → execute actions via `db.patch` → call `endTurnHandler`
-- [ ] Implement: Client-side "thinking" delay (1.5s) and `AI_THINKING...` indicator in TurnIndicator area
+- [x] Implement: Client-side "thinking" delay (1.5s) and `AI_THINKING...` indicator in TurnIndicator area
 - [x] Implement: AI actions logged with `[AI]` prefix in ConsoleHistory for human readability
     - [x] Run tests to confirm passing
     - [x] Run `bun run type-check; bun run lint; bun test --coverage`

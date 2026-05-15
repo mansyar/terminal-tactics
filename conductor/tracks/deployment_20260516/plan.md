@@ -3,13 +3,13 @@
 ## Phase A: Production Build & Environment Configuration
 
 ### Task A1: Create `build:prod` and `zip` scripts
-- [ ] Write test: verify `build:prod` script produces expected output (dist/ folder exists, contains index.html)
-- [ ] Implement: Update package.json scripts — add `build:prod` (existing build + production env + zip bundling) and standalone `zip` script
-- [ ] Write test: verify `zip` script creates dist.zip with correct contents
-- [ ] Implement: Configure Vite with `base: './'` for itch.io HTML5 game compatibility
-- [ ] Add `dist.zip` to `.gitignore`
-- [ ] Run verification: `bun run build:prod` produces deployable bundle with zero errors
-- [ ] Update: `conductor/tech-stack.md` with new `build:prod` and `zip` scripts
+- [x] Write test: verify `build:prod` script produces expected output (dist/ folder exists, contains index.html)
+- [x] Implement: Update package.json scripts — add `build:prod` (existing build + production env + zip bundling) and standalone `zip` script
+- [x] Write test: verify `zip` script creates dist.zip with correct contents
+- [x] Implement: Configure Vite with `base: './'` for itch.io HTML5 game compatibility
+- [x] Add `dist.zip` to `.gitignore`
+- [x] Run verification: `bun run build:prod` produces deployable bundle with zero errors
+- [x] Update: `conductor/tech-stack.md` with new `build:prod` and `zip` scripts `[d967cbf]`
 
 ### Task A2: Configure environment variables for dev/prod
 - [ ] Write test: verify environment detection works (DEV vs PROD mode)

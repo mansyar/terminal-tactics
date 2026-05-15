@@ -86,21 +86,21 @@
     - [x] Run tests to confirm passing
     - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
-### Task B.3: Post-Game Achievement Display
-- [ ] Write tests: Post-game screen renders newly unlocked achievements above existing stats, not shown for bots
-    - [ ] Run tests to confirm failures (Red Phase verification)
-- [ ] Implement: `ACHIEVEMENT_UNLOCKED: [NAME]` notification on finished game screen, rendered between the result header and stats panel
-- [ ] Implement: Animated confirmation effect (glow + pulse, consistent with existing CSS animations)
-- [ ] Implement: Return newly unlocked achievement list from `recordGameEnd` mutation response for client to display
-    - [ ] Run tests to confirm passing
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
+### Task B.3: Post-Game Achievement Display [5e873ba]
+- [x] Write tests: Post-game screen renders newly unlocked achievements above existing stats, not shown for bots
+    - [x] Run tests to confirm failures (Red Phase verification)
+- [x] Implement: `ACHIEVEMENT_UNLOCKED: [NAME]` notification on finished game screen, rendered between the result header and stats panel
+- [x] Implement: Animated confirmation effect (glow + pulse, consistent with existing CSS animations)
+- [x] Implement: Achievements fetched via playerStats query for post-game display
+    - [x] Run tests to confirm passing
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
-### Task B.4: Lobby Achievement Profile
-- [ ] Write tests: Achievement section renders locked/unlocked states correctly, collapsible behavior works
-    - [ ] Run tests to confirm failures (Red Phase verification)
-- [ ] Implement: Collapsible "ACHIEVEMENTS" section in lobby screen under handle area, below existing stats
-- [ ] Implement: Badge rendering — locked: dimmed bracket `[???]` in matrix-primary/30 opacity; unlocked: glowing green text `[FIRST_BLOOD]` with achievement name label
-- [ ] Implement: Fetch `achievements` field from `players` document and display all 6 badges
-    - [ ] Run tests to confirm passing
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
+### Task B.4: Lobby Achievement Profile [5e873ba]
+- [x] Write tests: Achievement section renders locked/unlocked states correctly, collapsible behavior works
+    - [x] Run tests to confirm failures (Red Phase verification)
+- [x] Implement: Collapsible "ACHIEVEMENTS" section in lobby screen under handle area, below existing stats
+- [x] Implement: Badge rendering — locked: dimmed bracket `[???]` in matrix-primary/30 opacity; unlocked: glowing green text `[FIRST_BLOOD]` with achievement name label
+- [x] Implement: Fetch `achievements` field from `players` document and display all 6 badges
+    - [x] Run tests to confirm passing
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 - [ ] Task: Conductor - Phase Completion Verification 'Achievements System' (Protocol in workflow.md)

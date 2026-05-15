@@ -10,6 +10,7 @@
 
 import type * as ai from "../ai.js";
 import type * as aiSquadBuilder from "../aiSquadBuilder.js";
+import type * as analytics from "../analytics.js";
 import type * as chat from "../chat.js";
 import type * as combat from "../combat.js";
 import type * as commander from "../commander.js";
@@ -35,6 +36,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   ai: typeof ai;
   aiSquadBuilder: typeof aiSquadBuilder;
+  analytics: typeof analytics;
   chat: typeof chat;
   combat: typeof combat;
   commander: typeof commander;

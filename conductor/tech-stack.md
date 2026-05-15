@@ -59,6 +59,8 @@
 |---------|--------|
 | `bun run dev` | Start Vite dev server on port 3000 |
 | `bun run build` | Production build + TypeScript check |
+| `bun run build:prod` | Production build + zip dist/ into dist.zip for itch.io upload |
+| `bun run zip` | Package dist/ into dist.zip |
 | `bun test` | Run all tests with Bun Test |
 | `bun test --coverage` | Run tests with coverage report (threshold: 80%) |
 | `bun run lint` | Run ESLint |

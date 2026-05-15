@@ -31,7 +31,8 @@
 |-----------|-----------|---------|
 | Backend | **Convex** | Serverless real-time backend |
 | Database | **Convex** (built-in) | Document database with real-time sync |
-| Schema | **Convex Schema** | Typed schema for games, units, logs tables |
+| Schema | **Convex Schema** | Typed schema for games, units, logs, analytics_events tables |
+| Analytics | **Convex Mutations/Queries** | Event logging system with logAnalyticsEvent mutation and getAnalyticsSummary query — no external dependencies |
 
 ## Testing
 

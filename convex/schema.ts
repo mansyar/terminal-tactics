@@ -98,4 +98,10 @@ export default defineSchema({
     playerId: v.string(),
     visibility: v.optional(v.union(v.literal('public'), v.literal('private'))),
   }).index('by_gameId', ['gameId']),
+
+  analytics_events: defineTable({
+    eventType: v.string(),
+    timestamp: v.number(),
+    metadata: v.optional(v.any()),
+  }).index('by_eventType', ['eventType']),
 })

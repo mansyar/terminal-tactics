@@ -148,6 +148,73 @@ export const getFilteredLogs = query({
   handler: getFilteredLogsHandler,
 })
 
+// Shared handler for ending a turn — extracted so both human endTurn and AI aiTurn can use it.
+// This handles: switch player, increment turn, RAP gain, kernel panic, AP restore.
+export async function endTurnHandler(ctx: any, game: any, gameId: any) {
+  const nextPlayer = game.currentPlayer === 'p1' ? 'p2' : 'p1'
+  const patch: any = {
+    currentPlayer: nextPlayer,
+    turnNum: game.turnNum + 1,
+    lastActionTime: Date.now(),
+    turnStartTime: Date.now(),
+    kernelPanicActive: undefined, // Clear any previous panic
+  }
+
+  // Passive RAP gain: +1 every 3 turns for both players
+  if ((game.turnNum + 1) % 3 === 0) {
+    patch.p1Rap = Math.min((game.p1Rap || 0) + 1, 3)
+    patch.p2Rap = Math.min((game.p2Rap || 0) + 1, 3)
+  }
+
+  // Random Kernel Panic: 20% chance each turn after turn 3
+  if (game.turnNum >= 3 && Math.random() < 0.2) {
+    const panics = ['SEGFAULT', 'OVERCLOCK', 'REBOOT']
+    const event = panics[Math.floor(Math.random() * panics.length)]
+    patch.kernelPanicActive = event
+
+    if (event === 'REBOOT') {
+      const units = await ctx.db
+        .query('units')
+        .withIndex('by_gameId', (q: any) => q.eq('gameId', gameId))
+        .collect()
+      await applyReboot(ctx, units)
+    }
+  }
+
+  await ctx.db.patch(gameId, patch)
+
+  // Restore AP for next player's units
+  const nextUnits = await ctx.db
+    .query('units')
+    .withIndex('by_gameId', (q: any) => q.eq('gameId', gameId))
+    .filter((q: any) => q.eq(q.field('ownerId'), nextPlayer))
+    .collect()
+
+  for (const unit of nextUnits) {
+    const unitPatch: any = { ap: unit.maxAp }
+
+    // SEGFAULT effect: Lose 1 AP starting turn
+    if (patch.kernelPanicActive === 'SEGFAULT') {
+      unitPatch.ap = Math.max(0, unit.maxAp - 1)
+    }
+
+    // Clear overwatch when starting turn
+    if (unit.isOverwatching) {
+      unitPatch.isOverwatching = false
+      unitPatch.overwatchDirection = undefined
+    }
+    // Re-cloak Scouts if not adjacent to enemies
+    if (unit.type === 'S' && !unit.isStealthed) {
+      unitPatch.isStealthed = true
+    }
+    // Clear Sniper moved flag at start of turn
+    if (unit.sniperMovedThisTurn) {
+      unitPatch.sniperMovedThisTurn = undefined
+    }
+    await ctx.db.patch(unit._id, unitPatch)
+  }
+}
+
 export const endTurn = mutation({
   args: { gameId: v.id('games'), playerId: v.string() },
   handler: async (ctx, args) => {
@@ -160,68 +227,7 @@ export const endTurn = mutation({
       throw new Error('NOT_YOUR_TURN')
     }
 
-    const nextPlayer = game.currentPlayer === 'p1' ? 'p2' : 'p1'
-    const patch: any = {
-      currentPlayer: nextPlayer,
-      turnNum: game.turnNum + 1,
-      lastActionTime: Date.now(),
-      turnStartTime: Date.now(),
-      kernelPanicActive: undefined, // Clear any previous panic
-    }
-
-    // Passive RAP gain: +1 every 3 turns for both players
-    if ((game.turnNum + 1) % 3 === 0) {
-      patch.p1Rap = Math.min((game.p1Rap || 0) + 1, 3)
-      patch.p2Rap = Math.min((game.p2Rap || 0) + 1, 3)
-    }
-
-    // Random Kernel Panic: 20% chance each turn after turn 3
-    if (game.turnNum >= 3 && Math.random() < 0.2) {
-      const panics = ['SEGFAULT', 'OVERCLOCK', 'REBOOT']
-      const event = panics[Math.floor(Math.random() * panics.length)]
-      patch.kernelPanicActive = event
-
-      if (event === 'REBOOT') {
-        const units = await ctx.db
-          .query('units')
-          .withIndex('by_gameId', (q) => q.eq('gameId', args.gameId))
-          .collect()
-        await applyReboot(ctx, units)
-      }
-    }
-
-    await ctx.db.patch(args.gameId, patch)
-
-    // Restore AP for next player's units
-    const nextUnits = await ctx.db
-      .query('units')
-      .withIndex('by_gameId', (q) => q.eq('gameId', args.gameId))
-      .filter((q) => q.eq(q.field('ownerId'), nextPlayer))
-      .collect()
-
-    for (const unit of nextUnits) {
-      const unitPatch: any = { ap: unit.maxAp }
-
-      // SEGFAULT effect: Lose 1 AP starting turn
-      if (patch.kernelPanicActive === 'SEGFAULT') {
-        unitPatch.ap = Math.max(0, unit.maxAp - 1)
-      }
-
-      // Clear overwatch when starting turn
-      if (unit.isOverwatching) {
-        unitPatch.isOverwatching = false
-        unitPatch.overwatchDirection = undefined
-      }
-      // Re-cloak Scouts if not adjacent to enemies
-      if (unit.type === 'S' && !unit.isStealthed) {
-        unitPatch.isStealthed = true
-      }
-      // Clear Sniper moved flag at start of turn
-      if (unit.sniperMovedThisTurn) {
-        unitPatch.sniperMovedThisTurn = undefined
-      }
-      await ctx.db.patch(unit._id, unitPatch)
-    }
+    await endTurnHandler(ctx, game, args.gameId)
   },
 })
 

@@ -1,8 +1,8 @@
 # 🗺️ TERMINAL TACTICS — ROADMAP
 
 **Project Status:** 🔄 In Progress  
-**GDD Version:** v1.8.0  
-**Last Updated:** 2026-05-15
+**GDD Version:** v1.9.0  
+**Last Updated:** 2026-05-16
 
 ---
 
@@ -431,47 +431,46 @@
 
 ---
 
-## 🚩 Phase 12: AI & Achievements ⏳
+## 🚩 Phase 12: AI & Achievements ✅ [checkpoint: 3dbf253]
 
-**Goal:** Enable single-player mode with a rule-based AI opponent and add achievement-based meta-progression.
+**Goal:** Enable single-player mode with a rule-based AI opponent and add achievement-based meta-progression. [e726136] [544ee32] [6c3e42d] [3f4076c] [03d408d] [2e6ef3e] [5e873ba]
 
 ### 12.1 AI Opponent (Single Player)
 
-- [ ] **Bot as Player:** Allow creating a game where `p2` is a bot ID (`__ai_easy__`, `__ai_medium__`, `__ai_hard__`).
-- [ ] **Decision Engine:** Rule-based AI using existing game logic (movement, combat, LoS, heal).
-  - Reads game state via Convex queries
-  - Evaluates valid actions using pure scoring functions
-  - Executes best action via same mutations as human players
-- [ ] **Difficulty Levels:**
-  - *Easy* — Random valid actions with basic self-preservation (avoid walking into danger)
-  - *Medium* — Score-based heuristics (prioritize killing low-HP targets, healing injured allies, advancing toward enemies, using high ground)
-  - *Hard* — One-turn lookahead via light MCTS (~50 simulations per decision):
-      1. Generate all valid actions for all AI units
-      2. For each action, simulate resulting game state using existing pure combat/move functions
-      3. Run randomized playouts from that state (opponent responds with Medium-level heuristics)
-      4. Pick the action sequence with the highest win-rate across simulations
-- [ ] **AI Squad Builder:** Generate a valid AI squad using the point-buy system.
+- [x] **Bot as Player:** AI game creation from lobby with 3 difficulty levels. Bot IDs (`__ai_easy__`, `__ai_medium__`, `__ai_hard__`) recognized throughout the pipeline via `isBot()` helper. [e726136]
+- [x] **Bot Disconnect Bypass:** Heartbeat, disconnect detection, turn timeout, and grace period all skip AI players. No bot ever flagged as disconnected. [e726136]
+- [x] **AI Squad Builder:** Difficulty-based fixed compositions within 1000cr budget (Easy: K+A+S=650cr, Medium: K+A+M+S=900cr, Hard: C+R+M=1000cr). [544ee32]
+- [x] **Decision Engine — Pure Module:** `src/lib/aiEngine.ts` with no Convex deps, mirrors `combatSystem.ts` pattern. 20 unit tests. [6c3e42d]
+- [x] **Difficulty Levels:**
+  - *Easy* — Random valid actions with self-preservation (avoids moving adjacent to enemies). [6c3e42d]
+  - *Medium* — Score-based heuristics (kill low HP > heal > attack > advance > use high ground). Unit ordering: Medic first, then danger-priority, then by unit type. [6c3e42d]
+  - *Hard* — One-step lookahead with state simulation. Clones unit state, applies each candidate action via `simulateAction`, evaluates resulting state via Medium heuristics. Search cap at 200 candidates, samples top 10. Weighting bonuses: +10% elimination, +5% high ground, +3% ally exposure. [3f4076c]
+- [x] **AI Turn Mutation:** `convex/ai.ts` — Fetches state, evaluates actions, executes via `db.patch`, logs with `[AI]` prefix, calls shared `endTurnHandler`. Wrapped in try-catch so turn always advances. [03d408d]
+- [x] **endTurnHandler Extraction:** Core turn-ending logic (AP restore, RAP gain, kernel panic, turn counter) extracted from `endTurn` mutation into shared `endTurnHandler`, used by both human and AI turn flows. [03d408d]
+- [x] **Client-Side AI Trigger:** When human ends turn, `useGameCommands` detects AI opponent, shows `AI_THINKING...` in TurnIndicator for 1.5s, then calls `aiTurn` mutation. 30s timer fallback if AI mutation fails. [03d408d] [ef1211a]
 
 ### 12.2 Achievements System
 
-- [ ] **Achievement Schema:** Track unlockable badges on `players` document.
-- [ ] **Achievements:**
-  - "First Blood" — Win your first game
-  - "Tactician" — Win without losing a unit
-  - "Comeback Kid" — Win after losing 3+ units
-  - "Sudo Master" — Win using a sudo command
-  - "Patience" — Win a game lasting 20+ turns
-  - "Speed Demon" — Win a game in under 5 turns
-- [ ] **Achievement Check:** Evaluate and unlock on game-over flow.
-- [ ] **Achievement Display:** Show earned badges on profile page.
+- [x] **Schema Updates:** Added `achievements: v.array(v.string())` to `players` table, `sudoUsedThisGame`, `unitsLostP1`, `unitsLostP2` to `games` table. [2e6ef3e]
+- [x] **6 Achievements:**
+  - *First Blood* — Win your first-ever game (preGameGamesPlayed === 0)
+  - *Tactician* — Win without losing any units (unitsLost === 0)
+  - *Comeback Kid* — Win after losing 3+ units
+  - *Sudo Master* — Win using a sudo command (tracked via `sudoUsedThisGame`)
+  - *Patience* — Win a game lasting 20+ turns
+  - *Speed Demon* — Win a game in under 5 turns
+- [x] **Achievement Evaluation:** `evaluateNewAchievements()` pure function called from `recordGameEndHandler`. Reads `game.turnNum`, `game.sudoUsedThisGame`, `game.unitsLostP1`/`P2`, pre-game `gamesPlayed`. Skips AI players. [2e6ef3e]
+- [x] **Tracking:** `sudoUsedThisGame` set in all three sudo mutations. `unitsLostP1`/`P2` incremented in combat.ts and movement.ts on unit destruction. [2e6ef3e]
+- [x] **Post-Game Display:** `ACHIEVEMENTS_UNLOCKED` section on win screen with glow effect, showing name and description. [5e873ba]
+- [x] **Lobby Profile:** Collapsible achievements section with locked (`[???]` dimmed) / unlocked (`[FIRST_BLOOD]` glowing green) badges. [5e873ba]
 
 ### Definition of Done
 
-- [ ] AI opponent playable at all 3 difficulty levels.
-- [ ] AI generates valid squad and makes legal moves only.
-- [ ] All 6 achievements unlock correctly on matching conditions.
-- [ ] Achievements persist and display on player profile.
-- [ ] Execute: `bun run type-check; bun run lint; bun run build; bun test`
+- [x] AI opponent playable at all 3 difficulty levels.
+- [x] AI generates valid squad and makes legal moves only.
+- [x] All 6 achievements unlock correctly on matching conditions.
+- [x] Achievements persist and display on player profile.
+- [x] Execute: `bun run type-check; bun run lint; bun run build; bun test` (464 tests, 0 failures). [d6ee88a]
 
 ---
 
@@ -546,7 +545,7 @@
 | Phase 9: Accessibility & Perf | ✅ Complete | 100%       |
 | Phase 10: Player Profiles     | ✅ Complete | 100%       |
 | Phase 11: Content Expansion   | ✅ Complete | 100%       |
-| Phase 12: AI & Achievements   | ⏳ Planned  | 0%         |
+| Phase 12: AI & Achievements   | ✅ Complete | 100%       |
 | Phase 13: Deployment          | ⏳ Planned  | 0%         |
 
 ---
@@ -561,7 +560,7 @@
 | ✅ Done   | Phase 10 | Player profiles and match history complete — identity, stats, history CLI, rematch |
 | 🟡 Medium | Phase 13 | **Launch on itch.io — portfolio-ready URL**                   |
 | ✅ Done   | Phase 11 | Content expansion complete — 3 new units, 3 preset maps, ASCII preview |
-| 🟢 Low    | Phase 12 | AI opponent for single-player + achievements for retention    |
+| ✅ Done   | Phase 12 | AI opponent for single-player + achievements for retention    |
 
 ---
 

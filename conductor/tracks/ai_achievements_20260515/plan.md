@@ -75,16 +75,16 @@
     - [x] Run tests to confirm passing
     - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
-### Task B.2: Achievement Checking on Game End
-- [ ] Write tests: Each achievement unlocks on correct condition, does not re-unlock, `first_blood` checks gamesPlayed transition
-    - [ ] Run tests to confirm failures (Red Phase verification)
-- [ ] Implement: `evaluateAchievements()` function called from `recordGameEndHandler` flow
+### Task B.2: Achievement Checking on Game End [2e6ef3e]
+- [x] Write tests: Each achievement unlocks on correct condition, does not re-unlock, `first_blood` checks gamesPlayed transition
+    - [x] Run tests to confirm failures (Red Phase verification)
+- [x] Implement: `evaluateAchievements()` function called from `recordGameEndHandler` flow
     - Reads `game.turnNum`, `game.sudoUsedThisGame`, `game.unitsLostP1`/`unitsLostP2`, player's pre-game `gamesPlayed`
-- [ ] Implement: `first_blood` logic — check if player's pre-game `gamesPlayed === 0` AND they won
-- [ ] Implement: Persist newly unlocked achievements to `players.achievements` array via `ctx.db.patch`
-- [ ] Implement: Skip achievement evaluation for bot players (AI does not earn achievements)
-    - [ ] Run tests to confirm passing
-    - [ ] Run `bun run type-check; bun run lint; bun test --coverage`
+- [x] Implement: `first_blood` logic — check if player's pre-game `gamesPlayed === 0` AND they won
+- [x] Implement: Persist newly unlocked achievements to `players.achievements` array via `ctx.db.patch`
+- [x] Implement: Skip achievement evaluation for bot players (AI does not earn achievements)
+    - [x] Run tests to confirm passing
+    - [x] Run `bun run type-check; bun run lint; bun test --coverage`
 
 ### Task B.3: Post-Game Achievement Display
 - [ ] Write tests: Post-game screen renders newly unlocked achievements above existing stats, not shown for bots

@@ -54,6 +54,7 @@ function createMockMutations(): GameMutations {
     buildWall: jest.fn(() => Promise.resolve()),
     demolishWall: jest.fn(() => Promise.resolve()),
     useRally: jest.fn(() => Promise.resolve()),
+    aiTurn: jest.fn(() => Promise.resolve()),
   }
 }
 

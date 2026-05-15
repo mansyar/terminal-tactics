@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { isBot } from '../lib/botDetection'
 import { parseCommand } from '../lib/commandParser'
 import { cleanErrorMessage, parseCoord } from '../lib/utils'
 import {
@@ -57,6 +58,7 @@ export interface GameMutations {
   buildWall: any
   demolishWall: any
   useRally: any
+  aiTurn: any
 }
 
 interface UseGameCommandsParams {
@@ -85,6 +87,8 @@ export function useGameCommands({
     x: number
     y: number
   } | null>(null)
+  const [aiThinking, setAiThinking] = useState(false)
+  const aiThinkingRef = useRef(false)
 
   void selectedUnit
   void hoveredUnit
@@ -392,6 +396,32 @@ export function useGameCommands({
           await mutations.endTurn({ gameId: gameState._id, playerId })
           result = 'TURN_ENDED'
           playSuccess()
+
+          // Check if the opponent is AI — trigger AI turn with "thinking" delay
+          const opponentId =
+            gameState.currentPlayer === 'p1' ? gameState.p2 : gameState.p1
+          if (opponentId && isBot(opponentId) && !aiThinkingRef.current) {
+            aiThinkingRef.current = true
+            setAiThinking(true)
+
+            // 1.5s "thinking" delay for human readability
+            await new Promise((resolve) => setTimeout(resolve, 1500))
+
+            try {
+              const difficulty =
+                opponentId === '__ai_easy__'
+                  ? 'easy'
+                  : opponentId === '__ai_hard__'
+                    ? 'hard'
+                    : 'medium'
+              await mutations.aiTurn({ gameId: gameState._id, difficulty })
+            } catch {
+              // AI turn failed silently — game state will handle via existing flows
+            } finally {
+              aiThinkingRef.current = false
+              setAiThinking(false)
+            }
+          }
         }
       } else if (cmd.type === 'sudo mv') {
         result = await handleSudoMoveCommand(
@@ -493,6 +523,7 @@ export function useGameCommands({
   } = useGameDerivedState(gameState, playerId, logs, selectedUnit, hoveredUnit)
 
   return {
+    aiThinking,
     selectedUnit,
     showCoordinates,
     setShowCoordinates,

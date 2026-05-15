@@ -69,6 +69,9 @@ function App() {
   )
   const heartbeat = useMutation(api.presence.heartbeat)
 
+  // Phase 12: AI Opponent
+  const aiTurn = useMutation(api.ai.aiTurn)
+
   // Phase 11: Engineer abilities
   const buildWall = useMutation(api.engineer.buildWall)
   const demolishWall = useMutation(api.engineer.demolishWall)
@@ -170,6 +173,7 @@ function App() {
       buildWall,
       demolishWall,
       useRally,
+      aiTurn,
     },
   })
 
@@ -544,6 +548,7 @@ function App() {
                   enemyDisconnected={opponentStatus === 'disconnected'}
                   enemyHandle={enemyHandle}
                   isAI={isOpponentAI}
+                  aiThinking={gameCommands.aiThinking}
                 />
 
                 <div className="flex gap-2">

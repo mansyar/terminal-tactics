@@ -688,6 +688,7 @@ describe('getPlayerStatsHandler', () => {
       losses: 3,
       draws: 2,
       gamesPlayed: 10,
+      achievements: [],
     })
   })
 

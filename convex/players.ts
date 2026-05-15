@@ -163,6 +163,7 @@ export const getPlayerStatsHandler = async (
     losses: player.losses,
     draws: player.draws,
     gamesPlayed: player.gamesPlayed,
+    achievements: (player).achievements ?? [],
   }
 }
 
@@ -280,8 +281,7 @@ export const recordGameEndHandler = async (
 
     if (game && !isBot(winningPlayerId)) {
       const playerDoc = winner === 'p1' ? p1 : p2
-      const existingAchievements: Array<string> =
-        (playerDoc).achievements ?? []
+      const existingAchievements: Array<string> = playerDoc.achievements ?? []
 
       // Pre-game gamesPlayed is current gamesPlayed (before this game's increment)
       const preGameGamesPlayed = playerDoc.gamesPlayed
@@ -289,10 +289,10 @@ export const recordGameEndHandler = async (
       const newAchievements = evaluateNewAchievements({
         playerWon: true,
         playerRole: winningRole,
-        unitsLostP1: (game).unitsLostP1 ?? 0,
-        unitsLostP2: (game).unitsLostP2 ?? 0,
-        turnNum: (game).turnNum ?? 1,
-        sudoUsedThisGame: (game).sudoUsedThisGame ?? false,
+        unitsLostP1: game.unitsLostP1 ?? 0,
+        unitsLostP2: game.unitsLostP2 ?? 0,
+        turnNum: game.turnNum ?? 1,
+        sudoUsedThisGame: game.sudoUsedThisGame ?? false,
         preGameGamesPlayed,
         existingAchievements,
       })

@@ -19,6 +19,7 @@ import { TabCoordinator } from './lib/tabCoordinator'
 import { renderMapAscii } from './lib/mapPreviewer'
 import { PRESET_MAPS } from './lib/mapPresets'
 import { getBotHandle, isBot } from './lib/botDetection'
+import { ACHIEVEMENT_DEFINITIONS } from './lib/achievements'
 import type { CLIInputHandle } from './components/Terminal/CLIInput'
 
 function App() {
@@ -379,6 +380,34 @@ function App() {
               </div>
             </div>
 
+            {/* Achievements — show unlocked on win */}
+            {gameState.winner === playerId &&
+              playerStats &&
+              (playerStats as any).achievements?.length > 0 && (
+                <div className="border border-matrix-primary/20 p-3 space-y-2">
+                  <div className="text-[10px] text-matrix-primary/50 font-mono uppercase tracking-wider">
+                    ACHIEVEMENTS_UNLOCKED
+                  </div>
+                  {(playerStats as any).achievements.map((id: string) => {
+                    const def =
+                      ACHIEVEMENT_DEFINITIONS[
+                        id
+                      ]
+                    return (
+                      <div
+                        key={id}
+                        className="text-matrix-primary font-mono text-xs animate-pulse glow-sm"
+                      >
+                        &gt; [{def.id.toUpperCase()}] {def.name}
+                        <span className="text-matrix-primary/60 text-[9px] ml-2">
+                          {def.description}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+
             {/* Game details */}
             <div className="text-xs text-matrix-primary/70 font-mono space-y-1">
               <div>
@@ -460,6 +489,7 @@ function App() {
             playerId={playerId}
             handle={playerHandle}
             onGameJoined={(id) => setActiveGameId(id)}
+            achievements={playerStats?.achievements}
           />
         )}
       </div>

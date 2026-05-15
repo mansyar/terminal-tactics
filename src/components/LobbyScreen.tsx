@@ -2,22 +2,26 @@ import React, { useState } from 'react'
 import { useMutation } from 'convex/react'
 import { api } from '../../convex/_generated/api'
 import { BOT_DIFFICULTIES } from '../lib/botDetection'
+import { ACHIEVEMENT_DEFINITIONS } from '../lib/achievements'
 
 interface LobbyScreenProps {
   playerId: string
   handle: string
   onGameJoined: (gameId: string) => void
+  achievements?: Array<string>
 }
 
 export const LobbyScreen: React.FC<LobbyScreenProps> = ({
   playerId,
   handle,
   onGameJoined,
+  achievements,
 }) => {
   const [code, setCode] = useState('')
   const [isCreating, setIsCreating] = useState(false)
   const [isAIStarting, setIsAIStarting] = useState(false)
   const [showAIDifficulty, setShowAIDifficulty] = useState(false)
+  const [showAchievements, setShowAchievements] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isEditingHandle, setIsEditingHandle] = useState(false)
   const [editHandleValue, setEditHandleValue] = useState(handle)
@@ -335,6 +339,40 @@ export const LobbyScreen: React.FC<LobbyScreenProps> = ({
             <div className="text-[9px] text-matrix-primary/20 font-mono">
               Use /handle &lt;name&gt; in-game to change
             </div>
+          </div>
+        )}
+      </div>
+
+      {/* Achievements Section */}
+      <div className="w-full max-w-2xl border-t border-matrix-primary/20 pt-4">
+        <button
+          onClick={() => setShowAchievements(!showAchievements)}
+          className="w-full text-left text-[10px] text-matrix-primary/50 hover:text-matrix-primary font-mono uppercase tracking-wider transition-colors flex items-center gap-2"
+        >
+          <span>{showAchievements ? '[-]' : '[+]'}</span>
+          ACHIEVEMENTS ({Object.keys(ACHIEVEMENT_DEFINITIONS).length})
+        </button>
+
+        {showAchievements && (
+          <div className="mt-3 space-y-2">
+            {Object.entries(ACHIEVEMENT_DEFINITIONS).map(([id, def]) => {
+              const unlocked = achievements?.includes(id)
+              return (
+                <div
+                  key={id}
+                  className={`font-mono text-xs flex items-center gap-3 ${
+                    unlocked
+                      ? 'text-matrix-primary glow-sm'
+                      : 'text-matrix-primary/30'
+                  }`}
+                >
+                  <span>{unlocked ? `[${id.toUpperCase()}]` : '[???]'}</span>
+                  <span className={unlocked ? '' : 'text-[9px]'}>
+                    {unlocked ? def.name : 'LOCKED'}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         )}
       </div>

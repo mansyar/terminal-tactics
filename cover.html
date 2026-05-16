@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terminal Tactics Cover</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-color: #050505;
+    --primary-green: #00ff00;
+    --dark-green: #003300;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #222; /* Outer background to make the 630x500 container pop */
+  }
+  .cover-container {
+    width: 630px;
+    height: 500px;
+    background-color: var(--bg-color);
+    position: relative;
+    overflow: hidden;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--primary-green);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 30px rgba(0,0,0,0.8);
+  }
+
+  /* CRT Scanlines */
+  .cover-container::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    z-index: 2;
+    background-size: 100% 4px, 6px 100%;
+    pointer-events: none;
+  }
+
+  /* Vignette/Glow overlay */
+  .cover-container::before {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: radial-gradient(circle, rgba(0,255,0,0.05) 0%, rgba(0,0,0,0.8) 100%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .content {
+    position: relative;
+    z-index: 3;
+    padding: 25px 35px;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    text-shadow: 0 0 15px rgba(0, 255, 0, 0.6);
+    border-bottom: 2px dashed rgba(0, 255, 0, 0.4);
+    padding-bottom: 5px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: 8px;
+  }
+
+  .grid-display {
+    margin-top: 10px;
+    font-size: 16px;
+    line-height: 1.4;
+    white-space: pre;
+    color: #00aa00;
+  }
+
+  .unit {
+    color: #fff;
+    text-shadow: 0 0 10px var(--primary-green);
+    font-weight: bold;
+  }
+
+  .enemy {
+    color: #ff3333;
+    text-shadow: 0 0 10px #ff0000;
+    font-weight: bold;
+  }
+
+  .terminal {
+    background: rgba(0, 30, 0, 0.6);
+    border: 1px solid rgba(0, 255, 0, 0.2);
+    border-left: 4px solid var(--primary-green);
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 2px;
+  }
+
+  .cmd-line {
+    margin: 4px 0;
+  }
+
+  .prompt {
+    opacity: 0.6;
+    margin-right: 10px;
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 10px;
+    height: 18px;
+    background-color: var(--primary-green);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+</style>
+</head>
+<body>
+
+<div class="cover-container">
+  <div class="content">
+    
+    <div>
+      <h1>TERMINAL_TACTICS</h1>
+      <div class="subtitle">SYS.STATUS: ACTIVE // MISSION_READY</div>
+    </div>
+
+    <!-- ASCII Tactical Grid representation -->
+    <div class="grid-display">
+  1 | .  .  .  .  ^  ^  .  .  .  .
+  2 | .  .  <span class="unit">[S]</span> .  .  .  <span class="enemy">[E]</span> .  .  .
+  3 | .  #  #  .  .  .  .  .  .  .
+  4 | .  .  <span class="unit">[K]</span> .  .  .  <span class="enemy">[C]</span> .  .  .
+  5 | .  .  .  <span class="unit">[A]</span> .  .  .  .  .  .
+  6 | .  .  .  .  .  <span class="enemy">[S]</span> .  .  #  #
+    +-----------------------------
+      A  B  C  D  E  F  G  H  I  J
+    </div>
+
+    <div class="terminal">
+      <div class="cmd-line"><span class="prompt">operator@terminal:~$</span> mv C4 E4</div>
+      <div class="cmd-line" style="color: #00cc00;">>> UNIT_K MOVED. 1 AP REMAINING.</div>
+      <div class="cmd-line"><span class="prompt">operator@terminal:~$</span> atk E4 F4</div>
+      <div class="cmd-line" style="color: #00cc00;">>> FRONTAL ATTACK! TARGET [C] TOOK 30 DMG.</div>
+      <div class="cmd-line"><span class="prompt">operator@terminal:~$</span> <span class="cursor"></span></div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

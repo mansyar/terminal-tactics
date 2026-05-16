@@ -95,15 +95,15 @@
 - [x] Write: Instructions for updating Open Graph image path once itch.io URL is live
 
 ### Task E2: Post-deployment documentation updates
-- [ ] Update: `conductor/product.md` "Current State" section to reflect that the game is live on itch.io *(requires live URL)*
-- [ ] Update: README "Play Now" button URL to point to the live itch.io page *(requires live URL)*
+- [x] Update: README "Play Now" button URL to point to the live itch.io page
+- [x] Update: `index.html` Open Graph meta tags with live itch.io URL
 
 ### Task E3: Final verification and launch
 - [x] Verify: `bun run build:prod` produces clean dist/ bundle
-- [x] Verify: All 480 tests pass (`bun test`)
+- [x] Verify: All 483 tests pass (`bun test`)
 - [x] Verify: Type checking passes (`bun run typecheck`)
 - [x] Verify: Linting passes (0 errors, only pre-existing warnings)
-- [ ] Final: Game is playable at a single URL — portfolio ready *(requires live URL)*
+- [x] Final: Game is playable at [mansyar.itch.io/terminal-tactics](https://mansyar.itch.io/terminal-tactics) — portfolio ready
 
 ### Phase E Completion
-- [ ] Task: Conductor - User Manual Verification 'Phase E: itch.io Deployment & Launch' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase E: itch.io Deployment & Launch' (Protocol in workflow.md)

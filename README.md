@@ -4,7 +4,7 @@
 
 **TERMINAL TACTICS** is a minimalist, high-fidelity tactical strategy game played entirely through a Command Line Interface (CLI). Built with **Vite**, **React**, **Convex**, and **Tailwind CSS**, it combines the depth of deterministic tactical combat with the aesthetic of a retro-futuristic terminal.
 
-[![PLAY_NOW](https://img.shields.io/badge/▶_PLAY_NOW-00ff00?style=for-the-badge&labelColor=0A0A0A&color=00ff00)](https://your-username.itch.io/terminal-tactics)
+[![PLAY_NOW](https://img.shields.io/badge/▶_PLAY_NOW-00ff00?style=for-the-badge&labelColor=0A0A0A&color=00ff00)](https://mansyar.itch.io/terminal-tactics)
 
 ![License](https://img.shields.io/badge/license-MIT-00ff00?labelColor=0A0A0A)
 ![Status](https://img.shields.io/badge/status-LIVE-00ff00?labelColor=0A0A0A)

@@ -100,24 +100,9 @@ The game is controlled entirely via text commands in a terminal interface. Every
 
 ## 📸 SCREENSHOTS
 
-> *TERMINAL CAPTURES PENDING — DEPLOY AGENT, EXTRACT VISUALS.*
-
-```
-+--------------------------------------------------+
-|  > TERMINAL_TACTICS v1.0                         |
-|  > PLAYER: OPERATOR_007                          |
-|  > STATUS: MISSION_READY                         |
-|                                                  |
-|  [GRID DISPLAY — 12x12 MATRIX]                   |
-|  [UNIT ICONS — K A S M E R C]                    |
-|  [CRT SCANLINE OVERLAY]                          |
-|                                                  |
-|  > mv K2 K5                                      |
-|  >> UNIT_K MOVED. 1 AP REMAINING.               |
-+--------------------------------------------------+
-```
-
-*Replace the above with actual game screenshots: CLI interface, grid combat, lobby/matchmaking.*
+| LOBBY | GRID | CLI |
+|-------|------|-----|
+| ![Lobby screen](./screenshots/lobby.png) | ![Grid combat](./screenshots/grid.png) | ![CLI commands](./screenshots/cli.png) |
 
 ## 📂 PROJECT_STRUCTURE
 

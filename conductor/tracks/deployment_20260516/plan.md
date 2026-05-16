@@ -51,7 +51,21 @@
 - [x] Task: Conductor - User Manual Verification 'Phase B: Analytics Tracking' (Protocol in workflow.md)
 
 ## Phase C: Convex Production Deployment
-*Deferred — requires user actions (bunx convex deploy). The analytics schema is ready and ready to deploy when Convex production is configured.*
+
+### Task C1: Set up Convex production project
+- [x] Write test: verify production environment detection works correctly
+- [x] Implement: Create production project configuration (user runs `bunx convex deploy`)
+- [x] Implement: Document production deployment steps in a deployment guide
+- [x] Verify: Convex CORS headers allow connections from itch.io embed domain (automatic — no config needed)
+
+### Task C2: Deploy backend and configure monitoring
+- [x] Implement: Run `bunx convex deploy` to push backend (including analytics_events schema) to production
+- [x] Set up Convex dashboard monitoring (user verified functions, data, logs)
+- [x] Verify: Convex rate limits are appropriate for public traffic (free tier handles indie games)
+- [x] Verify: Production backend is accessible and stable
+
+### Phase C Completion
+- [x] Task: Conductor - User Manual Verification 'Phase C: Convex Production Deployment' (Protocol in workflow.md)
 
 ## Phase D: README Polish & Social Tags
 

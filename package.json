@@ -6,7 +6,7 @@
     "dev": "bun --bun vite --port 3000",
     "build": "bun --bun vite build && tsc",
     "build:prod": "bun run build && bun run zip",
-    "zip": "bun --bun powershell -NoProfile -Command \"if(Test-Path dist.zip){Remove-Item dist.zip -Force};Add-Type -AssemblyName System.IO.Compression.FileSystem;[System.IO.Compression.ZipFile]::CreateFromDirectory('dist','dist.zip')\"",
+    "zip": "powershell.exe -NoProfile -Command \"if(Test-Path dist.zip){Remove-Item dist.zip -Force};Compress-Archive -Path dist/* -DestinationPath dist.zip\"",
     "preview": "bun --bun vite preview",
     "test": "bun test",
     "test:coverage": "bun test --coverage",

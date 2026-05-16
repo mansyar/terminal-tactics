@@ -90,7 +90,7 @@ bun run dev
 
 1. In the itch.io game dashboard, navigate to **Uploads**
 2. Upload `dist.zip` (generated in Step 1)
-3. Set **Viewport dimensions** to `1280x720`
+3. Set **Viewport dimensions** to `1280x960` (or 1280x720 if you enable the in-game scroll on itch.io)
 4. Enable **Fullscreen** option
 5. Set **Background color** to `#0A0A0A`
 
@@ -99,7 +99,7 @@ bun run dev
 ```yaml
 viewport:
   width: 1280
-  height: 720
+  height: 960
 fullscreen: true
 background: "#0A0A0A"
 ```

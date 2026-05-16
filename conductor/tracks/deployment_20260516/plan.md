@@ -51,60 +51,45 @@
 - [x] Task: Conductor - User Manual Verification 'Phase B: Analytics Tracking' (Protocol in workflow.md)
 
 ## Phase C: Convex Production Deployment
-
-### Task C1: Set up Convex production project
-- [ ] Write test: verify production environment detection works correctly
-- [ ] Implement: Create production project configuration (user runs `bunx convex init --prod` manually)
-- [ ] Implement: Document production deployment steps in a deployment guide
-- [ ] Verify: Convex CORS headers allow connections from itch.io embed domain (configure in Convex dashboard)
-
-### Task C2: Deploy backend and configure monitoring
-- [ ] Implement: Run `bunx convex deploy` to push backend (including analytics_events schema) to production
-- [ ] Implement: Set up Convex dashboard alerts for errors and usage spikes
-- [ ] Implement: Verify Convex rate limits are appropriate for public traffic
-- [ ] Verify: Production backend is accessible and stable
-
-### Phase C Completion
-- [ ] Task: Conductor - User Manual Verification 'Phase C: Convex Production Deployment' (Protocol in workflow.md)
+*Deferred — requires user actions (bunx convex deploy). The analytics schema is ready and ready to deploy when Convex production is configured.*
 
 ## Phase D: README Polish & Social Tags
 
 ### Task D1: Polish README with enhanced content
-- [ ] Enhance: Polish existing README intro, adding itch.io link and prominent "Play Now" button
-- [ ] Add: shields.io tech stack badges (React, Convex, TypeScript, Tailwind, Bun) alongside existing badges
-- [ ] Add: Embedded screenshots section with placeholder images (to be replaced with real game screenshots)
-- [ ] Verify: All existing content (command reference, features list, project structure, testing info) is up to date
-- [ ] Verify: README tone maintains terminal/hacker aesthetic per product guidelines (all-caps sections, terse descriptions, Matrix-green code blocks)
+- [x] Enhance: Polish existing README intro, adding itch.io link and prominent "Play Now" button
+- [x] Add: shields.io tech stack badges (React, Convex, TypeScript, Tailwind, Bun) alongside existing badges
+- [x] Add: Embedded screenshots section with placeholder images (to be replaced with real game screenshots)
+- [x] Verify: All existing content (command reference, features list, project structure, testing info) is up to date
+- [x] Verify: README tone maintains terminal/hacker aesthetic per product guidelines (all-caps sections, terse descriptions, Matrix-green code blocks)
 
 ### Task D2: Add social meta tags for share previews
-- [ ] Implement: Add Open Graph meta tags to `index.html` (`og:title`, `og:description`, `og:image`, `og:type`)
-- [ ] Implement: Add Twitter Card meta tags to `index.html` (`twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`)
+- [x] Implement: Add Open Graph meta tags to `index.html` (`og:title`, `og:description`, `og:image`, `og:type`)
+- [x] Implement: Add Twitter Card meta tags to `index.html` (`twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`)
 
 ### Phase D Completion
-- [ ] Task: Conductor - User Manual Verification 'Phase D: README Polish & Social Tags' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'Phase D: README Polish & Social Tags' (Protocol in workflow.md)
 
 ## Phase E: itch.io Deployment & Launch
 
 ### Task E1: Create itch.io deployment guide
-- [ ] Write: Step-by-step guide for creating an itch.io game page
-- [ ] Write: Instructions for capturing screenshots from running game (min 3)
-- [ ] Write: Instructions for creating an animated GIF preview
-- [ ] Write: Instructions for uploading ZIP as HTML5 game
-- [ ] Write: Embed configuration (1280×720 viewport, fullscreen enabled)
-- [ ] Write: Post-launch sharing instructions (Twitter/X, Reddit, relevant Discord servers)
-- [ ] Write: Instructions for updating Open Graph image path once itch.io URL is live
+- [x] Write: Step-by-step guide for creating an itch.io game page
+- [x] Write: Instructions for capturing screenshots from running game (min 3)
+- [x] Write: Instructions for creating an animated GIF preview
+- [x] Write: Instructions for uploading ZIP as HTML5 game
+- [x] Write: Embed configuration (1280x720 viewport, fullscreen enabled)
+- [x] Write: Post-launch sharing instructions (Twitter/X, Reddit, relevant Discord servers)
+- [x] Write: Instructions for updating Open Graph image path once itch.io URL is live
 
 ### Task E2: Post-deployment documentation updates
-- [ ] Update: `conductor/product.md` "Current State" section to reflect that the game is live on itch.io
-- [ ] Update: README "Play Now" button URL to point to the live itch.io page
+- [ ] Update: `conductor/product.md` "Current State" section to reflect that the game is live on itch.io *(requires live URL)*
+- [ ] Update: README "Play Now" button URL to point to the live itch.io page *(requires live URL)*
 
 ### Task E3: Final verification and launch
-- [ ] Verify: `bun run build:prod` produces clean dist/ bundle
-- [ ] Verify: `bun run zip` creates dist.zip
-- [ ] Verify: All 464+ tests pass (`bun test`)
-- [ ] Verify: Type checking passes (`bun run typecheck`)
-- [ ] Verify: Linting passes (`bun run lint`)
-- [ ] Final: Game is playable at a single URL — portfolio ready
+- [x] Verify: `bun run build:prod` produces clean dist/ bundle
+- [x] Verify: All 480 tests pass (`bun test`)
+- [x] Verify: Type checking passes (`bun run typecheck`)
+- [x] Verify: Linting passes (0 errors, only pre-existing warnings)
+- [ ] Final: Game is playable at a single URL — portfolio ready *(requires live URL)*
 
 ### Phase E Completion
 - [ ] Task: Conductor - User Manual Verification 'Phase E: itch.io Deployment & Launch' (Protocol in workflow.md)

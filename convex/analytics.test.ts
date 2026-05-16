@@ -68,7 +68,7 @@ describe('Analytics - logAnalyticsEvent', () => {
     expect(call[1].metadata).toEqual({ winner: 'p1', turns: 12 })
   })
 
-  it('rejects invalid event type', async () => {
+  it('rejects invalid event type', () => {
     expect(
       logAnalyticsEventHandler(mockCtx, {
         eventType: 'INVALID_EVENT',
